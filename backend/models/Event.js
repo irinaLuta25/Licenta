@@ -5,10 +5,6 @@ const EventModel = (sequelize, DataTypes) => {
             primaryKey:true,
             autoIncrement:true
         },
-        appointmentType: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
         name: {
             type: DataTypes.STRING,
             allowNull: false
@@ -27,6 +23,14 @@ const EventModel = (sequelize, DataTypes) => {
         },
         targetDepartment: {
             type: DataTypes.STRING,
+            allowNull: false
+        },
+        type: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        managerIsParticipant: {
+            type: DataTypes.BOOLEAN,
             allowNull: false
         }
     }, {

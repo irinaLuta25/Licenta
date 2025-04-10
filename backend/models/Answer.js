@@ -9,6 +9,10 @@ const AnswerModel = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: false
         },
+        isAnonymous: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false
+        }
     }, {
         underscored: true,
         freezeTableName: true,

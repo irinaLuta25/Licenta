@@ -7,7 +7,8 @@ const controller = {
                 mood: req.body.mood,
                 intensity: req.body.intensity,
                 recordedAt: req.body.recordedAt,
-                details: req.body.details
+                details: req.body.details,
+                employeeId:req.body.employeeId
             });
             res.status(200).send(emotionalState);
         } catch (err) {
@@ -25,7 +26,8 @@ const controller = {
                 mood: req.body.mood,
                 intensity: req.body.intensity,
                 recordedAt: req.body.recordedAt,
-                details: req.body.details
+                details: req.body.details,
+                employeeId:req.body.employeeId
             });
             res.status(200).send(updated);
         } catch (err) {
@@ -63,7 +65,23 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllEmotionalStatesByEmployeeId: async (req, res) => {
+        const {employeeId}=req.params;
+        if(!employeeId){
+            throw new Error("No ID provided");
+        }
+        try {
+            const emotionalStates = await EmotionalStateDb.findAll({
+                where: {employeeId}
+            });
+            res.status(200).send(emotionalStates);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
 };
 
 module.exports = controller;

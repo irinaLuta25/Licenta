@@ -6,7 +6,9 @@ const controller = {
             const session = await TherapySessionDb.create({
                 locationType: req.body.locationType,
                 location: req.body.location,
-                notes: req.body.notes
+                notes: req.body.notes,
+                intervalId:req.body.intervalId,
+                employeeId:req.body.employeeId
             });
             res.status(200).send(session);
         } catch (err) {
@@ -60,7 +62,39 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllTherapySessionsByEmployeeId: async (req, res) => {
+        const {employeeId}=req.params;
+        if(!employeeId) {
+            throw new Error("No ID provided");
+        }
+        try {
+            const sessions = await TherapySessionDb.findAll({
+                where: {employeeId}
+            });
+            res.status(200).send(sessions);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+    
+    getAllTherapySessionsBySpecialistId: async (req, res) => {
+        const {specialistId}=req.params;
+        if(!specialistId) {
+            throw new Error("No ID provided");
+        }
+        try {
+            const sessions = await TherapySessionDb.findAll({
+                where: {specialistId}
+            });
+            res.status(200).send(sessions);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
+
 };
 
 module.exports = controller;

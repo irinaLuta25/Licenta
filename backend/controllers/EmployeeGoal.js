@@ -4,6 +4,8 @@ const controller = {
     createEmployeeGoal: async (req, res) => {
         try {
             const goal = await EmployeeGoalDb.create({
+                employeeId:req.body.employeeId,
+                habitId:req.body.habitId,
                 targetValue: req.body.targetValue,
                 period: req.body.period
             });
@@ -19,6 +21,8 @@ const controller = {
             if (!goal) return res.status(400).send("Goal not found");
 
             const updated = await goal.update({
+                employeeId:req.body.employeeId,
+                habitId:req.body.habitId,
                 targetValue: req.body.targetValue,
                 period: req.body.period
             });
@@ -58,7 +62,25 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllEmployeeGoalsByEmployeeId: async (req, res) => {
+        const {employeeId}=req.params;
+        if(!employeeId){
+            throw new Error("No ID provided");
+        }
+        try {
+            const goals = await EmployeeGoalDb.findAll({
+                where:{employeeId}
+            });
+            res.status(200).send(goals);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+    
+
+
 };
 
 module.exports = controller;

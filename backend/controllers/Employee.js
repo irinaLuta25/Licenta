@@ -3,6 +3,7 @@ const EmployeeDb = require("../models").Employee;
 const controller = {
     createEmployee: async (req, res) => {
         const employee = {
+            userId:req.body.userId,
             hireDate: req.body.hireDate,
             allowAnonymous: req.body.allowAnonymous,
             isManager: req.body.isManager,
@@ -26,6 +27,7 @@ const controller = {
     updateEmployee: async (req, res) => {
         const employeeId = req.params.id;
         const payload = {
+            userId:req.body.userId,
             hireDate: req.body.hireDate,
             allowAnonymous: req.body.allowAnonymous,
             isManager: req.body.isManager,
@@ -40,7 +42,7 @@ const controller = {
 
         try {
             const employee = EmployeeDb.findByPk(employeeId);
-            if (!user) {
+            if (!employee) {
                 return res.status(400).send("Employee not found");
             }
 
@@ -78,6 +80,34 @@ const controller = {
         try {
             const employee = await EmployeeDb.findByPk(id);
             res.status(200).send(employee);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
+    getAllEmployeesByDepartment: async (req, res) => {
+        const {department}=req.params;
+        if(!department){
+            throw new Error("No  provided");
+        }
+        try {
+            const employees = await EmployeeDb.findAll({
+                where: {department}
+            });
+            res.status(200).send(employees);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
+    getAllEmployeesForReports: async (req, res) => {
+        try {
+            const employees = await EmployeeDb.findAll({
+                where: {
+                    allowAnonymous: true
+                }
+            });
+            res.status(200).send(employees);
         } catch (err) {
             res.status(500).send(err.message);
         }

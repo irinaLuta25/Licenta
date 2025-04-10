@@ -4,6 +4,7 @@ const controller = {
     createHabitTracking: async (req, res) => {
         try {
             const record = await HabitTrackingDb.create({
+                employeeGoalId:req.body.employeeGoalId,
                 value: req.body.value,
                 recordedAt: req.body.recordedAt
             });
@@ -19,6 +20,7 @@ const controller = {
             if (!record) return res.status(400).send("Habit tracking not found");
 
             const updated = await record.update({
+                employeeGoalId:req.body.employeeGoalId,
                 value: req.body.value,
                 recordedAt: req.body.recordedAt
             });
@@ -58,7 +60,24 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllHabitTrackingByEmployeeGoalId: async (req, res) => {
+        const {employeeGoalId}=req.params;
+        if(!employeeGoalId) {
+            throw new Error("No ID provided");
+        }
+        try {
+            const records = await HabitTrackingDb.findAll({
+                where: {
+                    employeeGoalId
+                }
+            });
+            res.status(200).send(records);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
 };
 
 module.exports = controller;

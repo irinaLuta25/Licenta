@@ -1,3 +1,5 @@
+const { where } = require("sequelize");
+
 const IntervalDb = require("../models").Interval;
 
 const controller = {
@@ -7,7 +9,8 @@ const controller = {
                 date: req.body.date,
                 beginTime: req.body.beginTime,
                 endTime: req.body.endTime,
-                status: req.body.status
+                status: req.body.status,
+                specialistId:req.body.specialistId
             });
             res.status(200).send(interval);
         } catch (err) {
@@ -24,7 +27,8 @@ const controller = {
                 date: req.body.date,
                 beginTime: req.body.beginTime,
                 endTime: req.body.endTime,
-                status: req.body.status
+                status: req.body.status,
+                specialistId:req.body.specialistId
             });
             res.status(200).send(updated);
         } catch (err) {
@@ -62,7 +66,28 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllAvailableIntervalsBySpecialistId: async(req,res) => {
+        const {specialistId}=req.params;
+        if(!specialistId) {
+            throw new Error("No ID provided");
+        }
+        try {
+            const availableIntervalsForSpecialist= await IntervalDb.findAll({
+                where: {
+                    specialistId,
+                    status: false
+                }
+            }
+            )
+            res.status(200).send(availableIntervalsForSpecialist);
+        } catch(err) {
+            res.status(500).send(err.message);
+        }
+    },
+
+
 };
 
 module.exports = controller;

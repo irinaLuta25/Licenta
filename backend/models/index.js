@@ -57,6 +57,9 @@ Interval.belongsTo(Specialist)
 Interval.hasOne(TherapySession)
 TherapySession.belongsTo(Interval)
 
+Interval.hasOne(Event)
+Event.belongsTo(Interval)
+
 Employee.hasMany(TherapySession)
 TherapySession.belongsTo(Employee)
 

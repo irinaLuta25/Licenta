@@ -4,7 +4,9 @@ const controller = {
     createSpecialistSpecialization: async (req, res) => {
         try {
             const ss = await SpecialistSpecializationDb.create({
-                dateAcquired: req.body.dateAcquired
+                dateAcquired: req.body.dateAcquired,
+                specialistId:req.body.specialistId,
+                specializationId:req.body.specializationId
             });
             res.status(200).send(ss);
         } catch (err) {
@@ -18,7 +20,9 @@ const controller = {
             if (!ss) return res.status(400).send("SpecialistSpecialization not found");
 
             const updated = await ss.update({
-                dateAcquired: req.body.dateAcquired
+                dateAcquired: req.body.dateAcquired,
+                specialistId:req.body.specialistId,
+                specializationId:req.body.specializationId
             });
             res.status(200).send(updated);
         } catch (err) {
@@ -56,7 +60,22 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllSpecialistSpecializationsBySpecialistId: async (req, res) => {
+        const {specialistId}=req.params;
+        if(!specialistId){
+            throw new Error("No ID provided");
+        }
+        try {
+            const list = await SpecialistSpecializationDb.findAll({
+                where: {specialistId}
+            });
+            res.status(200).send(list);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
 };
 
 module.exports = controller;

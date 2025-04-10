@@ -4,7 +4,9 @@ const controller = {
     createEmployeeReward: async (req, res) => {
         try {
             const reward = await EmployeeRewardDb.create({
-                receivedAt: req.body.receivedAt
+                receivedAt: req.body.receivedAt,
+                employeeId: req.body.employeeId,
+                rewardId:req.body.rewardId
             });
             res.status(200).send(reward);
         } catch (err) {
@@ -18,7 +20,9 @@ const controller = {
             if (!reward) return res.status(400).send("Employee reward not found");
 
             const updated = await reward.update({
-                receivedAt: req.body.receivedAt
+                receivedAt: req.body.receivedAt,
+                employeeId: req.body.employeeId,
+                rewardId:req.body.rewardId
             });
             res.status(200).send(updated);
         } catch (err) {
@@ -56,7 +60,37 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllRewardsByEmployeeId: async (req, res) => {
+        const {employeeId}=req.params;
+        if(!employeeId) {
+            throw new Error("No ID provided");
+        }
+        try {
+            const rewards = await EmployeeRewardDb.findAll({
+                where: {employeeId}
+            });
+            res.status(200).send(rewards);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+    
+    getAllRewardsByRewardId: async (req, res) => {
+        const {rewardId}=req.params;
+        if(!rewardId) {
+            throw new Error("No ID provided");
+        }
+        try {
+            const rewards = await EmployeeRewardDb.findAll({
+                where: {rewardId}
+            });
+            res.status(200).send(rewards);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
 };
 
 module.exports = controller;

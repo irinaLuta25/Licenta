@@ -1,10 +1,23 @@
 const QuestionDb = require("../models").Question;
 
 const controller = {
-    createQuestion: async (req, res) => {
+    createQuestionForEvent: async (req, res) => {
         try {
             const question = await QuestionDb.create({
-                text: req.body.text
+                text: req.body.text,
+                eventId:req.body.eventId,
+            });
+            res.status(200).send(question);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
+    createQuestionForTherapySession:  async (req, res) => {
+        try {
+            const question = await QuestionDb.create({
+                text: req.body.text,
+                therapySessionId:req.body.therapySessionId,
             });
             res.status(200).send(question);
         } catch (err) {
@@ -56,7 +69,37 @@ const controller = {
         } catch (err) {
             res.status(500).send(err.message);
         }
-    }
+    },
+
+    getAllQuestionsByEventId: async (req, res) => {
+        const {eventId}=req.params;
+        if(!eventId){
+            throw new Error("No ID provided");
+        }
+        try {
+            const questions = await QuestionDb.findAll({
+                where: {eventId}
+            });
+            res.status(200).send(questions);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    }, 
+    
+    getAllQuestionsBySpecialistId: async (req, res) => {
+        const {specialistId}=req.params;
+        if(!specialistId){
+            throw new Error("No ID provided");
+        }
+        try {
+            const questions = await QuestionDb.findAll({
+                where: {specialistId}
+            });
+            res.status(200).send(questions);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
 };
 
 module.exports = controller;
