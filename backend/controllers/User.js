@@ -1,9 +1,12 @@
 const UserDb = require("../models").User;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const EmployeeDb=require("../models").Employee;
+const SpecialistDb=require("../models").Specialist;
 
 const controller = {
     register: async (req, res) => {
+        console.log("aaaaa");
         const user = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
@@ -33,8 +36,22 @@ const controller = {
 
         try {
             user.password = await bcrypt.hash(user.password, 10);
-            const user = await UserDb.create(user);
-            res.status(200).send(user);
+            const newUser = await UserDb.create(user);
+            console.log("User creat:", newUser.id, newUser.role);
+
+            try {
+                if (newUser.role === "angajat") {
+                  await EmployeeDb.create({ userId: newUser.id });
+                  console.log("Employee creat");
+                } else if (newUser.role === "specialist") {
+                  await SpecialistDb.create({ userId: newUser.id });
+                  console.log("Specialist creat");
+                }
+              } catch (err) {
+                console.error("Eroare la creare employee/specialist:", err.message);
+            }
+
+            res.status(200).send(newUser);
         } catch (err) {
             res.status(500).send({ message: err.message });
         }
@@ -58,17 +75,24 @@ const controller = {
             });
 
             if (user) {
-                const match = bcrypt.compare(payload.password, user.password);
+                console.log("🧪 parola din payload:", payload.password);
+                console.log("🔒 parola userului din DB:", user.password);
+                const match = await bcrypt.compare(payload.password, user.password);
 
                 if (match) {
-                    req.session.user = await jwt.sign(
-                        user.get(),
+                    console.log("🔐 Se creează token...");
+                    console.log("SECRET:", process.env.COOKIE_SECRET);
+                    const token = jwt.sign(
+                        { id: user.id, email: user.email, role: user.role },
                         process.env.COOKIE_SECRET,
-                        {
-                            algorithm: "HS256",
-                            expiresIn: "1h",
-                        }
+                        { algorithm: "HS256", expiresIn: "8h" }
                     );
+                
+                    res.cookie("token", token, {
+                        httpOnly: true,
+                        sameSite: "Lax",
+                        maxAge: 60 * 60 * 1000, // 1 oră
+                    });
                     return res
                         .status(200)
                         .send({ message: "Login success!", userId: user.id });
@@ -77,7 +101,7 @@ const controller = {
                 }
             }
 
-            res.status(400).send("Incorrect email or password!");
+            return res.status(400).send("Incorrect email or password!");
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -141,10 +165,24 @@ const controller = {
         }
     },
 
-    // logout: async(req,res) => {
-    //     req.session={};
+    getUserFromCookie: async(req,res) => {
+        const token=req.cookies.token;
+        if(!token) {
+            return res.status(400).send("No token provided!");
+        }
+        try{
+            const user=jwt.verify(token,process.env.COOKIE_SECRET);
+            return res.status(200).send(user);
+        } catch(err) {
+            return res.status(500).send(err.message);
+        }
+    },
 
-    // }
+    logout: async (req, res) => {
+        res.clearCookie("token");
+        res.status(200).send({ message: "Logged out" });
+    }
+    
 };
 
 module.exports=controller;

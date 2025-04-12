@@ -1,6 +1,9 @@
 const { User } = require("../models");
 
 const SpecialistDb = require("../models").Specialist;
+const UserDb = require("../models").User;
+const SpecializationDb = require("../models").Specialization;
+const SpecialistSpecializationDb=require("../models").SpecialistSpecialization;
 
 const controller = {
     createSpecialist: async (req, res) => {
@@ -44,7 +47,7 @@ const controller = {
                 return res.status(400).send("Specialist not found");
             }
 
-            const newSpecialist = await specialist.update(payload);
+            const newSpecialist = await SpecialistDb.update(payload);
             res.status(200).send(newSpecialist);
         } catch (err) {
             res.status(500).send(err.message);
@@ -66,7 +69,14 @@ const controller = {
 
     getAllSpecialists: async (req, res) => {
         try {
-            const specialists = await specialists.findAll();
+            const specialists = await SpecialistDb.findAll({
+                include: [
+                    {
+                      model: UserDb,      
+                      as: 'user',            
+                    }
+                ]
+            });
             res.status(200).send(specialists);
         } catch (err) {
             res.status(500).send(err.message);
@@ -85,13 +95,29 @@ const controller = {
 
     getAllTherapists: async (req, res) => {
         try {
-            const therapists = await therapists.findAll({
+            const therapists = await SpecialistDb.findAll({
                 where: {
                     isTherapist: true
-                }
+                },
+                include: [
+                    {
+                      model: UserDb,      
+                      as: 'user',            
+                    },
+                    {
+                        model: SpecialistSpecializationDb,
+                        include: [
+                          {
+                            model: SpecializationDb,
+                          },
+                        ],
+                      },
+                ]
             });
-            res.status(200).send(therapists);
+            console.log(therapists)
+            res.status(200).json(therapists);
         } catch (err) {
+            console.error("Eroare in getAllTherapists:", err);
             res.status(500).send(err.message);
         }
     },

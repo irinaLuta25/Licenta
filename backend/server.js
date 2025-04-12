@@ -1,5 +1,8 @@
+require('dotenv').config();
+
 const express=require('express')
 const multer=require("multer")
+const cors=require("cors")
 
 const app=express()
 const port=4848
@@ -7,7 +10,27 @@ const port=4848
 const {db}=require("./models")
 const router=require("./routes")
 
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Access-Control-Allow-Methods",
+      "Access-Control-Allow-Origin",
+      "Access-Control-Request-Headers",
+    ],
+    credentials: true,
+    enablePreflight: true,
+  })
+);
+
 app.use(express.json())
+
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
 
 app.get("/reset",async(req,res) => {
     try {
@@ -20,6 +43,8 @@ app.get("/reset",async(req,res) => {
         res.status(500).send({message: "Db reset failed",err: err.message})
     }
 })
+
+
 
 app.use("/api",router);
 

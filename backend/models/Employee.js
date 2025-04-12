@@ -9,15 +9,15 @@ const EmployeeModel=(sequelize,DataTypes) => {
             },
             hireDate: {
                 type: DataTypes.DATE,
-                allowNull: false
+                allowNull: true
             },
             department: {
                 type: DataTypes.STRING,
-                allowNull:false
+                allowNull:true
             },
             isManager:  {
                 type: DataTypes.BOOLEAN,
-                allowNull: false
+                allowNull: true
             },
             allowAnonymous: {
                 type: DataTypes.BOOLEAN,

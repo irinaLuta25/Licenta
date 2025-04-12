@@ -9,31 +9,31 @@ const SpecialistModel = (sequelize,DataTypes) => {
             },
             description: {
                 type: DataTypes.TEXT,
-                allowNull: false
+                allowNull: true
             },
             linkedin: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: true
             },
             facebook: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: true
             }, 
             website: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: true
             },
             isTherapist: {
                 type: DataTypes.BOOLEAN,
-                allowNull: false
+                allowNull: true
             },
             formation: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: true
             },
             therapyStyle:{
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: true
             }
         }, 
         {
