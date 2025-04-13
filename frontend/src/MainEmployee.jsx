@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Routes, BrowserRouter } from "react-router-dom";
-import Therapists from "./pages/Login/Therapists/Therapists";
+import Therapists from "./pages/Therapists/Therapists";
 import { Navigate } from "react-router-dom";
 
 function MainEmployee() {
