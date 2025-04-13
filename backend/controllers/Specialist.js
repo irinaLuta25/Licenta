@@ -85,8 +85,25 @@ const controller = {
 
     getSpecialistById: async (req, res) => {
         const id = req.params.id;
+        console.log("ID primit:", id);
         try {
-            const specialist = await SpecialistDb.findByPk(id);
+            const specialist = await SpecialistDb.findByPk(id, {
+                include: [
+                    {
+                      model: UserDb,      
+                      as: 'user',            
+                    },
+                    {
+                        model: SpecialistSpecializationDb,
+                        include: [
+                          {
+                            model: SpecializationDb,
+                          },
+                        ],
+                      },
+                ]
+            });
+            console.log("specialist din back:"+ specialist)
             res.status(200).send(specialist);
         } catch (err) {
             res.status(500).send(err.message);
@@ -114,7 +131,6 @@ const controller = {
                       },
                 ]
             });
-            console.log(therapists)
             res.status(200).json(therapists);
         } catch (err) {
             console.error("Eroare in getAllTherapists:", err);

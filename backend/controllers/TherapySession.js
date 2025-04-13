@@ -3,13 +3,15 @@ const TherapySessionDb = require("../models").TherapySession;
 const controller = {
     createTherapySession: async (req, res) => {
         try {
+            console.log("BODY PRIMIT LA BACKEND:", req.body);
             const session = await TherapySessionDb.create({
                 locationType: req.body.locationType,
-                location: req.body.location,
+                location: req.body.location || null,
                 notes: req.body.notes,
                 intervalId:req.body.intervalId,
                 employeeId:req.body.employeeId
             });
+            console.log(session)
             res.status(200).send(session);
         } catch (err) {
             res.status(500).send(err.message);

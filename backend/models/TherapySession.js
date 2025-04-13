@@ -16,6 +16,7 @@ const TherapySessionModel = (sequelize, DataTypes) => {
         notes: {
             type: DataTypes.TEXT,
             allowNull: false
+            // de schimbat in true
         },
     }, {
         underscored: true,

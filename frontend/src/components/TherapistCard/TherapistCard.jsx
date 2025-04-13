@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 
 function TherapistCard({ therapist }) {
-  const {
-    user,
-    description,
-    formation,
-    specialistSpecialization
-  } = therapist;
+
+    const user = therapist.user;
+    const description = therapist.description;
+    const formation = therapist.formation;
+    const specialistSpecializations = therapist.specialist_specializations;
+
 
   const shortDescription = description
     ? description.length > 100
@@ -14,10 +14,10 @@ function TherapistCard({ therapist }) {
       : description
     : 'Fără descriere';
 
-  const specializations = specialistSpecialization?.map(s => s.specialization?.name).join(', ');
+  const specializations = specialistSpecializations?.map(s => s.specialization?.name).join(', ');
 
   return (
-    <div className="bg-white shadow-md rounded-lg overflow-hidden p-4 flex flex-col justify-between">
+    <div className="bg-white shadow-md rounded-lg overflow-hidden p-4 flex flex-col justify-between bg-indigo-400">
       <img
         src={user?.profilePicture || "/assets/Cat_November_2010-1a.jpg"}
         alt="Therapist"

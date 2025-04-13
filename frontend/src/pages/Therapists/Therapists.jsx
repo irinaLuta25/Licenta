@@ -48,10 +48,8 @@ function Therapists() {
     return (
         <>
             <Navbar />
-            <div className="px-8 sm:px-16">
-                <h1 className="text-2xl font-bold text-blue-500 mb-6">
-                    Meet our therapists!
-                </h1>
+
+            <div className="pt-10 px-8 sm:px-16 bg-indigo-200 min-h-screen">
 
                 <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center gap-4 mb-6">
                     <div className="flex flex-wrap items-center gap-4 flex-grow">
@@ -117,7 +115,7 @@ function Therapists() {
                         </select>
                     </div>
 
-                    {/* Dreapta: Compatibility Search */}
+                    {/* Compatibility Search */}
                     <button
                         onClick={() => alert("Deschide formularul de compatibilitate ✨")}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-md shadow-md transition duration-200 flex items-center gap-2"
@@ -129,7 +127,7 @@ function Therapists() {
                 </div>
 
                 {/* Terapeuti grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
                     {filteredAndSortedTherapists.map((therapist) => (
                         <TherapistCard key={therapist.id} therapist={therapist} />
                     ))}

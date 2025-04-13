@@ -36,6 +36,25 @@ const controller = {
         }
     },
 
+    updateIntervalStatus: async (req, res) => {
+        const { id } = req.params;
+        const { status } = req.body;
+      
+        try {
+          const interval = await IntervalDb.findByPk(id);
+          if (!interval) {
+            return res.status(404).send("Interval not found");
+          }
+      
+          interval.status = status;
+          await interval.save();
+      
+          res.status(200).json(interval);
+        } catch (err) {
+          res.status(500).send(err.message);
+        }
+    },
+
     deleteInterval: async (req, res) => {
         try {
             const interval = await IntervalDb.findByPk(req.params.id);
@@ -69,14 +88,14 @@ const controller = {
     },
 
     getAllAvailableIntervalsBySpecialistId: async(req,res) => {
-        const {specialistId}=req.params;
-        if(!specialistId) {
+        const {id}=req.params;
+        if(!id) {
             throw new Error("No ID provided");
         }
         try {
             const availableIntervalsForSpecialist= await IntervalDb.findAll({
                 where: {
-                    specialistId,
+                    specialistId:id,
                     status: false
                 }
             }

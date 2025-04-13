@@ -15,3 +15,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.highlight-available {
+  background-color: #bbf7d0 !important; 
+  color: #065f46 !important; 
+  border-radius: 100%;
+  font-weight: 500;
+}
+
+.react-calendar {
+  background-color: #818cf8 !important;
+  padding: 2rem;
+  border-radius: 10px;
+  /* transform: scale(1.4);
+  transform-origin: top;  */
+}
+
+
+.react-calendar__tile--active {
+  background: #4338ca !important;
+  color: white !important;
+  border-radius: 100%;
+}
+
+.react-calendar__tile--now {
+  background: #a5b4fc !important; 
+  color: #1e3a8a !important;      
+  border-radius: 20%;
+  font-weight: 600;
+}
+

@@ -113,6 +113,24 @@ const controller = {
         }
     },
 
+    getEmployeeByUserId: async (req, res) => {
+        const { userId } = req.params;
+        console.log("userId: ",userId)
+        try {
+            const employee = await EmployeeDb.findOne({
+                where: { userId }
+            });
+            console.log("EMPLOYEE FOUND:", employee);
+            if (!employee) {
+                return res.status(404).send("Employee not found");
+            }
+            console.log(employee)
+            res.status(200).json(employee);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    }
+
 }
 
 module.exports=controller;

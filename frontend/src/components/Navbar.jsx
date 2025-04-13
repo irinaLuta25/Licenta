@@ -7,75 +7,55 @@ function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const handleLogout = async () => {
     await dispatch(logout());
     navigate("/login");
   };
 
+  const navLinks = [
+    { label: "Therapists", path: "/employee/therapists" },
+    { label: "Events", path: "/employee/events" },
+    { label: "Habits", path: "/employee/habits" },
+    { label: "Calendar", path: "/employee/calendar" },
+    { label: "Profile", path: "/employee/profile" },
+  ];
+
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
-      <div className="text-2xl font-bold text-indigo-600">
+    <nav className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
+      <div className="text-2xl font-bold">
         MindCare
       </div>
 
-      <ul className="hidden md:flex space-x-6 font-medium text-gray-700">
-        <li>
-          <Link
-            to="/employee/therapists"
-            className={`hover:text-indigo-600 ${location.pathname.includes("/therapists") ? "text-indigo-600 font-semibold" : ""
-              }`}
-          >
-            Therapists
-          </Link>
-        </li>
-
-        <li>
-          <Link to="/employee/events"
-            className={`hover:text-indigo-600 ${location.pathname.includes("/events") ? "text-indigo-600 font-semibold" : ""
-              }`}
-          >
-            Events
-          </Link>
-        </li>
-        <li>
-
-          <Link
-            to="/employee/habits"
-            className={`hover:text-indigo-600 ${location.pathname.includes("/employee/habits") ? "text-indigo-600 font-semibold" : ""
-              }`}
-          >
-            Habits
-          </Link>
-        </li>
-
-        <li>
-          <Link
-            to="/employee/calendar"
-            className={`hover:text-indigo-600 ${location.pathname.includes("/employee/calendar") ? "text-indigo-600 font-semibold" : ""
-              }`}
-          >
-            Calendar
-          </Link>
-        </li>
-
-        <li>
-          <Link
-            to="/employee/profile"
-            className={`hover:text-indigo-600 ${location.pathname.includes("/employee/profile") ? "text-indigo-600 font-semibold" : ""
-              }`}
-          >
-            Profile
-          </Link>
-        </li>
+      <ul className="hidden md:flex space-x-6">
+        {navLinks.map(({ label, path }) => {
+          const isActive = location.pathname.includes(path);
+          return (
+            <li key={label}>
+              <Link
+                to={path}
+                className={`transition duration-200 ${
+                  isActive
+                    ? "underline font-semibold text-white"
+                    : "text-white hover:text-indigo-300"
+                }`}
+              >
+                {label}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
 
       <button
-        onClick={handleLogout}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 text-sm md:text-base"
-      >
-        Logout
-      </button>
+  onClick={handleLogout}
+  className="flex items-center gap-2 text-white px-3 py-1.5 rounded-md hover:bg-indigo-600 hover:border-indigo-300 transition duration-200"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9v1" />
+  </svg>
+  <span className="text-sm">Logout</span>
+</button>
+
     </nav>
   );
 }

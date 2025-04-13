@@ -13,12 +13,39 @@ export const getAllTherapists = createAsyncThunk(
   }
 )
 
+export const getTherapistById = createAsyncThunk(
+  'therapists/getTherapistById',
+  async(id, { rejectWithValue}) => {
+    try {
+      const response = await axios.get(`/specialist/${id}`)
+      return response.data;
+    } catch(err) {
+      return rejectWithValue(err.response?.data || err.message)
+    }
+  }
+)
+
+export const getIntervalsForTherapist = createAsyncThunk(
+  'therapists/getIntervalsForTherapist',
+  async(id,{rejectWithValue}) => {
+    try {
+      const response= await axios.get(`/interval/getAllAvailableIntervalsBySpecialistId/${id}`)
+      return response.data;
+    } catch(err) {
+      return rejectWithValue(err.response?.data || err.message)
+    }
+  }
+)
+
 const therapistsSlice = createSlice({
   name: 'therapists',
   initialState: {
     list: [],
+    selectedTherapist: null,
+    freeIntervals: [],
     loading: false,
-    error: null
+    error: null,
+    status: 'idle'
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -34,6 +61,38 @@ const therapistsSlice = createSlice({
       .addCase(getAllTherapists.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
+      })
+
+      .addCase(getTherapistById.pending, (state) => {
+        state.loading = true;
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(getTherapistById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.status = 'succeeded';
+        state.selectedTherapist = action.payload;
+      })
+      .addCase(getTherapistById.rejected, (state, action) => {
+        state.loading = false;
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+
+      .addCase(getIntervalsForTherapist.pending, (state) => {
+        state.loading = true;
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(getIntervalsForTherapist.fulfilled, (state, action) => {
+        state.loading = false;
+        state.status = 'succeeded';
+        state.freeIntervals = action.payload;
+      })
+      .addCase(getIntervalsForTherapist.rejected, (state, action) => {
+        state.loading = false;
+        state.status = 'failed';
+        state.error = action.payload;
       })
   }
 })

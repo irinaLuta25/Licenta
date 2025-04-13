@@ -37,6 +37,7 @@ router.use("/specialist",specialistRouter);
 router.use("/specialistSpecialization",specialistSpecializationRouter);
 router.use("/specialization",specializationRouter);
 router.use("/specialist",therapySessionRouter);
+router.use("/therapySession",therapySessionRouter);
 router.use("/user",userRouter);
 
 module.exports=router;

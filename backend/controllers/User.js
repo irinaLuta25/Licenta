@@ -75,13 +75,9 @@ const controller = {
             });
 
             if (user) {
-                console.log("🧪 parola din payload:", payload.password);
-                console.log("🔒 parola userului din DB:", user.password);
                 const match = await bcrypt.compare(payload.password, user.password);
 
                 if (match) {
-                    console.log("🔐 Se creează token...");
-                    console.log("SECRET:", process.env.COOKIE_SECRET);
                     const token = jwt.sign(
                         { id: user.id, email: user.email, role: user.role },
                         process.env.COOKIE_SECRET,
@@ -91,7 +87,7 @@ const controller = {
                     res.cookie("token", token, {
                         httpOnly: true,
                         sameSite: "Lax",
-                        maxAge: 60 * 60 * 1000, // 1 oră
+                        maxAge: 60 * 60 * 1000, // 1 ora
                     });
                     return res
                         .status(200)

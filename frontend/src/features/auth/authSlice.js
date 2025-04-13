@@ -10,7 +10,10 @@ export const getUserFromCookie = createAsyncThunk(
       })
       return res.data
     } catch (err) {
-      return rejectWithValue(null)
+      if (err.response?.status === 400) {
+        return rejectWithValue(null);
+      }
+      return rejectWithValue(err.message || 'Unexpected error');
     }
   }
 )

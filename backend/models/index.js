@@ -127,5 +127,3 @@ module.exports = {
     TherapySession,
     db
 }
-
-// pag 177 - 219 - omul ca fiinta sociala
