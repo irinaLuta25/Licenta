@@ -3,6 +3,7 @@ import { Route, Routes, BrowserRouter } from "react-router-dom";
 import Therapists from "./pages/Therapists/Therapists";
 import { Navigate } from "react-router-dom";
 import TherapistDetails from "./pages/Therapists/TherapistDetails";
+import Events from "./pages/Events";
 
 function MainEmployee() {
 
@@ -13,6 +14,7 @@ function MainEmployee() {
             <Route path="/" element={<Navigate to="therapists" />} />
             <Route path="therapists" element={<Therapists />} />
             <Route path="therapists/:id" element={<TherapistDetails />} />
+            <Route path="events" element={<Events />} />
         </Routes>
     )
     

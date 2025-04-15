@@ -1,4 +1,6 @@
 const EventDb = require("../models").Event;
+const { Op } = require("sequelize");
+
 
 const controller = {
     createEvent: async (req, res) => {
@@ -90,13 +92,18 @@ const controller = {
     },
 
     getAllEventsByTargetDepartment: async (req, res) => {
-        const {targetDepartment}=req.params;
-        if(!targetDepartment) {
-            throw new Error("No target department provided");
+        const department=req.params.department;
+        if(!department) {
+            return res.status(400).send("No target department provided");
         }
         try {
             const events = await EventDb.findAll({
-                where: {targetDepartment}
+                where: {
+                    [Op.or]: [
+                        { targetDepartment: department },             
+                        { targetDepartment: 'general' }
+                    ]
+                }
             });
             res.status(200).send(events);
         } catch (err) {
