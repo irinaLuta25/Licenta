@@ -5,6 +5,8 @@ import therapySessionsReducer from "../features/therapySessions/therapySessionsS
 import employeeReducer from "../features/employee/employeeSlice";
 import intervalReducer from "../features/interval/intervalSlice"
 import eventSlice from "../features/event/eventSlice"
+import employeeEventSlice from "../features/employeeEvent/employeeEventSlice"
+import userReducer from "../features/user/userSlice"; 
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +15,8 @@ export const store = configureStore({
         therapySessions: therapySessionsReducer,
         employee: employeeReducer,
         interval: intervalReducer,
-        event: eventSlice
+        event: eventSlice,
+        employeeEvent: employeeEventSlice,
+        user: userReducer
     }
 })

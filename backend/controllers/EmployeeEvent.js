@@ -62,6 +62,7 @@ const controller = {
 
     getAllEmployeeEventsByEmployeeId: async (req, res) => {
         const {employeeId}=req.params;
+        console.log("AAAAAAA employeeId din controller: ", employeeId)
         if(!employeeId){
             throw new Error("No ID provided");
         }
@@ -69,6 +70,7 @@ const controller = {
             const events = await EmployeeEventDb.findAll({
                 where: {employeeId}
             });
+            console.log("!!!!!!!!!!!!!!!!!events din back: ",events)
             res.status(200).send(events);
         } catch (err) {
             res.status(500).send(err.message);

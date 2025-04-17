@@ -103,7 +103,6 @@ const controller = {
                       },
                 ]
             });
-            console.log("specialist din back:"+ specialist)
             res.status(200).send(specialist);
         } catch (err) {
             res.status(500).send(err.message);
@@ -137,6 +136,25 @@ const controller = {
             res.status(500).send(err.message);
         }
     },
+
+    getSpecialistByUserId: async (req, res) => {
+        const { userId } = req.params;
+        console.log("userId: ",id)
+        try {
+            const specialist = await SpecialistDb.findOne({
+                where: { userId }
+            });
+            console.log("SPECIALIST FOUND:", specialist);
+            if (!specialist) {
+                return res.status(404).send("Specialist not found");
+            }
+            console.log(specialist)
+            res.status(200).json(specialist);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    }
+
 
 }
 

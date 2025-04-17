@@ -5,6 +5,7 @@ const specialistController=require("../controllers").specialistController;
 
 router.get("/getAll",specialistController.getAllSpecialists);
 router.get("/getAllTherapists",specialistController.getAllTherapists);
+router.get("/getSpecialistByUserId/:userId",specialistController.getSpecialistByUserId)
 router.get("/:id",specialistController.getSpecialistById);
 router.post("/create",specialistController.createSpecialist);
 router.put("/update/:id",specialistController.updateSpecialist);
