@@ -139,8 +139,8 @@ const controller = {
 
     getSpecialistByUserId: async (req, res) => {
         const { userId } = req.params;
-        console.log("userId: ",id)
-        try {
+        console.log("userId: ",userId)
+        try {   
             const specialist = await SpecialistDb.findOne({
                 where: { userId }
             });

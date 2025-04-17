@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from 'react-redux';
 import { getEmployeeByUserId } from "../features/employee/employeeSlice";
@@ -7,9 +8,11 @@ import { getSpecialistByUserId } from "../features/therapists/therapistsSlice"
 import { getEmployeeEventsByEmployeeId } from "../features/employeeEvent/employeeEventSlice"
 import { getAllIntervals } from "../features/interval/intervalSlice";
 import EventCard from "../components/EventCard"
-
+import { FiPlusCircle } from "react-icons/fi";
 
 function Events() {
+    const navigate = useNavigate()
+
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState("upcoming");
 
@@ -17,12 +20,12 @@ function Events() {
     const user = useSelector((state) => state.auth.user)
     const employee = useSelector((state) => state.employee.employee)
     const events = useSelector((state) => state.event.list)
-    const specialist = useSelector((state) => state.therapists.selectedTherapist)
+    const specialist = useSelector((state) => state.therapists.loggedInTherapist);
     const intervals = useSelector(state => state.interval.intervalsById || {});
 
-    console.log("ALL events:", events);
-console.log("INTERVALS:", intervals);
-
+    console.log("user logat: ", user)
+    console.log("employee logat: ", employee)
+    console.log("specialist logat: ", specialist)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,31 +50,40 @@ console.log("INTERVALS:", intervals);
     const now = new Date();
 
     const filteredEvents = events.length > 0 && Object.keys(intervals).length > 0
-    ? events.filter((event) => {
-        const interval = intervals[event.intervalId];
-        if (!interval || !interval.date || !interval.endTime) return false;
+        ? events.filter((event) => {
+            const interval = intervals[event.intervalId];
+            if (!interval || !interval.date || !interval.endTime) return false;
 
-        const isoDate = interval.date.split("T")[0];
-        const endDateTime = new Date(`${isoDate}T${interval.endTime}`);
-        if (isNaN(endDateTime.getTime())) return false;
+            const isoDate = interval.date.split("T")[0];
+            const endDateTime = new Date(`${isoDate}T${interval.endTime}`);
+            if (isNaN(endDateTime.getTime())) return false;
 
-        switch (activeTab) {
-            case "upcoming":
-                return endDateTime >= now;
-            case "past":
-                return endDateTime < now;
-            case "workshop":
-                return event.type === "workshop" && endDateTime >= now;
-            case "training":
-                return event.type === "training" && endDateTime >= now;
-            default:
-                return true;
-        }
-    })
-    : [];
+            switch (activeTab) {
+                case "upcoming":
+                    return endDateTime >= now;
+                case "past":
+                    return endDateTime < now;
+                case "workshop":
+                    return event.type === "workshop" && endDateTime >= now;
+                case "training":
+                    return event.type === "training" && endDateTime >= now;
+                default:
+                    return true;
+            }
+        })
+        : [];
+
+    const searchedEvents = filteredEvents.filter((event) => {
+        const search = searchTerm.toLowerCase();
+        return (
+            event.name.toLowerCase().includes(search) ||
+            event.description.toLowerCase().includes(search)
+        );
+    });
 
 
-    console.log("filtered: ",filteredEvents)
+
+    console.log("filtered: ", filteredEvents)
 
 
     return (
@@ -138,19 +150,40 @@ console.log("INTERVALS:", intervals);
                         Trecute
                     </button>
                 </div>
+
+
+                {user?.role === "specialist" && (
+                    <button
+                        onClick={() => {
+                            navigate("/specialist/create-event")
+                        }}
+                        className="ml-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md w-48"
+                    >
+                        <div className="flex flex-row gap-1 items-center">
+                            <FiPlusCircle className="text-lg" />
+                            <span className="hidden md:inline">Create Event</span>
+                        </div>
+
+                    </button>
+                )}
+
             </div>
 
             <div className="flex flex-col items-center gap-6">
-                {filteredEvents.map((event, index) => (
-                    <EventCard
-                        key={event.id}
-                        event={event}
-                        role={user?.role}
-                        employee={employee}
-                        index={index}
-                        loggedSpecialist={specialist}
-                    />
-                ))}
+                {searchedEvents.length === 0 ? (
+                    <p className="text-gray-500 mt-6 text-center">No events match your search.</p>
+                ) : (
+                    searchedEvents.map((event, index) => (
+                        <EventCard
+                            key={event.id}
+                            event={event}
+                            role={user?.role}
+                            employee={employee}
+                            index={index}
+                            loggedSpecialist={specialist}
+                        />
+                    ))
+                )}
             </div>
         </div>
     );

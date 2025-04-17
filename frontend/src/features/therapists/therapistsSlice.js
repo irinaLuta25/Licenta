@@ -30,10 +30,7 @@ export const getSpecialistByUserId = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       console.log("FETCH SPECIALIST for USER ID: ", userId);
-
-      const res = await axios.get(
-        `/specialist/getSpecialistByUserId/${userId}`
-      );
+      const res = await axios.get(`/specialist/getSpecialistByUserId/${userId}`);
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -59,7 +56,9 @@ const therapistsSlice = createSlice({
   name: "therapists",
   initialState: {
     list: [],
-    selectedTherapist: null,
+    loggedInTherapist: null,        
+    selectedTherapist: null,        
+    specialistsById: {},            // facilitatorii altor evenimente
     freeIntervals: [],
     loading: false,
     error: null,
@@ -68,6 +67,7 @@ const therapistsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // --- getAllTherapists ---
       .addCase(getAllTherapists.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -81,6 +81,7 @@ const therapistsSlice = createSlice({
         state.error = action.payload;
       })
 
+      // --- getTherapistById ---
       .addCase(getTherapistById.pending, (state) => {
         state.loading = true;
         state.status = "loading";
@@ -89,7 +90,10 @@ const therapistsSlice = createSlice({
       .addCase(getTherapistById.fulfilled, (state, action) => {
         state.loading = false;
         state.status = "succeeded";
-        state.selectedTherapist = action.payload;
+        const therapist = action.payload;
+
+        state.selectedTherapist = therapist; 
+        state.specialistsById[therapist.id] = therapist;
       })
       .addCase(getTherapistById.rejected, (state, action) => {
         state.loading = false;
@@ -97,19 +101,23 @@ const therapistsSlice = createSlice({
         state.error = action.payload;
       })
 
+      // --- getSpecialistByUserId  ---
       .addCase(getSpecialistByUserId.pending, (state) => {
         state.status = "loading";
       })
       .addCase(getSpecialistByUserId.fulfilled, (state, action) => {
-        console.log("Payload din fulfilled:", action.payload);
         state.status = "succeeded";
-        state.selectedTherapist = action.payload;
+
+        const therapist = action.payload;
+        state.loggedInTherapist = therapist;             
+        state.specialistsById[therapist.id] = therapist;  
       })
       .addCase(getSpecialistByUserId.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })
 
+      // --- getIntervalsForTherapist ---
       .addCase(getIntervalsForTherapist.pending, (state) => {
         state.loading = true;
         state.status = "loading";
@@ -127,5 +135,6 @@ const therapistsSlice = createSlice({
       });
   },
 });
+
 
 export default therapistsSlice.reducer;

@@ -4,8 +4,12 @@ import Therapists from "./pages/Therapists/Therapists";
 import { Navigate } from "react-router-dom";
 import TherapistDetails from "./pages/Therapists/TherapistDetails";
 import Events from "./pages/Events";
+// import { useSelector } from "react-redux";
+
+
 
 function MainEmployee() {
+    // const employee = useSelector((state) => state.employee.employee);
 
     return(
         <Routes>
@@ -15,6 +19,10 @@ function MainEmployee() {
             <Route path="therapists" element={<Therapists />} />
             <Route path="therapists/:id" element={<TherapistDetails />} />
             <Route path="events" element={<Events />} />
+            {/* <Route path="calendar" element={<CalendarEmployee />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="habits" element={<Habits />} />
+            {employee?.isManager && <Route path="reports" element={<Reports />} />} */}
         </Routes>
     )
     

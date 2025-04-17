@@ -1,4 +1,5 @@
 const EventDb = require("../models").Event;
+const EmployeeEventDb = require("../models").EmployeeEvent;
 const { Op } = require("sequelize");
 
 
@@ -46,17 +47,26 @@ const controller = {
 
     deleteEvent: async (req, res) => {
         try {
-            const event = await EventDb.findByPk(req.params.id);
-            if (event) {
-                await event.destroy();
-                res.status(200).send("Deleted");
-            } else {
-                res.status(400).send("Event not found");
+            const eventId = req.params.id;
+    
+            const event = await EventDb.findByPk(eventId);
+            if (!event) {
+                return res.status(404).send("Event not found");
             }
+    
+            await EmployeeEventDb.destroy({
+                where: { eventId }
+            });
+    
+            await event.destroy();
+    
+            res.status(200).send("Event and related inscriptions deleted");
         } catch (err) {
+            console.error("Eroare la ștergerea evenimentului:", err);
             res.status(500).send(err.message);
         }
     },
+    
 
     getAllEvents: async (req, res) => {
         try {

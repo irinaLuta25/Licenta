@@ -29,7 +29,6 @@ const employeeSlice = createSlice({
         state.status = "loading";
       })
       .addCase(getEmployeeByUserId.fulfilled, (state, action) => {
-        console.log("Payload din fulfilled:", action.payload);
         state.status = "succeeded";
         state.employee = action.payload;
       })

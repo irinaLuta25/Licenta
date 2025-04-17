@@ -1,30 +1,47 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
 
 function Navbar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const user = useSelector((state) => state.auth.user);
+  const employee = useSelector((state) => state.employee.employee);
 
   const handleLogout = async () => {
     await dispatch(logout());
     navigate("/login");
   };
 
-  const navLinks = [
-    { label: "Therapists", path: "/employee/therapists" },
-    { label: "Events", path: "/employee/events" },
-    { label: "Habits", path: "/employee/habits" },
-    { label: "Calendar", path: "/employee/calendar" },
-    { label: "Profile", path: "/employee/profile" },
-  ];
+  const role = user?.role;
+  const basePath = role === "specialist" ? "/specialist" : "/employee";
+
+  const navLinks = [];
+
+  if (role === "specialist") {
+    navLinks.push(
+      { label: "Events", path: `${basePath}/events` },
+      { label: "Therapists", path: `${basePath}/therapists` },
+      { label: "Calendar", path: `${basePath}/calendar` },
+      { label: "Profile", path: `${basePath}/profile` }
+    );
+  } else {
+    navLinks.push(
+      { label: "Therapists", path: `${basePath}/therapists` },
+      { label: "Events", path: `${basePath}/events` },
+      { label: "Calendar", path: `${basePath}/calendar` },
+      { label: "Habits", path: `${basePath}/habits` },
+      { label: "Profile", path: `${basePath}/profile` }
+    );
+    if (employee?.isManager) {
+      navLinks.push({ label: "Reports", path: `${basePath}/reports` });
+    }
+  }
 
   return (
     <nav className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
-      <div className="text-2xl font-bold">
-        MindCare
-      </div>
+      <div className="text-2xl font-bold">MindCare</div>
 
       <ul className="hidden md:flex space-x-6">
         {navLinks.map(({ label, path }) => {
@@ -47,15 +64,14 @@ function Navbar() {
       </ul>
 
       <button
-  onClick={handleLogout}
-  className="flex items-center gap-2 text-white px-3 py-1.5 rounded-md hover:bg-indigo-600 hover:border-indigo-300 transition duration-200"
->
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9v1" />
-  </svg>
-  <span className="text-sm">Logout</span>
-</button>
-
+        onClick={handleLogout}
+        className="flex items-center gap-2 text-white px-3 py-1.5 rounded-md hover:bg-indigo-600 hover:border-indigo-300 transition duration-200"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-9v1" />
+        </svg>
+        <span className="text-sm">Logout</span>
+      </button>
     </nav>
   );
 }
