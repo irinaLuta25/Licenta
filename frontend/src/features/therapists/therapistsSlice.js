@@ -64,7 +64,13 @@ const therapistsSlice = createSlice({
     error: null,
     status: "idle",
   },
-  reducers: {},
+  reducers: {
+    resetSelectedTherapist: (state) => {
+      state.selectedTherapist = null;
+      state.freeIntervals = [];
+      state.status = "idle";
+    }
+  },
   extraReducers: (builder) => {
     builder
       // --- getAllTherapists ---
@@ -138,3 +144,5 @@ const therapistsSlice = createSlice({
 
 
 export default therapistsSlice.reducer;
+export const { resetSelectedTherapist } = therapistsSlice.actions;
+

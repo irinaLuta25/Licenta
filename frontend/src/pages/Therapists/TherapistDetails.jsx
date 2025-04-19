@@ -1,6 +1,6 @@
 import { React, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"
-import { getTherapistById, getIntervalsForTherapist } from "../../features/therapists/therapistsSlice";
+import { getTherapistById, getIntervalsForTherapist, resetSelectedTherapist } from "../../features/therapists/therapistsSlice";
 import { createTherapySession, resetTherapySessionStatus } from "../../features/therapySessions/therapySessionsSlice"
 import { getEmployeeByUserId } from "../../features/employee/employeeSlice";
 import { updateIntervalStatus} from "../../features/interval/intervalSlice"
@@ -40,11 +40,9 @@ function TherapistDetails() {
 
 
     useEffect(() => {
-        if (status === "idle") {
             dispatch(getTherapistById(id));
             dispatch(getIntervalsForTherapist(id));
-        }
-    }, [dispatch, id, status]);
+    }, [dispatch, id]);
 
 
     useEffect(() => {
@@ -108,7 +106,7 @@ function TherapistDetails() {
 
             <div className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
                 <button
-                    onClick={() => navigate("/employee/therapists")}
+                    onClick={() => navigate(-1)}
                     className="text-2xl font-bold hover:underline"
                 >
                     ← Back
@@ -116,12 +114,12 @@ function TherapistDetails() {
             </div>
 
 
-            <div className="flex flex-col bg-indigo-200 min-h-screen  p-4">
+            <div className="flex flex-col bg-gradient-to-br from-[#c1f7dc] via-[#b2d8f3] to-[#c7b5ff] backdrop-blur-lg min-h-screen  p-4">
                 <div className="flex flex-row">
                     <img
                         src={"/assets/Cat_November_2010-1a.jpg"}
                         alt="Therapist"
-                        className="w-full max-h-[300px] aspect-[3/4] object-contain rounded-md"
+                        className="w-full max-h-[300px] aspect-[3/4] object-contain rounded-lg"
                     />
 
                     <div className="flex flex-col gap-3">

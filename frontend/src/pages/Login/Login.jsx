@@ -1,5 +1,4 @@
 import React from "react"; 
-import "./Login.css";
 import "../../components/LoginCard/LoginCard"
 import LoginCard from "../../components/LoginCard/LoginCard";
 

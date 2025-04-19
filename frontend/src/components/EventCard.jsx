@@ -92,7 +92,7 @@ function EventCard({ event, role, employee, index }) {
     const facilitatorUser = facilitator?.user;
 
     return (
-        <div className={`w-full max-w-6xl mx-auto flex flex-col ${layoutClass} items-center justify-between gap-6 bg-indigo-200 text-black rounded-2xl shadow-md border border-indigo-200 p-6 my-6`}>
+        <div className={`w-full max-w-6xl mx-auto flex flex-col ${layoutClass} items-center justify-between gap-6 text-black rounded-2xl bg-indigo-300 border border-indigo-300/30 shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg transition transform duration-300 hover:-translate-y-1 p-6 my-6`}>
             <div className="w-full md:w-1/2 flex justify-center">
                 <img src="/assets/workshop.png" alt="Event" className="rounded-xl object-cover max-h-72 w-full md:max-w-md" />
             </div>

@@ -87,7 +87,7 @@ function Events() {
 
 
     return (
-        <div className="bg-[#E0F4EC] min-h-screen">
+        <div className="bg-gradient-to-br from-[#c1f7dc] via-[#b2d8f3] to-[#c7b5ff] backdrop-blur-lg min-h-screen">
             <Navbar />
 
             <div className="flex flex-row m-4 justify-start ml-12">
@@ -120,32 +120,32 @@ function Events() {
                 <div className="flex flex-row justify-center gap-20 w-full">
                     <button
                         onClick={() => setActiveTab("upcoming")}
-                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2
-                        ${activeTab === 'upcoming' ? 'bg-indigo-600 text-white' : 'bg-indigo-400 text-black'}`}
+                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2 shadow-xl
+                        ${activeTab === 'upcoming' ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-indigo-400 hover:bg-indigo-500 text-black'}`}
                     >
                         Viitoare
                     </button>
 
                     <button
                         onClick={() => setActiveTab("workshop")}
-                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2
-                        ${activeTab === 'workshop' ? 'bg-indigo-600 text-white' : 'bg-indigo-400 text-black'}`}
+                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2 shadow-xl
+                        ${activeTab === 'workshop' ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-indigo-400 hover:bg-indigo-500 text-black'}`}
                     >
                         Workshops
                     </button>
 
                     <button
                         onClick={() => setActiveTab("training")}
-                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2
-                        ${activeTab === 'training' ? 'bg-indigo-600 text-white' : 'bg-indigo-400 text-black'}`}
+                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2 shadow-xl
+                        ${activeTab === 'training' ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-indigo-400 hover:bg-indigo-500 text-black'}`}
                     >
                         Trainings
                     </button>
 
                     <button
                         onClick={() => setActiveTab("past")}
-                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2
-                        ${activeTab === 'past' ? 'bg-indigo-600 text-white' : 'bg-indigo-400 text-black'}`}
+                        className={`border border-3 rounded-lg border-indigo-400 w-24 pb-2 pt-2 shadow-xl
+                        ${activeTab === 'past' ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-indigo-400 hover:bg-indigo-500 text-black'}`}
                     >
                         Trecute
                     </button>
@@ -155,9 +155,9 @@ function Events() {
                 {user?.role === "specialist" && (
                     <button
                         onClick={() => {
-                            navigate("/specialist/create-event")
+                            navigate("/specialist/events/create-event")
                         }}
-                        className="ml-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md w-48"
+                        className="ml-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg w-48"
                     >
                         <div className="flex flex-row gap-1 items-center">
                             <FiPlusCircle className="text-lg" />

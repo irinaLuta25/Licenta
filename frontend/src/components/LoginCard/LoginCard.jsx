@@ -1,6 +1,7 @@
-import {React,useState} from "react";
+import { React, useState } from "react";
 import "./LoginCard.css";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 import { useDispatch } from 'react-redux';
 import { getUserFromCookie } from '../../features/auth/authSlice';
@@ -31,25 +32,34 @@ function LoginCard() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const requiredFields = isLogin
+            ? ["email", "password"]
+            : ["firstName", "lastName", "email", "phoneNumber", "birthdate", "gender", "password"];
+
+        for (let field of requiredFields) {
+            if (!form[field]) {
+                toast.error("Te rugăm să completezi toate câmpurile.");
+                return;
+            }
+        }
+
         try {
             if (isLogin) {
-                // login
                 await axios.post("/user/login", {
                     email: form.email,
                     password: form.password,
                 });
-                alert("Login success!");
             } else {
-                // register
                 await axios.post("/user/register", form);
-                alert("Register success!");
             }
 
             await dispatch(getUserFromCookie());
+            toast.success("Cont creat cu succes! 🎉")
             navigate('/');
         } catch (err) {
             console.error(err);
-            alert("Eroare la register/login");
+            const message = err?.response?.data?.message || "Eroare la register/login";
+            toast.error(message);
         }
     };
 
@@ -60,12 +70,12 @@ function LoginCard() {
             <form onSubmit={handleSubmit}>
                 {!isLogin && (
                     <>
-                        <input type="text" name="firstName" placeholder="Prenume" value={form.firstName} onChange={handleChange} required />
-                        <input type="text" name="lastName" placeholder="Nume" value={form.lastName} onChange={handleChange} required />
-                        <input type="tel" name="phoneNumber" placeholder="Telefon" value={form.phoneNumber} onChange={handleChange} required />
-                        <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange} required />
+                        <input type="text" name="firstName" placeholder="Prenume" value={form.firstName} onChange={handleChange}  />
+                        <input type="text" name="lastName" placeholder="Nume" value={form.lastName} onChange={handleChange}  />
+                        <input type="tel" name="phoneNumber" placeholder="Telefon" value={form.phoneNumber} onChange={handleChange}  />
+                        <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange}  />
 
-                        <select name="gender" value={form.gender} onChange={handleChange} required>
+                        <select name="gender" value={form.gender} onChange={handleChange} >
                             <option value="">Gen</option>
                             <option value="feminin">Feminin</option>
                             <option value="masculin">Masculin</option>
@@ -79,8 +89,8 @@ function LoginCard() {
                     </>
                 )}
 
-                <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-                <input type="password" name="password" placeholder="Parolă" value={form.password} onChange={handleChange} required />
+                <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange}  />
+                <input type="password" name="password" placeholder="Parolă" value={form.password} onChange={handleChange}  />
 
                 <button type="submit">{isLogin ? "Login" : "Register"}</button>
             </form>

@@ -31,7 +31,7 @@ const controller = {
         });
 
         if (checkUser) {
-            return res.status(200).send("Email already registered");
+            return res.status(400).send({ message: "Emailul este deja folosit." });
         }
 
         try {
@@ -53,6 +53,7 @@ const controller = {
 
             res.status(200).send(newUser);
         } catch (err) {
+              console.error(err);
             res.status(500).send({ message: err.message });
         }
     },
@@ -93,13 +94,13 @@ const controller = {
                         .status(200)
                         .send({ message: "Login success!", userId: user.id });
                 } else {
-                    return res.status(400).send("Incorrect email or password!");
+                    return res.status(400).send({ message: "Email sau parolă greșită." });
                 }
             }
 
-            return res.status(400).send("Incorrect email or password!");
+            return res.status(400).send({ message: "Email sau parolă greșită." });
         } catch (err) {
-            res.status(500).send(err.message);
+            res.status(500).send({ message: err.message });
         }
     },
 
