@@ -51,10 +51,10 @@ function LoginCard() {
                 });
             } else {
                 await axios.post("/user/register", form);
+                toast.success("Cont creat cu succes! 🎉")
             }
 
             await dispatch(getUserFromCookie());
-            toast.success("Cont creat cu succes! 🎉")
             navigate('/');
         } catch (err) {
             console.error(err);
