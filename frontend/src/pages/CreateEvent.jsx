@@ -1,10 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { getIntervalsForTherapist } from "../features/therapists/therapistsSlice"
+import { createQuestionForEvent } from "../features/question/questionSlice"
+import { updateIntervalStatus } from "../features/interval/intervalSlice"
+import { createEvent } from "../features/event/eventSlice"
 import ImageUpload from "../components/ImageUpload"
+import { toast } from 'react-toastify';
+
 
 function CreateEvent() {
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+
+    const user = useSelector((state) => state.auth.user)
+    const specialist = useSelector((state) => state.therapists.loggedInTherapist);
+    const freeIntervals = useSelector((state) => state.therapists.freeIntervals)
+
+
+    console.log("user logat: ", user)
+    console.log("specialist logat: ", specialist)
+    console.log("intervale libere: ", freeIntervals)
+
+    const dispatch = useDispatch()
+
+    const availableDates = freeIntervals.map(interval => new Date(interval.date).toDateString());
+
+    const selectedDateString = selectedDate.toDateString();
+    const intervalsForSelectedDate = freeIntervals.filter(interval =>
+        new Date(interval.date).toDateString() === selectedDateString
+    );
+
+
+    useEffect(() => {
+        if (specialist?.id && freeIntervals.length === 0) {
+            console.log("Dispatch getIntervalsForTherapist din CreateEvent");
+            dispatch(getIntervalsForTherapist(specialist.id));
+        }
+    }, [dispatch, specialist?.id, freeIntervals.length]);
+
+
+
     const navigate = useNavigate();
 
     const [step, setStep] = useState(1);
@@ -50,13 +88,88 @@ function CreateEvent() {
         setForm((prev) => ({ ...prev, questions: updated }));
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Date trimise:", form);
-        // to do
+    const handleSubmit = async (e) => {
+        e.preventDefault(); 
+
+        console.log("SUBMIT TRIGGERED")
+
+        if (step !== 4) {
+            return; 
+        }
+
+        if (form.questions.length === 0) {
+            toast.warning("Please add at least one question to the feedback form!");
+            return;
+        }
+
+        console.log("📦 Date trimise:", form);
+        try {
+            if (!form.interval) throw new Error("Intervalul nu există");
+            if (!specialist?.id) throw new Error("Specialistul nu este valid");
+
+            const eventPayload = {
+                name: form.name,
+                description: form.description,
+                specialistId: specialist.id,
+                dateTime: selectedDate,
+                enrollmentDeadline: form.enrollmentDeadline,
+                targetDepartment: form.department,
+                intervalId: form.interval.id,
+                type: form.type,
+                managerIsParticipant: form.isManagerParticipant,
+            };
+
+            const eventData = await dispatch(createEvent(eventPayload)).unwrap();
+            const eventId = eventData.id;
+
+            for (const text of form.questions) {
+                if (text.trim()) {
+                    await dispatch(createQuestionForEvent({ text, eventId })).unwrap();
+                }
+            }
+
+            await dispatch(updateIntervalStatus({ id: form.interval.id, status: true }));
+            toast.success("Evenimentul și feedback-ul au fost create cu succes!");
+            navigate(-1);
+        } catch (err) {
+            toast.error(err.message || "Ceva n-a mers bine la creare.");
+        }
     };
 
-    const nextStep = () => setStep((prev) => prev + 1);
+    const nextStep = () => {
+        if (step === 1) {
+            if (!form.name || !form.description || !form.type || !form.department) {
+                toast.warning("All fields are required.");
+                return;
+            }
+
+        }
+
+        if (step === 2) {
+            if (!form.enrollmentDeadline || !form.interval) {
+                toast.warning("All fields are required.");
+                return;
+            }
+
+            const enrollmentDate = new Date(form.enrollmentDeadline);
+            const eventDate = new Date(selectedDate);
+
+            const diffInMs = eventDate.getTime() - enrollmentDate.getTime();
+            const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+
+            if (diffInDays < 1) {
+                toast.warning("Enrollment  deadline needs to be at least 24h before the event!");
+                return;
+            }
+        }
+
+        if (step === 3 && !form.image) {
+            toast.warning("Please upload an event image.");
+            return;
+        }
+
+        setStep((prev) => prev + 1);
+    };
     const prevStep = () => setStep((prev) => prev - 1);
 
     return (
@@ -68,7 +181,8 @@ function CreateEvent() {
             </div>
 
             <div className="flex-1 flex items-center justify-center px-4 py-10">
-                <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-4 space-y-6">
+            <form noValidate className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-4 space-y-6">
+
                     <h1 className="text-2xl font-bold text-center text-indigo-800 mb-4">Create a New Event</h1>
 
                     {step === 1 && (
@@ -83,10 +197,7 @@ function CreateEvent() {
                                 <textarea name="description" value={form.description} onChange={handleChange} className="w-full border px-3 py-1 rounded-md" required />
                             </div>
 
-                            <div>
-                                <label className="font-medium">Enrollment Deadline</label>
-                                <input type="date" name="enrollmentDeadline" value={form.enrollmentDeadline} onChange={handleChange} className="w-full border px-3 py-1 rounded-md" required />
-                            </div>
+
 
                             <div>
                                 <label className="block font-semibold mb-1">Type</label>
@@ -139,12 +250,67 @@ function CreateEvent() {
 
                     {step === 2 && (
                         <div className="flex flex-col sm:flex-row justify-between items-start gap-8">
-
+                            {/* Calendar */}
                             <div>
                                 <label className="font-medium block mb-2">Choose Event Interval</label>
-                                <Calendar onChange={handleDateSelect} value={form.interval} />
+                                <Calendar
+                                    onChange={(date) => {
+                                        setSelectedDate(date);
+                                        setForm((prev) => ({ ...prev, interval: null }));
+                                    }}
+                                    value={selectedDate}
+                                    tileClassName={({ date }) => {
+                                        return availableDates.includes(date.toDateString()) ? 'highlight-available' : null
+                                    }}
+                                />
+                                {selectedDate && (
+                                    <p className="mt-4 text-sm  text-indigo-700 font-medium">
+                                        Selected date: {selectedDate.toLocaleDateString("ro-RO")}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Enrollment + Intervals */}
+                            <div className="w-full sm:w-1/2">
+                                <label className="font-medium block mb-2">Enrollment Deadline</label>
+                                <input
+                                    type="date"
+                                    name="enrollmentDeadline"
+                                    value={form.enrollmentDeadline}
+                                    onChange={handleChange}
+                                    className="w-full border px-3 py-1 rounded-md mb-4"
+                                    required
+                                />
+
+                                <div className="bg-indigo-50 p-4 rounded-md shadow-md">
+                                    <h3 className="text-indigo-800 font-semibold mb-2">Available Intervals</h3>
+                                    <div className="flex flex-col gap-2 items-center">
+                                        {intervalsForSelectedDate.map((interval) => {
+                                            const isSelected = form.interval?.id === interval.id;
+                                            return (
+                                                <button
+                                                    type="button"
+                                                    key={interval.id}
+                                                    onClick={() => setForm((prev) => ({ ...prev, interval }))}
+                                                    className={`text-center w-40 px-4 py-2 rounded-md transition ${isSelected
+                                                        ? "bg-indigo-600 text-white font-semibold"
+                                                        : "bg-white text-gray-800 border border-gray-300 hover:bg-indigo-100"
+                                                        }`}
+                                                >
+                                                    {interval.beginTime.slice(0, 5)} - {interval.endTime.slice(0, 5)}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+
+                                </div>
+
                                 {form.interval && (
-                                    <p className="text-sm mt-2 text-gray-700">Selected date: {form.interval.toDateString()}</p>
+                                    <p className="mt-4 text-sm  text-indigo-700 font-medium">
+                                        Selected interval:{" "}
+                                        {form.interval.beginTime.slice(0, 5)} - {form.interval.endTime.slice(0, 5)}
+                                    </p>
                                 )}
                             </div>
                         </div>
@@ -188,12 +354,12 @@ function CreateEvent() {
                                 Next
                             </button>
                         ) : (
-                            <button type="submit" onClick={handleSubmit} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
+                            <button type="button"  onClick={handleSubmit} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
                                 Submit
                             </button>
                         )}
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     );

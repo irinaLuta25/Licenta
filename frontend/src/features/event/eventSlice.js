@@ -37,6 +37,18 @@ export const deleteEventById = createAsyncThunk(
     }
 );
 
+export const createEvent = createAsyncThunk(
+    'event/createEvent',
+    async (payload, { rejectWithValue }) => {
+      try {
+        const response = await axios.post('/event/create', payload);
+        return response.data;
+      } catch (err) {
+        return rejectWithValue(err.response?.data || err.message);
+      }
+    }
+);
+
 
 const eventSlice = createSlice({
     name: "event",
@@ -83,6 +95,19 @@ const eventSlice = createSlice({
             })
             .addCase(deleteEventById.rejected, (state, action) => {
                 state.loading = false;
+                state.error = action.payload;
+            })
+
+            .addCase(createEvent.pending, (state) => {
+                state.status = 'loading';
+                state.error = null;
+              })
+            .addCase(createEvent.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                state.list.push(action.payload);
+            })
+            .addCase(createEvent.rejected, (state, action) => {
+                state.status = 'failed';
                 state.error = action.payload;
             })
 

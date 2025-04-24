@@ -1,4 +1,5 @@
 const { where } = require("sequelize");
+const { Op } = require("sequelize");
 
 const IntervalDb = require("../models").Interval;
 
@@ -88,18 +89,29 @@ const controller = {
     },
 
     getAllAvailableIntervalsBySpecialistId: async(req,res) => {
+        console.log(">>> Controller intrat");
         const {id}=req.params;
         if(!id) {
             throw new Error("No ID provided");
         }
-        try {
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        console.log(">>> DEBUG: Dateul folosit pentru filtrare:", today.toISOString());
+
+        try {   
             const availableIntervalsForSpecialist= await IntervalDb.findAll({
                 where: {
                     specialistId:id,
-                    status: false
+                    status: false,
+                    date: {
+                        [Op.gte]: today
+                    }
                 }
             }
             )
+            console.log("intervale libere back: ",availableIntervalsForSpecialist)
             res.status(200).send(availableIntervalsForSpecialist);
         } catch(err) {
             res.status(500).send(err.message);

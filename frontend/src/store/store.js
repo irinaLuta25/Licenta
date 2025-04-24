@@ -6,7 +6,8 @@ import employeeReducer from "../features/employee/employeeSlice";
 import intervalReducer from "../features/interval/intervalSlice"
 import eventSlice from "../features/event/eventSlice"
 import employeeEventSlice from "../features/employeeEvent/employeeEventSlice"
-import userReducer from "../features/user/userSlice"; 
+import userReducer from "../features/user/userSlice";
+import questionReducer from "../features/question/questionSlice"
 
 export const store = configureStore({
     reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
         interval: intervalReducer,
         event: eventSlice,
         employeeEvent: employeeEventSlice,
-        user: userReducer
+        user: userReducer,
+        question: questionReducer
     }
 })
