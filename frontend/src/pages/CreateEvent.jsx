@@ -107,32 +107,37 @@ function CreateEvent() {
             if (!form.interval) throw new Error("Intervalul nu există");
             if (!specialist?.id) throw new Error("Specialistul nu este valid");
 
-            const eventPayload = {
-                name: form.name,
-                description: form.description,
-                specialistId: specialist.id,
-                dateTime: selectedDate,
-                enrollmentDeadline: form.enrollmentDeadline,
-                targetDepartment: form.department,
-                intervalId: form.interval.id,
-                type: form.type,
-                managerIsParticipant: form.isManagerParticipant,
-            };
+            const formData = new FormData();
+            formData.append("file", form.image);
+            formData.append("name", form.name);
+            formData.append("description", form.description);
+            formData.append("specialistId", specialist.id);
+            formData.append("enrollmentDeadline", form.enrollmentDeadline);
+            formData.append("targetDepartment", form.department);
+            formData.append("intervalId", form.interval.id);
+            formData.append("type", form.type);
+            formData.append("managerIsParticipant", form.isManagerParticipant);
+            formData.append("dateTime", selectedDate.toISOString());
 
-            const eventData = await dispatch(createEvent(eventPayload)).unwrap();
-            const eventId = eventData.id;
-
+            const res = await fetch("http://localhost:4848/api/event/create", {
+                method: "POST",
+                body: formData,
+            });
+    
+            if (!res.ok) throw new Error("Failed to create event");
+            const eventData = await res.json();
+    
             for (const text of form.questions) {
                 if (text.trim()) {
-                    await dispatch(createQuestionForEvent({ text, eventId })).unwrap();
+                    await dispatch(createQuestionForEvent({ text, eventId: eventData.id })).unwrap();
                 }
             }
-
+    
             await dispatch(updateIntervalStatus({ id: form.interval.id, status: true }));
-            toast.success("Evenimentul și feedback-ul au fost create cu succes!");
+            toast.success("Success creating event!");
             navigate(-1);
         } catch (err) {
-            toast.error(err.message || "Ceva n-a mers bine la creare.");
+            toast.error(err.message || "Something went wrong.");
         }
     };
 
@@ -181,7 +186,8 @@ function CreateEvent() {
             </div>
 
             <div className="flex-1 flex items-center justify-center px-4 py-10">
-            <form noValidate className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-4 space-y-6">
+            <form noValidate className="w-full max-w-2xl bg-[#ffe6e0] border border-indigo-300/30 shadow-xl hover:shadow-2xl drop-shadow-lg rounded-2xl p-6 space-y-6">
+
 
                     <h1 className="text-2xl font-bold text-center text-indigo-800 mb-4">Create a New Event</h1>
 
@@ -189,12 +195,12 @@ function CreateEvent() {
                         <>
                             <div>
                                 <label className="font-medium">Event Name</label>
-                                <input name="name" value={form.name} onChange={handleChange} className="w-full border px-3 py-1 rounded-md" required />
+                                <input name="name" value={form.name} onChange={handleChange} className="w-full border border-indigo-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500" required />
                             </div>
 
                             <div>
                                 <label className="font-medium">Description</label>
-                                <textarea name="description" value={form.description} onChange={handleChange} className="w-full border px-3 py-1 rounded-md" required />
+                                <textarea name="description" value={form.description} onChange={handleChange} className="w-full border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500" required />
                             </div>
 
 
@@ -205,7 +211,7 @@ function CreateEvent() {
                                     name="type"
                                     value={form.type}
                                     onChange={handleChange}
-                                    className="w-full border px-3 py-1 rounded-md shadow-sm"
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500"
                                     required
                                 >
                                     <option value="">Select type</option>
@@ -220,7 +226,7 @@ function CreateEvent() {
                                     name="department"
                                     value={form.department}
                                     onChange={handleChange}
-                                    className="w-full border px-3 py-1 rounded-md shadow-sm"
+                                    className="w-full border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500"
                                     required
                                 >
                                     <option value="">Select department</option>
@@ -228,6 +234,7 @@ function CreateEvent() {
                                     <option value="IT">IT</option>
                                     <option value="Marketing">Marketing</option>
                                     <option value="Sales">Sales</option>
+                                    <option value="General">General</option>
                                 </select>
                             </div>
 
@@ -278,7 +285,7 @@ function CreateEvent() {
                                     name="enrollmentDeadline"
                                     value={form.enrollmentDeadline}
                                     onChange={handleChange}
-                                    className="w-full border px-3 py-1 rounded-md mb-4"
+                                    className="w-full mb-4 border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500"
                                     required
                                 />
 
@@ -332,7 +339,7 @@ function CreateEvent() {
                                         type="text"
                                         value={q}
                                         onChange={(e) => updateQuestion(idx, e.target.value)}
-                                        className="w-full border px-3 py-2 rounded-md"
+                                        className="w-full border px-3 py-2 rounded-md bg-[#d9c2f0]"
                                         placeholder={`Question ${idx + 1}`}
                                     />
                                 </div>
@@ -345,7 +352,7 @@ function CreateEvent() {
 
                     <div className="flex justify-between pt-4">
                         {step > 1 && (
-                            <button type="button" onClick={prevStep} className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+                            <button type="button" onClick={prevStep} className="bg-indigo-100 text-indigo-800 px-4 py-2 rounded hover:bg-indigo-300">
                                 Back
                             </button>
                         )}

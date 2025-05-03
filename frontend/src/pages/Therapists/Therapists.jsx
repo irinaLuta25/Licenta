@@ -60,7 +60,7 @@ function Therapists() {
                                 placeholder="Search therapist..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg
@@ -84,7 +84,7 @@ function Therapists() {
                         <select
                             value={sortOption}
                             onChange={(e) => setSortOption(e.target.value)}
-                            className="border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            className="border border-gray-300 shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg rounded-xl py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                         >
                             <option value="name-asc">Nume A-Z</option>
                             <option value="name-desc">Nume Z-A</option>
@@ -94,7 +94,7 @@ function Therapists() {
                         <select
                             value={genderFilter}
                             onChange={(e) => setGenderFilter(e.target.value)}
-                            className="border border-gray-300 rounded px-3 py-2"
+                            className="border border-gray-300 shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg rounded-xl px-3 py-2"
                         >
                             <option value="">Gen</option>
                             <option value="feminin">Feminin</option>
@@ -106,7 +106,7 @@ function Therapists() {
                         <select
                             value={formationFilter}
                             onChange={(e) => setFormationFilter(e.target.value)}
-                            className="border border-gray-300 rounded px-3 py-2"
+                            className="border border-gray-300 shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg rounded-xl px-3 py-2"
                         >
                             <option value="">Formare</option>
                             <option value="CBT">CBT</option>
@@ -118,7 +118,7 @@ function Therapists() {
                     {/* Compatibility Search */}
                     <button
                         onClick={() => alert("Deschide formularul de compatibilitate ✨")}
-                        className="bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500 text-white shadow-md hover:brightness-110 font-semibold px-4 py-2 rounded-md shadow-md transition duration-200 flex items-center gap-2"
+                        className="bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500 text-white shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg rounded-md hover:brightness-110 font-semibold px-4 py-2 transition duration-200 flex items-center gap-2"
                     >
                         <span>✨</span>
                         Compatibility Search

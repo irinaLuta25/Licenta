@@ -23,14 +23,14 @@ function Navbar() {
     navLinks.push(
       { label: "Events", path: `${basePath}/events` },
       { label: "Therapists", path: `${basePath}/therapists` },
-      { label: "Calendar", path: `${basePath}/calendar` },
+      { label: "My Schedule", path: `${basePath}/schedule` },
       { label: "Profile", path: `${basePath}/profile` }
     );
   } else {
     navLinks.push(
       { label: "Therapists", path: `${basePath}/therapists` },
       { label: "Events", path: `${basePath}/events` },
-      { label: "Calendar", path: `${basePath}/calendar` },
+      { label: "My Schedule", path: `${basePath}/schedule` },
       { label: "Habits", path: `${basePath}/habits` },
       { label: "Profile", path: `${basePath}/profile` }
     );

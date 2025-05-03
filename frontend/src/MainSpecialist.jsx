@@ -5,6 +5,7 @@ import CreateEvent from "./pages/CreateEvent";
 import Events from "./pages/Events";
 import { Navigate } from "react-router-dom";
 import TherapistDetails from "./pages/Therapists/TherapistDetails";
+import SpecialistSchedule from "./pages/SpecialistSchedule";
 
 
 function MainSpecialist() {
@@ -17,10 +18,11 @@ function MainSpecialist() {
             <Route path="therapists/:id" element={<TherapistDetails />} />
             <Route path="events" element={<Events />}/>
             <Route path="events/create-event" element={<CreateEvent />} />
-            {/* <Route path="calendar" element={<CalendarSpecialist />} />
-            <Route path="profile" element={<Profile />} /> 
+            { <Route path="schedule" element={<SpecialistSchedule />} />
+            /* <Route path="profile" element={<Profile />} /> 
             <Route path="clients" element={<Clients />} /> 
-            */}
+            */
+            }
 
         </Routes>
     )

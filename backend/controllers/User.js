@@ -115,6 +115,7 @@ const controller = {
             gender: req.body.gender,
             password: req.body.password,
             role: req.body.role,
+            profileImage: req.body.profileImage
         };
 
         try {

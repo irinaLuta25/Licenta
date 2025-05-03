@@ -13,10 +13,6 @@ const EventModel = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             allowNull: false
         },
-        dateTime: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
         enrollmentDeadline: {
             type: DataTypes.DATE,
             allowNull: false
@@ -32,7 +28,11 @@ const EventModel = (sequelize, DataTypes) => {
         managerIsParticipant: {
             type: DataTypes.BOOLEAN,
             allowNull: false
-        }
+        },
+        image: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
     }, {
         underscored: true,
         freezeTableName: true

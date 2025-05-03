@@ -39,7 +39,11 @@ const UserModel = (sequelize,DataTypes) => {
             role: {
                 type: DataTypes.STRING,
                 allowNull: true
-            }
+            },
+            profileImage: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         }, {
             underscored: true,
             freezeTableName: true
