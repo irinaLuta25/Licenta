@@ -1,21 +1,82 @@
-import React, { useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Calendar from 'react-calendar'
+import { useDispatch, useSelector } from 'react-redux';
 import 'react-calendar/dist/Calendar.css'
 import './CustomSchedule.css'
 import { format } from 'date-fns'
 import Navbar from '../components/Navbar'
+import { getSpecialistByUserId, getIntervalsForTherapist } from "../features/therapists/therapistsSlice"
+import { getAllTherapySessionsBySpecialistId } from '../features/therapySessions/therapySessionsSlice';
+import { getAllEventsBySpecialistId } from '../features/event/eventSlice';
+
+// la click pe details: afisam toate detaliile programarii + luam intrebare si raspunsuri (anonime si nu) pt feedback! 
+// nu exista feedback => mesaj. altfel avem intrebare - lista nume cu raspunsuri
+// createFreeInterval - asta facem cu modala la click pe buton
+
 
 const SpecialistCalendar = () => {
+  const user = useSelector((state) => state.auth.user)
+  const specialist = useSelector((state) => state.therapists.loggedInTherapist);
+  const freeIntervals = useSelector((state) => state.therapists.freeIntervals);
+  const therapySessions = useSelector((state) => state.therapySessions.list);
+  const events = useSelector((state) => state.event.list)
+
+  console.log("specialist", specialist)
+  console.log("free intervals: ", freeIntervals)
+  console.log("therapySessions: ", therapySessions)
+  console.log("events: ", events)
+
+  const dispatch = useDispatch();
+
   const [selectedDate, setSelectedDate] = useState(new Date())
 
-  const mockSchedule = {
-    '2025-05-03': [
-      { type: 'therapy', title: 'Therapy - Ana', time: '09:00' },
-      { type: 'event', title: 'Workshop - Stress Relief', time: '14:00' },
-      { type: 'free', title: 'Free slot', time: '10:00–11:00' },
-      { type: 'free', title: 'Free slot', time: '15:00–16:00' }
-    ]
+  const realSchedule = {};
+  if (therapySessions) {
+    therapySessions.forEach(session => {
+      if (!session?.interval?.date) return;
+      const dateKey = format(new Date(session.interval.date), 'yyyy-MM-dd');
+      const begin = session.interval.beginTime.slice(0, 5);
+      const end = session.interval.endTime.slice(0, 5);
+      realSchedule[dateKey] = realSchedule[dateKey] || [];
+      realSchedule[dateKey].push({
+        type: 'therapy',
+        title: `Therapy Session - ${session.employee.user.firstName} ${session.employee.user.lastName}`,
+        time: `${begin}–${end}`
+      });
+    });
   }
+
+  if (events) {
+    events.forEach(event => {
+      if (!event?.interval?.date) return;
+      const dateKey = format(new Date(event?.interval.date), 'yyyy-MM-dd');
+      const begin = event.interval.beginTime.slice(0, 5);
+      const end = event.interval.endTime.slice(0, 5);
+      realSchedule[dateKey] = realSchedule[dateKey] || [];
+      realSchedule[dateKey].push({
+        type: 'event',
+        title: `${event.type === 'workshop' ? 'Workshop' : 'Training'} - ${event.name}`,
+        time: `${begin}–${end}`
+      });
+    });
+  }
+
+  if (freeIntervals) {
+    freeIntervals.forEach(interval => {
+      if (!interval?.date) return;
+      const dateKey = format(new Date(interval.date), 'yyyy-MM-dd');
+      const begin = interval.beginTime.slice(0, 5);
+      const end = interval.endTime.slice(0, 5);
+      realSchedule[dateKey] = realSchedule[dateKey] || [];
+      realSchedule[dateKey].push({
+        type: 'free',
+        title: 'Free slot',
+        time: `${begin}–${end}`
+      });
+    });
+  }
+
+
 
   const handleDayClick = (date) => {
     setSelectedDate(date)
@@ -23,8 +84,45 @@ const SpecialistCalendar = () => {
 
   const getEventsForDate = (date) => {
     const formatted = format(date, 'yyyy-MM-dd')
-    return mockSchedule[formatted] || []
+    return realSchedule[formatted] || []
   }
+
+  const getColorClass = (ev) => {
+    if (ev.type === 'therapy') {
+      return 'bg-yellow-100 text-yellow-700';
+    }
+    if (ev.type === 'event') {
+      if (ev.title.toLowerCase().includes('workshop')) {
+        return 'bg-purple-100 text-purple-800';
+      } else {
+        return 'bg-blue-100 text-blue-800';
+      }
+    }
+    if (ev.type === 'free') {
+      return 'bg-green-100 text-green-800';
+    }
+    return 'bg-gray-100 text-gray-800';
+  };
+
+
+  useEffect(() => {
+    if (user?.role === "specialist") {
+      dispatch(getSpecialistByUserId(user.id));
+    }
+  }, [user?.role, user?.id, dispatch]);
+
+  useEffect(() => {
+    if (specialist?.id) {
+      dispatch(getIntervalsForTherapist(specialist.id));
+      if (specialist?.isTherapist === true) {
+        dispatch(getAllTherapySessionsBySpecialistId(specialist.id));
+      }
+      dispatch(getAllEventsBySpecialistId(specialist.id))
+    }
+  }, [specialist?.id, dispatch]);
+
+
+
 
   return (
     <div className="bg-gradient-to-br from-[#c1f7dc] via-[#b2d8f3] to-[#c7b5ff] backdrop-blur-lg min-h-screen pb-10">
@@ -42,7 +140,7 @@ const SpecialistCalendar = () => {
             </div>
 
             <Calendar
-            className="custom-schedule-calendar"
+              className="custom-schedule-calendar"
               onClickDay={handleDayClick}
               value={selectedDate}
               tileContent={({ date }) => {
@@ -52,13 +150,7 @@ const SpecialistCalendar = () => {
                     {events.slice(0, 3).map((ev, idx) => (
                       <div
                         key={idx}
-                        className={`text-[9px] px-1 rounded whitespace-nowrap truncate max-w-[40px] font-medium ${
-                          ev.type === 'therapy'
-                            ? 'bg-blue-100 text-blue-800'
-                            : ev.type === 'event'
-                            ? 'bg-purple-100 text-purple-800'
-                            : 'bg-green-100 text-green-800'
-                        }`}
+                        className={`text-[9px] px-1 rounded whitespace-nowrap truncate max-w-[40px] font-medium  ${getColorClass(ev)}`}
                       >
                         {ev.title}
                       </div>
@@ -78,21 +170,19 @@ const SpecialistCalendar = () => {
               {format(selectedDate, 'MMMM dd, yyyy')}
             </h2>
             <div className="space-y-3">
-              {getEventsForDate(selectedDate).map((ev, idx) => (
-                <div
-                  key={idx}
-                  className={`p-4 rounded flex justify-between items-center shadow-sm ${
-                    ev.type === 'therapy'
-                      ? 'bg-blue-100 text-blue-800'
-                      : ev.type === 'event'
-                      ? 'bg-purple-100 text-purple-800'
-                      : 'bg-green-100 text-green-800'
-                  }`}
-                >
-                  <span className="font-medium">{ev.title}</span>
-                  <span className="text-sm">{ev.time}</span>
-                </div>
-              ))}
+              {getEventsForDate(selectedDate).length === 0 ?
+                (
+                  <p className="text-gray-600 italic text-center">No activities scheduled.</p>
+                ) :
+                getEventsForDate(selectedDate).map((ev, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-4 rounded flex justify-between items-center shadow-sm  ${getColorClass(ev)}`}
+                  >
+                    <span className="font-medium">{ev.title}</span>
+                    <span className="text-sm">{ev.time}</span>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

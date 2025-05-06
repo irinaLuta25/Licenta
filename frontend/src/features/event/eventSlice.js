@@ -25,6 +25,18 @@ export const getAllEventsByTargetDepartment = createAsyncThunk(
     }
 )
 
+export const getAllEventsBySpecialistId = createAsyncThunk(
+    'event/getAllEventsBySpecialistId',
+    async (specialistId, { rejectWithValue }) => {
+        try {
+            const response = await axios.get(`/event/getAllEventsBySpecialistId/${specialistId}`);
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response?.data || err.message);
+        }
+    }
+)
+
 export const deleteEventById = createAsyncThunk(
     'event/deleteEventById',
     async (id, { rejectWithValue }) => {
@@ -72,6 +84,7 @@ const eventSlice = createSlice({
                 state.loading = false
                 state.error = action.payload
             })
+
             .addCase(getAllEventsByTargetDepartment.pending, (state) => {
                 state.loading = true
                 state.error = null
@@ -83,6 +96,19 @@ const eventSlice = createSlice({
             .addCase(getAllEventsByTargetDepartment.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.payload
+            })
+
+            .addCase(getAllEventsBySpecialistId.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(getAllEventsBySpecialistId.fulfilled, (state, action) => {
+                state.loading = false;
+                state.list = action.payload;
+            })
+            .addCase(getAllEventsBySpecialistId.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
             })
 
             .addCase(deleteEventById.pending, (state) => {

@@ -118,7 +118,7 @@ function Therapists() {
                     {/* Compatibility Search */}
                     <button
                         onClick={() => alert("Deschide formularul de compatibilitate ✨")}
-                        className="bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500 text-white shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg rounded-md hover:brightness-110 font-semibold px-4 py-2 transition duration-200 flex items-center gap-2"
+                        className="bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500 text-white shadow-[0_10px_20px_rgba(0,0,0,0.15)] drop-shadow-md rounded-md hover:brightness-110 font-semibold px-4 py-2 transition duration-200 flex items-center gap-2"
                     >
                         <span>✨</span>
                         Compatibility Search

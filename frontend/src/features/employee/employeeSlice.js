@@ -15,6 +15,18 @@ export const getEmployeeByUserId = createAsyncThunk(
   }
 );
 
+export const getEmployeeById = createAsyncThunk(
+  "employee/getEmployeeById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/employee/${id}`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 const employeeSlice = createSlice({
   name: "employee",
   initialState: {
@@ -35,7 +47,20 @@ const employeeSlice = createSlice({
       .addCase(getEmployeeByUserId.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
-      });
+      })
+
+    .addCase(getEmployeeById.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    })
+    .addCase(getEmployeeById.fulfilled, (state, action) => {
+      state.status = "succeeded";
+      state.employee = action.payload;
+    })
+    .addCase(getEmployeeById.rejected, (state, action) => {
+      state.status = "failed";
+      state.error = action.payload;
+    });
   },
 });
 

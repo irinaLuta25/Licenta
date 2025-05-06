@@ -1,4 +1,7 @@
 const TherapySessionDb = require("../models").TherapySession;
+const IntervalDb = require("../models").Interval;
+const EmployeeDb = require('../models').Employee;
+const UserDb = require('../models').User;
 
 const controller = {
     createTherapySession: async (req, res) => {
@@ -82,19 +85,29 @@ const controller = {
     },
     
     getAllTherapySessionsBySpecialistId: async (req, res) => {
-        const {specialistId}=req.params;
-        if(!specialistId) {
-            throw new Error("No ID provided");
+        const { specialistId } = req.params;
+        if (!specialistId) {
+            return res.status(400).send("No ID provided");
         }
+    
         try {
             const sessions = await TherapySessionDb.findAll({
-                where: {specialistId}
+                include: [{
+                    model: IntervalDb,
+                    where: { specialistId }
+                },
+                {
+                    model: EmployeeDb,
+                    include: [{ model: UserDb}]
+                }
+            ]
             });
+    
             res.status(200).send(sessions);
         } catch (err) {
             res.status(500).send(err.message);
         }
-    },
+    }
 
 
 };

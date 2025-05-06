@@ -1,5 +1,7 @@
 const EventDb = require("../models").Event;
 const EmployeeEventDb = require("../models").EmployeeEvent;
+const IntervalDb = require("../models").Interval;
+
 const { Op } = require("sequelize");
 const bucket = require("../config/firebaseConfig");
 
@@ -53,14 +55,12 @@ const controller = {
               },
             });
       
-            // Așteaptă finalizarea streamului cu promisiune
             await new Promise((resolve, reject) => {
               blobStream.on("finish", resolve);
               blobStream.on("error", reject);
               blobStream.end(file.buffer);
             });
       
-            // Fă imaginea publică și obține URL-ul
             await blob.makePublic();
             imageUrl = `https://storage.googleapis.com/${bucket.name}/event-images/${firebaseFileName}`;
           }
@@ -157,7 +157,10 @@ const controller = {
         }
         try {
             const events = await EventDb.findAll({
-                where: {specialistId}
+                include: [{
+                    model: IntervalDb,
+                    where: { specialistId }
+                }]
             });
             res.status(200).send(events);
         } catch (err) {

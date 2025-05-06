@@ -30,7 +30,7 @@
   font-weight: 600;
 }
 
-.custom-schedule-calendar .react-calendar__tile:enabled:hover {
+.custom-schedule-calendar .react-calendar__tile:enabled:not(.react-calendar__tile--active):hover{
   background-color: rgba(79, 70, 229, 0.3); 
   color: white;
   border-radius: 0.5rem;
@@ -57,6 +57,13 @@
   background-color: #9f81f9 !important;
   color: #ffffff !important;
   font-weight: 700;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 6px rgba(79, 70, 229, 0.5);
+}
+
+.custom-schedule-calendar .react-calendar__tile--active:hover {
+  background-color: #9f81f9 !important;
+  color: #ffffff !important;
   border-radius: 0.5rem;
   box-shadow: 0 0 6px rgba(79, 70, 229, 0.5);
 }

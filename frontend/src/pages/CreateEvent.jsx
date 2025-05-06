@@ -3,6 +3,7 @@ import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
+import { getSpecialistByUserId } from "../features/therapists/therapistsSlice";
 import { getIntervalsForTherapist } from "../features/therapists/therapistsSlice"
 import { createQuestionForEvent } from "../features/question/questionSlice"
 import { updateIntervalStatus } from "../features/interval/intervalSlice"
@@ -35,6 +36,9 @@ function CreateEvent() {
 
 
     useEffect(() => {
+        if (user?.id && !specialist?.id) {
+            dispatch(getSpecialistByUserId(user.id));
+        }
         if (specialist?.id && freeIntervals.length === 0) {
             console.log("Dispatch getIntervalsForTherapist din CreateEvent");
             dispatch(getIntervalsForTherapist(specialist.id));
