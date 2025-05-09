@@ -40,7 +40,8 @@ function Navbar() {
   }
 
   return (
-    <nav className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-indigo-700 text-white px-6 py-3 pb-4 flex justify-between items-center shadow-md">
+
       <div className="text-2xl font-bold">MindCare</div>
 
       <ul className="hidden md:flex space-x-6">

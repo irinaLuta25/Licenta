@@ -16,6 +16,24 @@ code {
     monospace;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #4338ca;;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #3a1f9b; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #77c1e3; 
+}
+
+
 .highlight-available {
   background-color: #bbf7d0 !important; 
   color: #065f46 !important; 
