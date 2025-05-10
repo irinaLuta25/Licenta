@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 function EventCard({ event, role, employee, index }) {
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const specialists = useSelector((state) => state.therapists.specialistsById);
     const loggedInSpecialist = useSelector((state) => state.therapists.loggedInTherapist);
@@ -21,16 +22,13 @@ function EventCard({ event, role, employee, index }) {
 
     useEffect(() => {
         const specialist = specialists?.[event.specialistId];
-
         if (event?.specialistId && (!specialist || !specialist.user)) {
             dispatch(getTherapistById(event.specialistId));
         }
-
         if (event?.intervalId && !interval) {
             dispatch(getIntervalById(event.intervalId));
         }
     }, [event?.specialistId, event?.intervalId, specialists, interval, dispatch]);
-
 
     const formattedDate = useMemo(() => new Date(event.enrollmentDeadline), [event.enrollmentDeadline]);
 
@@ -40,22 +38,19 @@ function EventCard({ event, role, employee, index }) {
 
     const isEventPast = useMemo(() => {
         if (!interval?.date || !interval?.endTime) return false;
-
         const baseDate = new Date(interval.date);
         const [hours, minutes] = interval.endTime.split(":");
-
         const endDateTime = new Date(baseDate);
         endDateTime.setHours(Number(hours));
         endDateTime.setMinutes(Number(minutes));
         endDateTime.setSeconds(0);
-        endDateTime.setMilliseconds(0);
-
         return new Date() > endDateTime;
     }, [interval]);
 
     const isEnrollmentClosed = new Date() > formattedDate;
     const layoutClass = index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse";
     const facilitator = specialists?.[event.specialistId];
+    const facilitatorUser = facilitator?.user;
 
     const canSignUp =
         role === "angajat" &&
@@ -74,8 +69,6 @@ function EventCard({ event, role, employee, index }) {
         }
     };
 
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
     const confirmDelete = async () => {
         try {
             await dispatch(deleteEventById(event?.id));
@@ -87,12 +80,8 @@ function EventCard({ event, role, employee, index }) {
         }
     };
 
-
-
-    const facilitatorUser = facilitator?.user;
-
     return (
-        <div className={`w-full max-w-6xl mx-auto flex flex-col ${layoutClass} items-center justify-between gap-6 text-black rounded-2xl bg-[#ffe6e0] border border-indigo-300/30 shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg transition transform duration-300 hover:-translate-y-1 p-6 my-6`}>
+        <div className={`w-full max-w-6xl mx-auto flex flex-col ${layoutClass} items-center justify-between gap-6 text-indigo-900 rounded-2xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 border border-indigo-300/30 backdrop-blur-xl shadow-xl hover:shadow-2xl rounded-xl transition transform duration-300 hover:-translate-y-1 p-6 my-6`}>
             {event.image && (
                 <div className="w-full md:w-1/2 flex justify-center">
                     <img src={event.image} alt="Event" className="rounded-xl object-cover max-h-72 w-full md:max-w-md" />
@@ -102,7 +91,7 @@ function EventCard({ event, role, employee, index }) {
             <div className="w-full md:w-1/2">
                 <div className="flex flex-row gap-6">
                     <h2 className="text-2xl font-semibold">{event.name}</h2>
-                    <div className="flex gap-4 items-center justify-end mt-2 text-sm text-gray-700">
+                    <div className="flex gap-4 items-center justify-end mt-2 text-sm text-indigo-800">
                         <span className="flex items-center gap-1"><FaCalendarAlt /> {eventDate.toLocaleDateString("ro-RO")}</span>
                         <span className="flex items-center gap-1"><FaClock /> {interval?.beginTime?.slice(0, 5)} - {interval?.endTime?.slice(0, 5)}</span>
                     </div>
@@ -110,7 +99,7 @@ function EventCard({ event, role, employee, index }) {
 
                 <p className="text-sm mb-4 leading-relaxed break-words">{event.description}</p>
 
-                <p className="text-sm text-gray-700 mb-4">
+                <p className="text-sm text-indigo-800 mb-4">
                     <b>Facilitator:</b>{" "}
                     {facilitatorUser?.firstName} {facilitatorUser?.lastName}
                     {facilitator && (
@@ -130,64 +119,54 @@ function EventCard({ event, role, employee, index }) {
                             ) : isSignedUp ? (
                                 <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md" disabled>Signed up</button>
                             ) : (
-                                <button className="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md" onClick={() => setShowModal(true)}>Sign up</button>
+                                <button className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md" onClick={() => setShowModal(true)}>Sign up</button>
                             )
                         )}
 
                         {isCreator && !isEventPast && (
                             <button
-                                className="mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md"
+                                className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md"
                                 onClick={() => setDeleteModalOpen(true)}
                             >
                                 Delete
                             </button>
                         )}
-
                     </div>
 
-                    <p className="text-sm text-gray-500 mt-2 md:mt-0">Registration closes on: {formattedDate.toLocaleDateString("ro-RO")}</p>
+                    <p className="text-sm text-indigo-800 mt-2 md:mt-0">Registration closes on: {formattedDate.toLocaleDateString("ro-RO")}</p>
                 </div>
 
+                {/* Modal înscriere */}
                 {showModal && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                         <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-                            <h2 className="text-xl font-bold mb-4 text-center">Confirmare înscriere</h2>
-                            <p className="text-gray-700 mb-6 text-center">
+                            <h2 className="text-xl font-bold mb-4 text-center text-indigo-800">Confirmare înscriere</h2>
+                            <p className="text-indigo-700 mb-6 text-center">
                                 Vrei să te înscrii la evenimentul <strong>{event?.name}</strong> pe data de <strong>{eventDate.toLocaleDateString("ro-RO")}</strong>?
                             </p>
                             <div className="flex justify-center gap-4">
                                 <button className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setShowModal(false)}>Anulează</button>
-                                <button className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700" onClick={() => { handleSignUp(); setShowModal(false); }}>Da, confirmă</button>
+                                <button className="px-4 py-2 bg-indigo-700 text-white rounded hover:bg-indigo-500" onClick={() => { handleSignUp(); setShowModal(false); }}>Da, confirmă</button>
                             </div>
                         </div>
                     </div>
                 )}
 
+                {/* Modal ștergere */}
                 {deleteModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                         <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
                             <h2 className="text-xl font-bold mb-4 text-center text-red-600">Confirmare ștergere</h2>
-                            <p className="text-gray-700 mb-6 text-center">
+                            <p className="text-indigo-700 mb-6 text-center">
                                 Sigur vrei să ștergi evenimentul <strong>{event.name}</strong>?
                             </p>
                             <div className="flex justify-center gap-4">
-                                <button
-                                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                                    onClick={() => setDeleteModalOpen(false)}
-                                >
-                                    Anulează
-                                </button>
-                                <button
-                                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                                    onClick={confirmDelete}
-                                >
-                                    Da, șterge
-                                </button>
+                                <button className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setDeleteModalOpen(false)}>Anulează</button>
+                                <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" onClick={confirmDelete}>Da, șterge</button>
                             </div>
                         </div>
                     </div>
                 )}
-
             </div>
         </div>
     );

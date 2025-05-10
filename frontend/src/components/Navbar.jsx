@@ -22,7 +22,7 @@ function Navbar() {
   if (role === "specialist") {
     navLinks.push(
       { label: "Events", path: `${basePath}/events` },
-      { label: "Therapists", path: `${basePath}/therapists` },
+      { label: "Clients", path: `${basePath}/clients` },
       { label: "My Schedule", path: `${basePath}/schedule` },
       { label: "Profile", path: `${basePath}/profile` }
     );

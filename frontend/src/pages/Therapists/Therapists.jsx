@@ -65,7 +65,7 @@ function Therapists() {
         <>
             <Navbar />
             <div className="pt-24 px-8 sm:px-16 bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
-                <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center gap-4 mb-12">
+                <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center gap-4 my-6 mb-12">
                     <div className="flex flex-wrap items-center gap-6 flex-grow">
                         {/* Search */}
                         <div className="relative w-full sm:w-64">

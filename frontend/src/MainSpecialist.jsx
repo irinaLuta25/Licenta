@@ -13,9 +13,7 @@ function MainSpecialist() {
     return(
         <Routes>
             {/* pages in navbar: clients, events, calendar, profile */}
-            <Route path="/" element={<Navigate to="therapists" />} />
-            <Route path="therapists" element={<Therapists />} />
-            <Route path="therapists/:id" element={<TherapistDetails />} />
+            <Route path="/" element={<Navigate to="events" />} />
             <Route path="events" element={<Events />}/>
             <Route path="events/create-event" element={<CreateEvent />} />
             { <Route path="schedule" element={<SpecialistSchedule />} />

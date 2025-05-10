@@ -125,10 +125,10 @@ const SpecialistCalendar = () => {
 
 
   return (
-    <div className="bg-gradient-to-br from-[#c1f7dc] via-[#b2d8f3] to-[#c7b5ff] backdrop-blur-lg min-h-screen pb-10">
+    <div className="pt-16 px-8 sm:px-12 bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-10">
           {/* Left side: Calendar + header */}
           <div className="lg:w-[55%] w-full bg-[#ffe6e0] p-6 border border-indigo-300/30 shadow-xl hover:shadow-2xl shadow-[0_10px_20px_rgba(0,0,0,0.08)] drop-shadow-lg rounded-xl">

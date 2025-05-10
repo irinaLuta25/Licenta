@@ -132,7 +132,7 @@ const therapistsSlice = createSlice({
       .addCase(getIntervalsForTherapist.fulfilled, (state, action) => {
         state.loading = false;
         state.status = "succeeded";
-        state.freeIntervals = action.payload;
+        state.freeIntervals = action.payload.filter(interval => interval.status === false);
       })
       .addCase(getIntervalsForTherapist.rejected, (state, action) => {
         state.loading = false;

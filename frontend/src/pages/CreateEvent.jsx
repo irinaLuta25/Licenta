@@ -10,6 +10,8 @@ import { updateIntervalStatus } from "../features/interval/intervalSlice"
 import { createEvent } from "../features/event/eventSlice"
 import ImageUpload from "../components/ImageUpload"
 import { toast } from 'react-toastify';
+import CustomDropdown2 from "../components/CustomDropdown2";
+import "./AvailabilityCalendar2.css"
 
 
 function CreateEvent() {
@@ -93,12 +95,12 @@ function CreateEvent() {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
         console.log("SUBMIT TRIGGERED")
 
         if (step !== 4) {
-            return; 
+            return;
         }
 
         if (form.questions.length === 0) {
@@ -127,16 +129,16 @@ function CreateEvent() {
                 method: "POST",
                 body: formData,
             });
-    
+
             if (!res.ok) throw new Error("Failed to create event");
             const eventData = await res.json();
-    
+
             for (const text of form.questions) {
                 if (text.trim()) {
                     await dispatch(createQuestionForEvent({ text, eventId: eventData.id })).unwrap();
                 }
             }
-    
+
             await dispatch(updateIntervalStatus({ id: form.interval.id, status: true }));
             toast.success("Success creating event!");
             navigate(-1);
@@ -182,15 +184,15 @@ function CreateEvent() {
     const prevStep = () => setStep((prev) => prev - 1);
 
     return (
-        <div className="bg-gradient-to-br from-[#c1f7dc] via-[#b2d8f3] to-[#c7b5ff] min-h-screen flex flex-col">
+        <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
             <div className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
                 <button onClick={() => navigate(-1)} className="text-2xl font-bold hover:underline">
                     ← Back
                 </button>
             </div>
 
-            <div className="flex-1 flex items-center justify-center px-4 py-10">
-            <form noValidate className="w-full max-w-2xl bg-[#ffe6e0] border border-indigo-300/30 shadow-xl hover:shadow-2xl drop-shadow-lg rounded-2xl p-6 space-y-6">
+            <div className="flex flex items-center min-h-[calc(100vh-64px)] justify-center py-8">
+                <form noValidate className="w-full max-w-3xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-xl hover:shadow-2xl border border-indigo-300/30 drop-shadow-lg rounded-2xl p-6 space-y-6">
 
 
                     <h1 className="text-2xl font-bold text-center text-indigo-800 mb-4">Create a New Event</h1>
@@ -199,47 +201,42 @@ function CreateEvent() {
                         <>
                             <div>
                                 <label className="font-medium">Event Name</label>
-                                <input name="name" value={form.name} onChange={handleChange} className="w-full border border-indigo-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500" required />
+                                <input name="name" value={form.name} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" required />
                             </div>
 
                             <div>
                                 <label className="font-medium">Description</label>
-                                <textarea name="description" value={form.description} onChange={handleChange} className="w-full border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500" required />
+                                <textarea name="description" value={form.description} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" required />
                             </div>
 
 
 
                             <div>
                                 <label className="block font-semibold mb-1">Type</label>
-                                <select
-                                    name="type"
+                                <CustomDropdown2
                                     value={form.type}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500"
-                                    required
-                                >
-                                    <option value="">Select type</option>
-                                    <option value="workshop">Workshop</option>
-                                    <option value="training">Training</option>
-                                </select>
+                                    onChange={(val) => setForm((prev) => ({ ...prev, type: val }))}
+                                    options={[
+                                        { label: "Select type", value: "" },
+                                        { label: "Workshop", value: "workshop" },
+                                        { label: "Training", value: "training" },
+                                    ]}
+                                />
                             </div>
 
                             <div>
                                 <label className="block font-semibold mb-1">Target Department</label>
-                                <select
-                                    name="department"
+                                <CustomDropdown2
                                     value={form.department}
-                                    onChange={handleChange}
-                                    className="w-full border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500"
-                                    required
-                                >
-                                    <option value="">Select department</option>
-                                    <option value="HR">HR</option>
-                                    <option value="IT">IT</option>
-                                    <option value="Marketing">Marketing</option>
-                                    <option value="Sales">Sales</option>
-                                    <option value="General">General</option>
-                                </select>
+                                    onChange={(val) => setForm((prev) => ({ ...prev, department: val }))}
+                                    options={[
+                                        { label: "HR", value: "HR" },
+                                        { label: "IT", value: "IT" },
+                                        { label: "Marketing", value: "Marketing" },
+                                        { label: "Sales", value: "Sales" },
+                                        { label: "General", value: "General" },
+                                    ]}
+                                />
                             </div>
 
                             <div className="flex items-center justify-between mt-4">
@@ -265,6 +262,7 @@ function CreateEvent() {
                             <div>
                                 <label className="font-medium block mb-2">Choose Event Interval</label>
                                 <Calendar
+                                    className="custom-calendar2"
                                     onChange={(date) => {
                                         setSelectedDate(date);
                                         setForm((prev) => ({ ...prev, interval: null }));
@@ -289,33 +287,40 @@ function CreateEvent() {
                                     name="enrollmentDeadline"
                                     value={form.enrollmentDeadline}
                                     onChange={handleChange}
-                                    className="w-full mb-4 border border-gray-300 rounded-md px-4 py-2 bg-[#d9c2f0] shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500"
+                                    className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner mb-4"
                                     required
                                 />
 
-                                <div className="bg-indigo-50 p-4 rounded-md shadow-md">
-                                    <h3 className="text-indigo-800 font-semibold mb-2">Available Intervals</h3>
-                                    <div className="flex flex-col gap-2 items-center">
-                                        {intervalsForSelectedDate.map((interval) => {
-                                            const isSelected = form.interval?.id === interval.id;
-                                            return (
-                                                <button
-                                                    type="button"
-                                                    key={interval.id}
-                                                    onClick={() => setForm((prev) => ({ ...prev, interval }))}
-                                                    className={`text-center w-40 px-4 py-2 rounded-md transition ${isSelected
-                                                        ? "bg-indigo-600 text-white font-semibold"
-                                                        : "bg-white text-gray-800 border border-gray-300 hover:bg-indigo-100"
-                                                        }`}
-                                                >
-                                                    {interval.beginTime.slice(0, 5)} - {interval.endTime.slice(0, 5)}
-                                                </button>
-                                            );
-                                        })}
+                                <div className="w-full flex justify-center">
+                                    <div className="w-64 min-h-[120px] p-4 rounded-xl bg-white/70 shadow-inner text-gray-700 overflow-hidden">
+                                        <h3 className="text-indigo-800 font-semibold mb-2 text-center">Available Intervals</h3>
+
+                                        <div className="flex flex-col gap-2 items-center w-full">
+                                            {intervalsForSelectedDate.length === 0 ? (
+                                                <p className="text-gray-600 italic text-center text-sm">No available intervals for this date.</p>
+                                            ) : (
+                                                intervalsForSelectedDate.map((interval) => {
+                                                    const isSelected = form.interval?.id === interval.id;
+                                                    return (
+                                                        <button
+                                                            type="button"
+                                                            key={interval.id}
+                                                            onClick={() => setForm((prev) => ({ ...prev, interval }))}
+                                                            className={`w-full max-w-[10rem] text-center px-4 py-2 rounded-md truncate transition ${isSelected
+                                                                    ? "bg-indigo-600 text-white font-semibold"
+                                                                    : "bg-white text-gray-800 border border-gray-300 hover:bg-indigo-100"
+                                                                }`}
+                                                        >
+                                                            {interval.beginTime.slice(0, 5)} - {interval.endTime.slice(0, 5)}
+                                                        </button>
+                                                    );
+                                                })
+                                            )}
+                                        </div>
                                     </div>
-
-
                                 </div>
+
+
 
                                 {form.interval && (
                                     <p className="mt-4 text-sm  text-indigo-700 font-medium">
@@ -343,7 +348,7 @@ function CreateEvent() {
                                         type="text"
                                         value={q}
                                         onChange={(e) => updateQuestion(idx, e.target.value)}
-                                        className="w-full border px-3 py-2 rounded-md bg-[#d9c2f0]"
+                                        className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner"
                                         placeholder={`Question ${idx + 1}`}
                                     />
                                 </div>
@@ -354,7 +359,7 @@ function CreateEvent() {
                         </div>
                     )}
 
-                    <div className="flex justify-between pt-4">
+                    <div className="flex justify-between pt-2">
                         {step > 1 && (
                             <button type="button" onClick={prevStep} className="bg-indigo-100 text-indigo-800 px-4 py-2 rounded hover:bg-indigo-300">
                                 Back
@@ -365,7 +370,7 @@ function CreateEvent() {
                                 Next
                             </button>
                         ) : (
-                            <button type="button"  onClick={handleSubmit} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
+                            <button type="button" onClick={handleSubmit} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
                                 Submit
                             </button>
                         )}

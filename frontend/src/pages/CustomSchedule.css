@@ -3,6 +3,10 @@
   border: none;
   font-family: inherit;
   background-color: #d9c2f0 !important;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  color: #1e1e2f;
 }
 
 .custom-schedule-calendar .react-calendar__month-view__days {

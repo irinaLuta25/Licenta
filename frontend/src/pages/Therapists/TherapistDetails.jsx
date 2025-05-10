@@ -1,9 +1,10 @@
+import './AvailabilityCalendar.css';
 import { React, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"
 import { getTherapistById, getIntervalsForTherapist, resetSelectedTherapist } from "../../features/therapists/therapistsSlice";
 import { createTherapySession, resetTherapySessionStatus } from "../../features/therapySessions/therapySessionsSlice"
 import { getEmployeeByUserId } from "../../features/employee/employeeSlice";
-import { updateIntervalStatus} from "../../features/interval/intervalSlice"
+import { updateIntervalStatus } from "../../features/interval/intervalSlice"
 import { useDispatch, useSelector } from "react-redux";
 import { FaLinkedin, FaFacebook, FaGlobe, FaPhone, FaEnvelope } from "react-icons/fa";
 import Calendar from "react-calendar";
@@ -40,8 +41,8 @@ function TherapistDetails() {
 
 
     useEffect(() => {
-            dispatch(getTherapistById(id));
-            dispatch(getIntervalsForTherapist(id));
+        dispatch(getTherapistById(id));
+        dispatch(getIntervalsForTherapist(id));
     }, [dispatch, id]);
 
 
@@ -54,10 +55,10 @@ function TherapistDetails() {
 
     useEffect(() => {
         if (success) {
-          toast.success("Programare efectuată cu succes!");
-          dispatch(resetTherapySessionStatus());
+            toast.success("Programare efectuată cu succes!");
+            dispatch(resetTherapySessionStatus());
         }
-      }, [success, dispatch]);
+    }, [success, dispatch]);
 
 
     if (status === "loading") return <p>Loading...</p>;
@@ -98,13 +99,11 @@ function TherapistDetails() {
         return intervalDateString === selectedDateString
     })
 
-
-
     return (
         <>
-            
 
-            <div className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
+
+            <div className="bg-indigo-700 text-white px-6 py-3 pb-4 flex justify-between items-center shadow-md">
                 <button
                     onClick={() => navigate(-1)}
                     className="text-2xl font-bold hover:underline"
@@ -114,29 +113,35 @@ function TherapistDetails() {
             </div>
 
 
-            <div className="flex flex-col bg-gradient-to-br from-[#c1f7dc] via-[#b2d8f3] to-[#c7b5ff] backdrop-blur-lg min-h-screen  p-4">
-                <div className="flex flex-row">
-                    <img
-                        src={"/assets/Cat_November_2010-1a.jpg"}
-                        alt="Therapist"
-                        className="w-full max-h-[300px] aspect-[3/4] object-contain rounded-lg"
-                    />
+            <div className="flex flex-col bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] backdrop-blur-lg min-h-screen">
+                <div className="m-8 flex flex-row gap-10">
 
-                    <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-3">
-                            <h1 className="text-2xl font-bold leading-none">
-                                {therapist.user?.firstName} {therapist.user?.lastName}
-                            </h1>
-                            <span className="text-lg text-gray-600 mt-[2px]">{age} de ani</span>
+                    <div className="flex flex-row gap-10 bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-2xl rounded-xl p-8">
+                        <img
+                            src={"/assets/pfp.jpeg"}
+                            alt="Therapist"
+                            className="w-auto max-h-[300px] object-cover rounded-lg"
+                        />
+
+                        <div className="flex flex-col gap-5">
+
+
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-2xl font-bold leading-none">
+                                    {therapist.user?.firstName} {therapist.user?.lastName}
+                                </h1>
+                                <span className="text-lg text-gray-600 mt-[2px]">{age} de ani</span>
+                            </div>
+
+
+                            <p className="text-justify">
+                                {therapist.description}
+                            </p>
                         </div>
 
-
-                        <p className="text-justify">
-                            {therapist.description}
-                        </p>
                     </div>
 
-                    <div className="m-8">
+                    <div className="bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-2xl rounded-xl p-8">
                         <h1 className="text-large font-bold">
                             Detalii de contact
                         </h1>
@@ -198,19 +203,28 @@ function TherapistDetails() {
                         </div>
 
                     </div>
-
                 </div>
 
 
-                {/* Calendar cu intervalele libere din fiecare zi highlighted */}
-                <div className="w-full flex justify-evenly items-center">
 
-                    <div className="flex flex-col justify-center items-center">
-                        <h2 className="text-lg font-bold mb-2">
+                {/* Calendar cu intervalele libere din fiecare zi highlighted */}
+                <div className="flex flex-row gap-10 mx-8 pb-8">
+
+                    <div className="w-[40%] min-h-[350px] flex flex-col gap-4 items-center text-center bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-2xl rounded-xl px-8 pt-4">
+                        <h3 className="text-lg font-semibold text-indigo-800">Planifică o sesiune de terapie</h3>
+                        <p className="text-sm text-gray-700">
+                            Alege o zi din calendar și rezervă un interval disponibil pentru a începe călătoria ta spre echilibru și bunăstare.
+                        </p>
+                        <img src="/assets/aa.png" alt="Ilustrație meditație" className="w-64 h-64 mb-4 " />
+                    </div>
+
+                    <div className="w-[35%] min-h-[350px] flex flex-col">
+                        {/* <h2 className="text-lg font-bold mb-2 text-indigo-800">
                             Calendar disponibilitate
-                        </h2>
+                        </h2> */}
 
                         <Calendar
+                            className="custom-calendar"
                             onChange={setSelectedDate}
                             value={selectedDate}
                             tileClassName={({ date }) => {
@@ -220,120 +234,122 @@ function TherapistDetails() {
                     </div>
 
                     {intervalsForSelectedDate.length > 0 ? (
-                        <div className="flex flex-col justify-center items-center">
-                            <div className="bg-indigo-400 rounded-lg px-6 py-4 shadow-md w-fit text-center">
-                                <h3 className="text-center text-large font-semibold text-black">
-                                    Intervale disponibile pe {selectedDate.toLocaleDateString("ro-RO")}
-                                </h3>
+                        <div className="w-[25%] min-h-[350px] flex flex-col items-center bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-2xl rounded-xl p-8 text-center">
+                            <h3 className="text-center text-large font-semibold text-black">
+                                Intervale disponibile pe {selectedDate.toLocaleDateString("ro-RO")}
+                            </h3>
 
-                                <ul className="flex flex-col gap-3 mt-4 ">
-                                    {intervalsForSelectedDate.map(interval => {
-                                        const isSelected = selectedInterval?.id === interval.id;
+                            <ul className="flex flex-col gap-3 mt-4 ">
+                                {intervalsForSelectedDate.map(interval => {
+                                    const isSelected = selectedInterval?.id === interval.id;
 
-                                        return (
-                                            <li key={interval.id} >
-                                                <button
-                                                    onClick={() => setSelectedInterval(interval)}
-                                                    className={`px-4 py-2 rounded-md border ${isSelected
-                                                        ? 'bg-indigo-700 text-white border-indigo-500'
-                                                        : 'bg-white hover:bg-indigo-100 text-gray-800 border-gray-300'
-                                                        }`}
-                                                >
-                                                    {interval.beginTime.slice(0, 5)} - {interval.endTime.slice(0, 5)}
-                                                </button>
-                                            </li>
-                                        )
-                                    })}
-                                </ul>
-
-                            </div>
+                                    return (
+                                        <li key={interval.id} >
+                                            <button
+                                                onClick={() => setSelectedInterval(interval)}
+                                                className={`px-4 py-2 rounded-md border ${isSelected
+                                                    ? 'bg-indigo-700 text-white border-indigo-500'
+                                                    : 'bg-white hover:bg-indigo-100 text-gray-800 border-gray-300'
+                                                    }`}
+                                            >
+                                                {interval.beginTime.slice(0, 5)} - {interval.endTime.slice(0, 5)}
+                                            </button>
+                                        </li>
+                                    )
+                                })}
+                            </ul>
 
                             <div className="p-8">
                                 <button
                                     className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
-                                    onClick={() => setShowModal(true)}
+                                    onClick={() => {
+                                        if (!selectedInterval) {
+                                            toast.warn("Selectează un interval înainte de a continua!");
+                                            return;
+                                        }
+                                        setShowModal(true);
+                                    }}
                                 >
                                     Programează-te
                                 </button>
 
-                                {showModal && selectedInterval && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                                        <div
-                                            className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            <h2 className="text-xl font-bold mb-4 text-center">Confirmare programare</h2>
 
-                                            <p className="text-gray-700 mb-6 text-center">
-                                                Vrei să te programezi în intervalul <strong>{selectedInterval.beginTime.slice(0, 5)} - {selectedInterval.endTime.slice(0, 5)}</strong> pe data de <strong>{selectedDate.toLocaleDateString("ro-RO")}</strong>?
-                                            </p>
-
-                                            <div className="flex justify-center gap-4">
-                                                <button
-                                                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                                                    onClick={() => setShowModal(false)}
-                                                >
-                                                    Anulează
-                                                </button>
-
-                                                <button
-                                                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                                                    onClick={() => {
-                                                        if (selectedInterval && therapist && employee?.id) {
-                                                            console.log({
-                                                                locationType: "online",
-                                                                intervalId: selectedInterval.id,
-                                                                specialistId: therapist.id,
-                                                                notes: "nimic",
-                                                                employeeId: employee.id
-                                                            })
-                                                            dispatch(
-                                                                createTherapySession({
-                                                                    locationType: "online",
-                                                                    intervalId: selectedInterval.id,
-                                                                    specialistId: therapist.id,
-                                                                    notes: "nimic",
-                                                                    employeeId: employee.id
-                                                                })
-                                                             
-                                                            ).then(() => {
-                                                                dispatch(updateIntervalStatus({ id: selectedInterval.id, status: true }));
-
-                                                            });
-                                                            console.log("Programare confirmată!");
-                                                        } else {
-                                                            console.warn("Date insuficiente pentru a crea sesiunea!");
-                                                        }
-                                                        setShowModal(false);
-                                                    }}
-                                                >
-                                                    Da, confirmă
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
 
                             </div>
+
                         </div>
 
                     ) : (
-                        <p className="mt-4 text-gray-500">Niciun interval disponibil în această zi.</p>
+                        <div className="w-[25%] min-h-[350px] bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-2xl rounded-xl p-8 text-center">
+                            <p className="text-gray-600 italic text-center">Niciun interval disponibil în această zi.</p>
+                        </div>
                     )}
-
-
 
                 </div>
 
-
-
-
             </div>
+
+            {showModal && selectedInterval && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div
+                        className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h2 className="text-xl font-bold mb-4 text-center">Confirmare programare</h2>
+
+                        <p className="text-gray-700 mb-6 text-center">
+                            Vrei să te programezi în intervalul <strong>{selectedInterval.beginTime.slice(0, 5)} - {selectedInterval.endTime.slice(0, 5)}</strong> pe data de <strong>{selectedDate.toLocaleDateString("ro-RO")}</strong>?
+                        </p>
+
+                        <div className="flex justify-center gap-4">
+                            <button
+                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Anulează
+                            </button>
+
+                            <button
+                                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                onClick={async() => {
+                                    if (selectedInterval && therapist && employee?.id) {
+                                        console.log({
+                                            locationType: "online",
+                                            intervalId: selectedInterval.id,
+                                            specialistId: therapist.id,
+                                            notes: "nimic",
+                                            employeeId: employee.id
+                                        })
+                                        await dispatch(
+                                            createTherapySession({
+                                                locationType: "online",
+                                                intervalId: selectedInterval.id,
+                                                specialistId: therapist.id,
+                                                notes: "nimic",
+                                                employeeId: employee.id
+                                            })
+
+                                        ).unwrap();
+                                        
+                                        await dispatch(updateIntervalStatus({ id: selectedInterval.id, status: true })).unwrap();
+
+                                        await dispatch(getIntervalsForTherapist(therapist.id)).unwrap();
+                                        
+                                        console.log("Programare confirmată!");
+                                    } else {
+                                        console.warn("Date insuficiente pentru a crea sesiunea!");
+                                    }
+                                    setShowModal(false);
+                                }}
+                            >
+                                Da, confirmă
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </>
-
-
-
-
 
     )
 }
