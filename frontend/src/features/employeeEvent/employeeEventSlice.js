@@ -26,11 +26,24 @@ export const getEmployeeEventsByEmployeeId = createAsyncThunk(
     }
   );
 
+  export const getEmployeeEventsByEventId = createAsyncThunk(
+    'employeeEvent/getByEventId',
+    async (eventId, { rejectWithValue }) => {
+      try {
+        const res = await axios.get(`/employeeEvent/getAllEmployeeEventsByEventId/${eventId}`);
+        return res.data.count;
+      } catch (err) {
+        return rejectWithValue(err.response?.data || err.message);
+      }
+    }
+  );
+
 const employeeEventSlice = createSlice({
     name: "employeeEvent",
     initialState: {
       createdEvent: null,
       employeeEvents: [],
+      count: 0,
       status: "idle",
       error: null,
     },
@@ -59,6 +72,11 @@ const employeeEventSlice = createSlice({
         .addCase(getEmployeeEventsByEmployeeId.fulfilled, (state, action) => {
             state.status = "succeeded";
             state.employeeEvents = action.payload;
+        })
+
+        .addCase(getEmployeeEventsByEventId.fulfilled, (state, action) => {
+          state.count = action.payload;
+          state.status = 'succeeded';
         })
     },
   });

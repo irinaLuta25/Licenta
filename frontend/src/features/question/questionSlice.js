@@ -27,9 +27,21 @@ export const getAllQuestions = createAsyncThunk(
   
   export const getQuestionsByEventId = createAsyncThunk(
     'questions/getByEventId',
-    async (id, { rejectWithValue }) => {
+    async (eventId, { rejectWithValue }) => {
       try {
-        const res = await axios.get(`/question/getAllQuestionsByEventId/${id}`);
+        const res = await axios.get(`/question/getAllQuestionsByEventId/${eventId}`);
+        return res.data;
+      } catch (err) {
+        return rejectWithValue(err.response?.data || err.message);
+      }
+    }
+  );
+
+  export const getQuestionsByTherapySessionId = createAsyncThunk(
+    'questions/getByTherapySessionId',
+    async (therapySessionId, { rejectWithValue }) => {
+      try {
+        const res = await axios.get(`/question/getAllQuestionsByTherapySessionId/${therapySessionId}`);
         return res.data;
       } catch (err) {
         return rejectWithValue(err.response?.data || err.message);
@@ -127,6 +139,11 @@ export const getAllQuestions = createAsyncThunk(
           state.list = action.payload;
           state.status = 'succeeded';
         })
+        .addCase(getQuestionsByTherapySessionId.fulfilled, (state, action) => {
+          state.list = action.payload;
+          state.status = 'succeeded';
+        })
+
         .addCase(getQuestionsBySpecialistId.fulfilled, (state, action) => {
           state.list = action.payload;
           state.status = 'succeeded';

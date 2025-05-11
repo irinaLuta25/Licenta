@@ -1,8 +1,6 @@
 .custom-calendar {
   width: 100% !important;
   min-height: 350px;
-
-
   background: linear-gradient(to bottom right, rgba(212, 204, 255, 0.7), rgba(199, 223, 255, 0.7), rgba(214, 230, 255, 0.7)) !important;
   backdrop-filter: blur(20px);
   border-radius: 1rem;

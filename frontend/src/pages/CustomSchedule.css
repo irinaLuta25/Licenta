@@ -2,7 +2,8 @@
   width: 100% !important;
   border: none;
   font-family: inherit;
-  background-color: #d9c2f0 !important;
+  backdrop-filter: blur(4px);
+  background:linear-gradient(145deg, #e2d9ff, #c3e0ff, #dee3ff);
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);

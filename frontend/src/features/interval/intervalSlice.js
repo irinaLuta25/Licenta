@@ -2,6 +2,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const createInterval = createAsyncThunk(
+  "interval/create",
+  async ({ date, beginTime, endTime, specialistId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/interval/create", {
+        date,
+        beginTime,
+        endTime,
+        status:false,
+        specialistId
+      });
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 export const updateIntervalStatus = createAsyncThunk(
   "interval/updateStatus",
   async ({ id, status }, { rejectWithValue }) => {
@@ -9,7 +27,7 @@ export const updateIntervalStatus = createAsyncThunk(
       const response = await axios.put(`/interval/updateIntervalStatus/${id}`, {
         status: status
       });
-      return response.data; 
+      return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -56,6 +74,10 @@ const intervalSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(createInterval.fulfilled, (state, action) => {
+        const interval = action.payload;
+        state.intervalsById[interval.id] = interval;
+      })
       .addCase(updateIntervalStatus.fulfilled, (state, action) => {
         const updatedInterval = action.payload;
         state.intervalsById[updatedInterval.id] = updatedInterval;

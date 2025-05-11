@@ -5,8 +5,9 @@ const questionController=require("../controllers").questionController;
 
 router.get("/getAll",questionController.getAllQuestions);
 router.get("/:id",questionController.getQuestionById);
-router.get("/getAllQuestionsByEventId/:id",questionController.getAllQuestionsByEventId);
-router.get("/getAllQuestionsBySpecialistId/:id",questionController.getAllQuestionsBySpecialistId);
+router.get("/getAllQuestionsByEventId/:eventId",questionController.getAllQuestionsByEventId);
+router.get("/getAllQuestionsByTherapySessionId/:therapySessionId",questionController.getAllQuestionsByTherapySessionId);
+router.get("/getAllQuestionsBySpecialistId/:specialistId",questionController.getAllQuestionsBySpecialistId);
 router.post("/create",questionController.createQuestionForEvent);
 router.post("/create",questionController.createQuestionForTherapySession);
 router.put("/update/:id",questionController.updateQuestion);

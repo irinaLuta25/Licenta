@@ -1,4 +1,6 @@
 const AnswerDb = require("../models").Answer;
+const EmployeeDb = require("../models").Employee;
+const UserDb = require("../models").User;
 
 const controller = {
     createAnswer: async (req, res) => {
@@ -72,8 +74,16 @@ const controller = {
         }
         try {
             const answers = await AnswerDb.findAll({
-                where: {questionId}
-            });
+                where: { questionId },
+                include: {
+                  model: EmployeeDb,
+                  include: {
+                    model: UserDb,
+                    attributes: ['firstName', 'lastName'],
+                  },
+                },
+              });
+            console.log("ANSWERS DIN BACK", answers)
             res.status(200).send(answers);
         } catch (err) {
             res.status(500).send(err.message);
@@ -81,13 +91,13 @@ const controller = {
     },
     
     getAllAnswersByEmployeeId: async (req, res) => {
-        const {questionId}=req.params;
-        if(!questionId) {
+        const {employeeId}=req.params;
+        if(!employeeId) {
             throw new Error("No ID provided");
         }
         try {
             const answers = await AnswerDb.findAll({
-                where: {questionId}
+                where: {employeeId}
             });
             res.status(200).send(answers);
         } catch (err) {

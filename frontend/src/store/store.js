@@ -8,6 +8,7 @@ import eventSlice from "../features/event/eventSlice"
 import employeeEventSlice from "../features/employeeEvent/employeeEventSlice"
 import userReducer from "../features/user/userSlice";
 import questionReducer from "../features/question/questionSlice"
+import answerReducer from "../features/answer/answerSlice"
 
 export const store = configureStore({
     reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
         event: eventSlice,
         employeeEvent: employeeEventSlice,
         user: userReducer,
-        question: questionReducer
+        question: questionReducer,
+        answer: answerReducer
     }
 })

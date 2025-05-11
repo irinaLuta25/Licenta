@@ -73,12 +73,31 @@ const controller = {
 
     getAllQuestionsByEventId: async (req, res) => {
         const {eventId}=req.params;
+        console.log("AAAAAAAA eventId: ",eventId)
+
         if(!eventId){
             throw new Error("No ID provided");
         }
         try {
             const questions = await QuestionDb.findAll({
                 where: {eventId}
+            });
+            res.status(200).send(questions);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+    
+    getAllQuestionsByTherapySessionId: async (req, res) => {
+        const {therapySessionId}=req.params;
+        console.log("AAAAAAAA thId: ",therapySessionId)
+
+        if(!therapySessionId){
+            throw new Error("No ID provided");
+        }
+        try {
+            const questions = await QuestionDb.findAll({
+                where: {therapySessionId}
             });
             res.status(200).send(questions);
         } catch (err) {
