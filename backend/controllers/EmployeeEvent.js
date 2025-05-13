@@ -1,11 +1,13 @@
 const EmployeeEventDb = require("../models").EmployeeEvent;
+const EventDb = require("../models").Event;
+const IntervalDb = require("../models").Interval;
 
 const controller = {
     createEmployeeEvent: async (req, res) => {
         try {
             const event = await EmployeeEventDb.create({
-                employeeId:req.body.employeeId,
-                eventId:req.body.eventId
+                employeeId: req.body.employeeId,
+                eventId: req.body.eventId
             });
             res.status(200).send(event);
         } catch (err) {
@@ -19,8 +21,8 @@ const controller = {
             if (!event) return res.status(400).send("Employee event not found");
 
             const updated = await event.update({
-                employeeId:req.body.employeeId,
-                eventId:req.body.eventId
+                employeeId: req.body.employeeId,
+                eventId: req.body.eventId
             });
             res.status(200).send(updated);
         } catch (err) {
@@ -61,13 +63,20 @@ const controller = {
     },
 
     getAllEmployeeEventsByEmployeeId: async (req, res) => {
-        const {employeeId}=req.params;
-        if(!employeeId){
+        const { employeeId } = req.params;
+        console.log("IDDDDDDDD", employeeId)
+        if (!employeeId) {
             throw new Error("No ID provided");
         }
         try {
             const events = await EmployeeEventDb.findAll({
-                where: {employeeId}
+                where: { employeeId },
+                include: [{
+                    model: EventDb,
+                    include: [{
+                        model: IntervalDb
+                    }]
+                }]
             });
             res.status(200).send(events);
         } catch (err) {
@@ -76,13 +85,13 @@ const controller = {
     },
 
     getAllEmployeeEventsByEventId: async (req, res) => {
-        const {eventId}=req.params;
-        if(!eventId){
+        const { eventId } = req.params;
+        if (!eventId) {
             throw new Error("No ID provided");
         }
         try {
             const events = await EmployeeEventDb.findAndCountAll({
-                where: {eventId}
+                where: { eventId }
             });
             res.status(200).send({ count: events.count });
         } catch (err) {

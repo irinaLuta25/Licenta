@@ -26,6 +26,21 @@ export const getAllTherapySessionsBySpecialistId = createAsyncThunk(
   }
 )
 
+export const getAllTherapySessionsByEmployeeId = createAsyncThunk(
+  'therapySessions/getAllTherapySessionsByEmployeeId',
+  async (employeeId, { rejectWithValue }) => {
+    try {
+      console.log(employeeId)
+      const response = await axios.get(`/therapySession/getAllTherapySessionsByEmployeeId/${employeeId}`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+)
+
+
+
 const therapySessionsSlice = createSlice({
   name: 'therapySessions',
   initialState: {
@@ -67,6 +82,19 @@ const therapySessionsSlice = createSlice({
         state.list = action.payload
       })
       .addCase(getAllTherapySessionsBySpecialistId.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload
+      })
+
+      .addCase(getAllTherapySessionsByEmployeeId.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(getAllTherapySessionsByEmployeeId.fulfilled, (state, action) => {
+        state.loading = false
+        state.list = action.payload
+      })
+      .addCase(getAllTherapySessionsByEmployeeId.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
       })

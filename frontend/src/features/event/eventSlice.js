@@ -25,6 +25,7 @@ export const getAllEventsByTargetDepartment = createAsyncThunk(
     }
 )
 
+
 export const getAllEventsBySpecialistId = createAsyncThunk(
     'event/getAllEventsBySpecialistId',
     async (specialistId, { rejectWithValue }) => {

@@ -71,13 +71,16 @@ const controller = {
 
     getAllTherapySessionsByEmployeeId: async (req, res) => {
         const {employeeId}=req.params;
+        console.log("employeeId",employeeId)
         if(!employeeId) {
             throw new Error("No ID provided");
         }
         try {
             const sessions = await TherapySessionDb.findAll({
-                where: {employeeId}
+                where: { employeeId },
+                include: [IntervalDb]
             });
+            console.log(sessions)
             res.status(200).send(sessions);
         } catch (err) {
             res.status(500).send(err.message);

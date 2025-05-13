@@ -70,6 +70,7 @@ const SpecialistCalendar = () => {
 
   if (events) {
     events.forEach(event => {
+      console.log(event?.interval?.date)
       if (!event?.interval?.date) return;
       const dateKey = format(new Date(event?.interval.date), 'yyyy-MM-dd');
       const begin = event.interval.beginTime.slice(0, 5);
@@ -97,7 +98,7 @@ const SpecialistCalendar = () => {
         time: `${begin}–${end}`
       });
     });
-  }
+  } 
 
   const handleDayClick = (date) => setSelectedDate(date);
   const getEventsForDate = (date) => realSchedule[format(date, 'yyyy-MM-dd')] || [];

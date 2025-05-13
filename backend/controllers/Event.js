@@ -168,6 +168,8 @@ const controller = {
         }
     },
 
+   
+
     getAllEventsByTargetDepartment: async (req, res) => {
         const department=req.params.department;
         if(!department) {
