@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import TherapistDetails from "./pages/Therapists/TherapistDetails";
 import Events from "./pages/Events";
 import EmployeeSchedule from "./pages/EmployeeSchedule";
+import FeedbackForm from "./pages/FeedbackForm";
 // import { useSelector } from "react-redux";
 
 
@@ -21,6 +22,8 @@ function MainEmployee() {
             <Route path="therapists/:id" element={<TherapistDetails />} />
             <Route path="events" element={<Events />} />
             <Route path="schedule" element={<EmployeeSchedule />} />
+            <Route path="schedule/event/:id" element={<FeedbackForm />} />
+            <Route path="schedule/therapySession/:id" element={<FeedbackForm />} />
             {/* <Route path="calendar" element={<CalendarEmployee />} />
             <Route path="profile" element={<Profile />} />
             <Route path="habits" element={<Habits />} />
