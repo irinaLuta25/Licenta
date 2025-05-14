@@ -1,6 +1,8 @@
 const EmployeeEventDb = require("../models").EmployeeEvent;
 const EventDb = require("../models").Event;
 const IntervalDb = require("../models").Interval;
+const SpecialistDb = require("../models").Specialist;
+const UserDb = require("../models").User;
 
 const controller = {
     createEmployeeEvent: async (req, res) => {
@@ -74,7 +76,13 @@ const controller = {
                 include: [{
                     model: EventDb,
                     include: [{
-                        model: IntervalDb
+                        model: IntervalDb,
+                        include: [{
+                            model: SpecialistDb,
+                            include: [{
+                                model: UserDb
+                            }]
+                        }]
                     }]
                 }]
             });

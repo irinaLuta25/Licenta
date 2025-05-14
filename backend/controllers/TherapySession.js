@@ -1,6 +1,7 @@
 const TherapySessionDb = require("../models").TherapySession;
 const IntervalDb = require("../models").Interval;
 const EmployeeDb = require('../models').Employee;
+const SpecialistDb = require("../models").Specialist;
 const UserDb = require('../models').User;
 
 const controller = {
@@ -11,8 +12,8 @@ const controller = {
                 locationType: req.body.locationType,
                 location: req.body.location || null,
                 notes: req.body.notes,
-                intervalId:req.body.intervalId,
-                employeeId:req.body.employeeId
+                intervalId: req.body.intervalId,
+                employeeId: req.body.employeeId
             });
             console.log(session)
             res.status(200).send(session);
@@ -70,29 +71,40 @@ const controller = {
     },
 
     getAllTherapySessionsByEmployeeId: async (req, res) => {
-        const {employeeId}=req.params;
-        console.log("employeeId",employeeId)
-        if(!employeeId) {
+        const { employeeId } = req.params;
+        console.log("employeeId", employeeId)
+        if (!employeeId) {
             throw new Error("No ID provided");
         }
         try {
             const sessions = await TherapySessionDb.findAll({
                 where: { employeeId },
-                include: [IntervalDb]
+                include: [
+                    {
+                        model: IntervalDb,
+                        include: [
+                            {
+                                model: SpecialistDb,
+                                include: [UserDb]
+                            }
+                        ]
+                    }
+                ]
             });
+
             console.log(sessions)
             res.status(200).send(sessions);
         } catch (err) {
             res.status(500).send(err.message);
         }
     },
-    
+
     getAllTherapySessionsBySpecialistId: async (req, res) => {
         const { specialistId } = req.params;
         if (!specialistId) {
             return res.status(400).send("No ID provided");
         }
-    
+
         try {
             const sessions = await TherapySessionDb.findAll({
                 include: [{
@@ -101,11 +113,11 @@ const controller = {
                 },
                 {
                     model: EmployeeDb,
-                    include: [{ model: UserDb}]
+                    include: [{ model: UserDb }]
                 }
-            ]
+                ]
             });
-    
+
             res.status(200).send(sessions);
         } catch (err) {
             res.status(500).send(err.message);
