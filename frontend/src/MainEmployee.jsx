@@ -6,6 +6,7 @@ import TherapistDetails from "./pages/Therapists/TherapistDetails";
 import Events from "./pages/Events";
 import EmployeeSchedule from "./pages/EmployeeSchedule";
 import FeedbackForm from "./pages/FeedbackForm";
+import CompatibilityForm from "./pages/CompatibilityForm";
 // import { useSelector } from "react-redux";
 
 
@@ -24,8 +25,8 @@ function MainEmployee() {
             <Route path="schedule" element={<EmployeeSchedule />} />
             <Route path="schedule/event/:id" element={<FeedbackForm />} />
             <Route path="schedule/therapySession/:id" element={<FeedbackForm />} />
-            {/* <Route path="calendar" element={<CalendarEmployee />} />
-            <Route path="profile" element={<Profile />} />
+            <Route path="therapists/compatibilityForm" element={<CompatibilityForm />} />
+            {/* <Route path="profile" element={<Profile />} />
             <Route path="habits" element={<Habits />} />
             {employee?.isManager && <Route path="reports" element={<Reports />} />} */}
         </Routes>

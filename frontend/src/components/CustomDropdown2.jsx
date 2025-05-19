@@ -22,7 +22,7 @@ import {
                 key={opt.value}
                 value={opt.value}
                 className={({ active }) =>
-                  `cursor-pointer select-none px-4 py-2 ${
+                  `cursor-pointer select-none px-4 py-1 ${
                     active ? "bg-indigo-100 text-indigo-700" : ""
                   }`
                 }
