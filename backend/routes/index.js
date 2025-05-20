@@ -19,6 +19,7 @@ const specialistSpecializationRouter=require("./SpecialistSpecialization");
 const specializationRouter=require("./Specialization");
 const therapySessionRouter=require("./TherapySession");
 const userRouter=require("./User");
+const recommendationRouter=require("./recommendation");
 
 router.use("/answer",answerRouter);
 router.use("/emotionalState",emotionalStateRouter);
@@ -39,5 +40,6 @@ router.use("/specialization",specializationRouter);
 router.use("/specialist",therapySessionRouter);
 router.use("/therapySession",therapySessionRouter);
 router.use("/user",userRouter);
+router.use("/recommendation",recommendationRouter);
 
 module.exports=router;

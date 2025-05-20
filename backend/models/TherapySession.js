@@ -2,22 +2,21 @@ const TherapySessionModel = (sequelize, DataTypes) => {
     const therapySession = sequelize.define("therapy_session", {
         id: {
             type: DataTypes.BIGINT,
-            primaryKey:true,
-            autoIncrement:true
-        },
-        locationType: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        location: {
-            type: DataTypes.STRING,
-            allowNull: true
+            primaryKey: true,
+            autoIncrement: true
         },
         notes: {
             type: DataTypes.TEXT,
-            allowNull: false
-            // de schimbat in true
+            allowNull: true
         },
+        satisfactionScore: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            validate: {
+                min: 1,
+                max: 5
+            }
+        }
     }, {
         underscored: true,
         freezeTableName: true

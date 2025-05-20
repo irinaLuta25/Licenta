@@ -7,10 +7,8 @@ const UserDb = require('../models').User;
 const controller = {
     createTherapySession: async (req, res) => {
         try {
-            console.log("BODY PRIMIT LA BACKEND:", req.body);
             const session = await TherapySessionDb.create({
-                locationType: req.body.locationType,
-                location: req.body.location || null,
+                satisfactionScore: req.body.satisfactionScore,
                 notes: req.body.notes,
                 intervalId: req.body.intervalId,
                 employeeId: req.body.employeeId
@@ -24,13 +22,15 @@ const controller = {
 
     updateTherapySession: async (req, res) => {
         try {
+            console.log("ID primit:", req.params.id);
+console.log("Body primit:", req.body);
+
             const session = await TherapySessionDb.findByPk(req.params.id);
             if (!session) return res.status(400).send("Therapy session not found");
 
             const updated = await session.update({
-                locationType: req.body.locationType,
-                location: req.body.location,
-                notes: req.body.notes
+                satisfactionScore: req.body.satisfactionScore,
+                notes: req.body.notes,
             });
             res.status(200).send(updated);
         } catch (err) {

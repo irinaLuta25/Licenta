@@ -28,6 +28,7 @@ function Navbar() {
     );
   } else {
     navLinks.push(
+      { label: "Home", path: `${basePath}/home` },
       { label: "Therapists", path: `${basePath}/therapists` },
       { label: "Events", path: `${basePath}/events` },
       { label: "My Schedule", path: `${basePath}/schedule` },

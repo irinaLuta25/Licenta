@@ -2,6 +2,14 @@
 /backend/.env
 /backend/config/mindcare-f5693-firebase-adminsdk-fbsvc-ffb383397d.json
 
+# ML
+/backend/ML/model.joblib
+/backend/ML/export-ml.csv
+/backend/ML/__pycache__/
+/backend/ML/*.pyc
+/backend/ML/*.pyo
+/backend/ML/*.pyd
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies

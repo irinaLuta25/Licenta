@@ -313,19 +313,10 @@ function TherapistDetails() {
                                 className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
                                 onClick={async() => {
                                     if (selectedInterval && therapist && employee?.id) {
-                                        console.log({
-                                            locationType: "online",
-                                            intervalId: selectedInterval.id,
-                                            specialistId: therapist.id,
-                                            notes: "nimic",
-                                            employeeId: employee.id
-                                        })
                                         await dispatch(
                                             createTherapySession({
-                                                locationType: "online",
                                                 intervalId: selectedInterval.id,
                                                 specialistId: therapist.id,
-                                                notes: "nimic",
                                                 employeeId: employee.id
                                             })
 

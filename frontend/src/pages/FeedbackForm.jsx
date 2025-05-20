@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import CustomDropdown2 from "../components/CustomDropdown2";
 import { getQuestionsByTherapySessionId, getQuestionsByEventId } from "../features/question/questionSlice";
 import { getEmployeeByUserId } from "../features/employee/employeeSlice";
 import { createAnswer } from "../features/answer/answerSlice";
+import { updateTherapySession } from "../features/therapySessions/therapySessionsSlice";
 import { toast } from "react-toastify";
 
 const FeedbackForm = () => {
@@ -21,6 +22,7 @@ const FeedbackForm = () => {
 
     const [answers, setAnswers] = useState({});
     const [isAnonymous, setIsAnonymous] = useState(false);
+    const [satisfactionScore, setSatisfactionScore] = useState(3);
 
     useEffect(() => {
         if (id) {
@@ -62,6 +64,19 @@ const FeedbackForm = () => {
                     ).unwrap();
                 }
             }
+            console.log("isTherapy este:", isTherapy);
+            if (isTherapy) {
+                console.log("Trimitem update:", {
+                    therapySessionId: id,
+                    updates: { satisfactionScore }
+                });
+                await dispatch(updateTherapySession({
+                    therapySessionId: id,
+                    updates: {
+                        satisfactionScore
+                    }
+                })).unwrap();
+            }
 
             toast.success("Feedback submitted successfully!");
             navigate(-1);
@@ -70,6 +85,11 @@ const FeedbackForm = () => {
             toast.error("Failed to submit feedback.");
         }
     };
+
+    const satisfactionOptions = [1, 2, 3, 4, 5].map((score) => ({
+        value: score,
+        label: `${score} – ${["Very Poor", "Poor", "Average", "Good", "Excellent"][score - 1]}`
+    }));
 
     return (
         <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
@@ -115,6 +135,17 @@ const FeedbackForm = () => {
                                     />
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                                 </label>
+                            </div>
+
+                            <div className="flex flex-col">
+                                <label className="text-md font-medium text-black mb-2">
+                                    How satisfied were you with this session?
+                                </label>
+                                <CustomDropdown2
+                                    value={satisfactionScore}
+                                    onChange={setSatisfactionScore}
+                                    options={satisfactionOptions}
+                                />
                             </div>
 
                             <button

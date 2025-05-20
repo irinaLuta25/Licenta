@@ -1,15 +1,53 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import CustomDropdown2 from "../components/CustomDropdown2";
+import { fetchRecommendations } from '../features/recommendation/recommendationSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { getEmployeeByUserId } from "../features/employee/employeeSlice";
+
 
 // plan:
 // - vezi word intrebari
 // - se da update la employee cu raspunsurile la intrebari
-// 
+// - se da update la therapySession pt satisfactionScore
+// - dispare formular, apar recomandarile cele 3 cu procentele si un text sugestiv
 
 
 function CompatibilityForm() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const user = useSelector((state) => state.auth.user);
+    const employee = useSelector((state) => state.employee.employee);
+    const recommendations = useSelector(state => state.recommendation);
+
+    console.log("user: ", user);
+    console.log("employee: ", employee);
+    console.log(recommendations);
+
+    if (recommendations.data) {
+
+        const scoresWithPercentage = recommendations.data.map(r => ({
+            specialistId: r.specialistId,
+            score: r.score,
+            compatibility: Math.round((r.score / 5) * 100)
+        }));
+
+        console.log(scoresWithPercentage);
+    }
+
+
+
+    useEffect(() => {
+        dispatch(getEmployeeByUserId(user?.id))
+    }, [dispatch, user?.id]);
+
+    useEffect(() => {
+        if (employee?.id) {
+            dispatch(fetchRecommendations(employee.id));
+        }
+    }, [dispatch, employee?.id]);
+
     const [form, setForm] = useState({
         preferredGender: "",
         preferredMinAge: "",
@@ -38,22 +76,23 @@ function CompatibilityForm() {
     };
 
     const genderOptions = [
-        { label: "No preference", value: "" },
-        { label: "Female", value: "Female" },
-        { label: "Male", value: "Male" },
-        { label: "Other", value: "Other" }
+        { label: "Nicio preferinta", value: "" },
+        { label: "Feminin", value: "feminin" },
+        { label: "Masculin", value: "masculin" },
+        { label: "AlLtul", value: "altul" }
     ];
 
     const formationOptions = [
-        { label: "No preference", value: "" },
+        { label: "Nicio preferinta", value: "" },
         { label: "CBT", value: "CBT" },
-        { label: "Gestalt", value: "Gestalt" },
-        { label: "Psychodynamic", value: "Psychodynamic" },
-        { label: "Integrative", value: "Integrative" }
+        { label: "Psihanaliza", value: "Psihanaliza" },
+        { label: "Sistemica", value: "Sistemica" },
+        { label: "Experientiala", value: "Experientiala" }
     ];
 
+    // de schimbat candva si integrat in ML - doar daca fac sa poata avea o singura specializare
     const specializationOptions = [
-        { label: "No preference", value: "" },
+        { label: "Nicio preferinta", value: "" },
         { label: "Anxiety", value: "Anxiety" },
         { label: "Depression", value: "Depression" },
         { label: "Trauma", value: "Trauma" },
@@ -61,11 +100,12 @@ function CompatibilityForm() {
     ];
 
     const therapyStyleOptions = [
-        { label: "No preference", value: "" },
-        { label: "Supportive", value: "Supportive" },
-        { label: "Directive", value: "Directive" },
-        { label: "Exploratory", value: "Exploratory" },
-        { label: "Coaching-style", value: "Coaching-style" }
+        { label: "Nicio preferinta", value: "" },
+        { label: "Directiv", value: "Directiv" },
+        { label: "Non-Directiv", value: "Non-Directiv" },
+        { label: "Empatic", value: "Empatic" },
+        { label: "Explorator", value: "Explorator" },
+        { label: "Orientat pe obiective", value: "Orientat pe obiective" }
     ];
 
     return (
@@ -81,16 +121,16 @@ function CompatibilityForm() {
                     onSubmit={handleSubmit}
                     className="bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-xl hover:shadow-2xl border border-indigo-300/30 drop-shadow-lg rounded-2xl p-8 w-full max-w-xl"
                 >
-                    <h2 className="text-center text-2xl font-bold text-indigo-800 mb-6">Let us find compatible therapists for you!</h2>
+                    <h2 className="text-center text-2xl font-bold text-indigo-800 mb-6">Haide să găsim terapeutul potrivit pentru tine!</h2>
 
-                    <label className="block mb-2 font-semibold text-indigo-800">Preferred Gender</label>
+                    <label className="block mb-2 font-semibold text-indigo-800">Preferință gen</label>
                     <CustomDropdown2
                         value={form.preferredGender}
                         onChange={(val) => setForm({ ...form, preferredGender: val })}
                         options={genderOptions}
                     />
 
-                    <label className="block mt-6 mb-2 font-semibold text-indigo-800">Preferred Age Range</label>
+                    <label className="block mt-6 mb-2 font-semibold text-indigo-800">Preferință vârstă</label>
                     <div className="flex gap-4 mb-4">
                         <input
                             type="number"
@@ -112,21 +152,21 @@ function CompatibilityForm() {
                         />
                     </div>
 
-                    <label className="block mb-2 font-semibold text-indigo-800">Preferred Formation</label>
+                    <label className="block mb-2 font-semibold text-indigo-800">Preferință formare</label>
                     <CustomDropdown2
                         value={form.preferredFormation}
                         onChange={(val) => setForm({ ...form, preferredFormation: val })}
                         options={formationOptions}
                     />
 
-                    <label className="block mt-6 mb-2 font-semibold text-indigo-800">Preferred Specialization</label>
+                    <label className="block mt-6 mb-2 font-semibold text-indigo-800">Preferință specializare</label>
                     <CustomDropdown2
                         value={form.preferredSpecialization}
                         onChange={(val) => setForm({ ...form, preferredSpecialization: val })}
                         options={specializationOptions}
                     />
 
-                    <label className="block mt-6 mb-2 font-semibold text-indigo-800">Preferred Therapy Style</label>
+                    <label className="block mt-6 mb-2 font-semibold text-indigo-800">Preferință stil terapeutic</label>
                     <CustomDropdown2
                         value={form.preferredTherapyStyle}
                         onChange={(val) => setForm({ ...form, preferredTherapyStyle: val })}
@@ -137,7 +177,7 @@ function CompatibilityForm() {
                         type="submit"
                         className="w-full mt-8 bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2 px-4 rounded"
                     >
-                        Submit Preferences
+                        Trimite
                     </button>
                 </form>
             </div>
