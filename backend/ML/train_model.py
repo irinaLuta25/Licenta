@@ -10,6 +10,14 @@ import os
 csv_path = os.path.join(os.path.dirname(__file__), 'export-ml.csv')
 df = pd.read_csv(csv_path)
 
+df = df[
+    ((df["preferredFormation"] == df["formation"]) | (df["preferredFormation"] == "")) &
+    ((df["preferredGender"] == df["specialistGender"]) | (df["preferredGender"] == "")) &
+    ((df["preferredTherapyStyle"] == df["therapyStyle"]) | (df["preferredTherapyStyle"] == "")) &
+    (df["specialistAge"] >= df["preferredMinAge"]) &
+    (df["specialistAge"] <= df["preferredMaxAge"])
+]
+
 categorical_features = [
     'employeeDepartment',
     'preferredGender',

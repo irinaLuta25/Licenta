@@ -5,6 +5,7 @@ import { getAllTherapists } from "../../features/therapists/therapistsSlice";
 import TherapistCard from "../../components/TherapistCard/TherapistCard";
 import Navbar from "../../components/Navbar";
 import CustomDropdown1 from "../../components/CustomDropdown1";
+import { useLocation } from "react-router-dom";
 
 
 const sortOptions = [
@@ -32,6 +33,8 @@ function Therapists() {
 
     const dispatch = useDispatch();
     const navigate=useNavigate();
+    const location = useLocation();
+
 
     const therapists = useSelector((state) => state.therapists.list);
     const status = useSelector((state) => state.therapists.status);
@@ -108,7 +111,7 @@ function Therapists() {
                     {/* Compatibility */}
                     <button
                         onClick={() => navigate("compatibilityForm")}
-                        className="bg-gradient-to-r from-[#4f46e5] via-[#7c3aed] to-[#ec4899] text-white shadow-md hover:brightness-110 hover:scale-105 font-semibold px-4 py-2 rounded-md transition-all duration-200 flex items-center gap-2"
+                        className="bg-gradient-to-r from-[#4f46e5] via-[#7c3aed] to-[#ec4899] text-white shadow-md hover:brightness-110 hover:scale-105 font-semibold px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
                     >
                         <span>✨</span>
                         Compatibility Search
@@ -116,7 +119,7 @@ function Therapists() {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
                     {filteredAndSortedTherapists.map((therapist) => (
                         <TherapistCard key={therapist.id} therapist={therapist} />
                     ))}

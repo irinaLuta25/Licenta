@@ -105,7 +105,7 @@ function TherapistDetails() {
 
             <div className="bg-indigo-700 text-white px-6 py-3 pb-4 flex justify-between items-center shadow-md">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate("/employee/therapists")}
                     className="text-2xl font-bold hover:underline"
                 >
                     ← Back

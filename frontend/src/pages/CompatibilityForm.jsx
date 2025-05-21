@@ -6,11 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { getEmployeeByUserId, updateEmployee } from "../features/employee/employeeSlice";
 import { getTherapistById } from "../features/therapists/therapistsSlice";
 import TherapistCard from "../components/TherapistCard/TherapistCard";
-
+import CalculatingAnimation from "../components/CalculatingAnimation";
 
 function CompatibilityForm() {
     const [showResults, setShowResults] = useState(false);
     const [therapistCards, setTherapistCards] = useState([]);
+    const [isLoadingRecommendations, setIsLoadingRecommendations] = useState(false);
+
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -24,39 +26,8 @@ function CompatibilityForm() {
     console.log(recommendations);
 
     useEffect(() => {
-        if (recommendations.data && recommendations.data.length > 0) {
-
-            const scoresWithPercentage = recommendations.data.map(r => ({
-                specialistId: r.specialistId,
-                score: r.score,
-                compatibility: Math.round((r.score / 5) * 100)
-            }));
-
-            console.log(scoresWithPercentage);
-
-            Promise.all(
-                scoresWithPercentage.map(async ({ specialistId, compatibility }) => {
-                    const res = await dispatch(getTherapistById(specialistId)).unwrap();
-                    return {
-                        therapist: res,
-                        compatibility
-                    };
-                })
-            ).then(setTherapistCards);
-
-        }
-    }, [dispatch, recommendations.data]);
-
-
-    useEffect(() => {
         dispatch(getEmployeeByUserId(user?.id))
     }, [dispatch, user?.id]);
-
-    useEffect(() => {
-        if (employee?.id) {
-            dispatch(fetchRecommendations(employee.id));
-        }
-    }, [dispatch, employee?.id]);
 
     const [form, setForm] = useState({
         preferredGender: "",
@@ -71,10 +42,9 @@ function CompatibilityForm() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // update employee
         const updatedEmployee = {
             userId: employee.userId,
             hireDate: employee.hireDate,
@@ -87,26 +57,52 @@ function CompatibilityForm() {
             preferredFormation: form.preferredFormation,
             preferredSpecialization: form.preferredSpecialization,
             preferredTherapyStyle: form.preferredTherapyStyle,
+        };
+
+        try {
+            setShowResults(false);
+            setIsLoadingRecommendations(true);
+
+            await dispatch(updateEmployee({ id: employee.id, employee: updatedEmployee })).unwrap();
+
+            const response = await dispatch(fetchRecommendations(employee.id)).unwrap();
+
+            const scoresWithPercentage = response.map(r => ({
+                specialistId: r.specialistId,
+                score: r.score,
+                compatibility: Math.round((r.score / 5) * 100)
+            }));
+
+            const therapists = await Promise.all(
+                scoresWithPercentage.map(async ({ specialistId, compatibility }) => {
+                    const res = await dispatch(getTherapistById(specialistId)).unwrap();
+                    return {
+                        therapist: res,
+                        compatibility
+                    };
+                })
+            );
+
+            setTherapistCards(therapists);
+
+            setTimeout(() => {
+                setIsLoadingRecommendations(false);
+                setShowResults(true);
+            }, 2500);
+
+        } catch (err) {
+            console.error("🔥 Eroare în handleSubmit:", err);
+            setIsLoadingRecommendations(false);
         }
-
-        console.log("user id:", employee.userId)
-        dispatch(updateEmployee({ id: employee.id, employee: updatedEmployee }));
-
-        // apar cartonase
-        setShowResults(true);
-        console.log(showResults);
-
-
-        console.log("Form submitted:", form);
-        // !!          to do: ceva animatie chestie inainte sa apara terapeutii care sa apara cateva secunde ceva gen se cauta lalala
-        //                  stilizeaza procente si titlu 
     };
+
+
 
     const genderOptions = [
         { label: "Nicio preferinta", value: "" },
         { label: "Feminin", value: "feminin" },
         { label: "Masculin", value: "masculin" },
-        { label: "AlLtul", value: "altul" }
+        { label: "Altul", value: "altul" }
     ];
 
     const formationOptions = [
@@ -143,7 +139,7 @@ function CompatibilityForm() {
                 </button>
             </div>
 
-            {!showResults &&
+            {!showResults && !isLoadingRecommendations &&
                 <div className="flex justify-center items-center mt-10">
                     <form
                         onSubmit={handleSubmit}
@@ -211,32 +207,57 @@ function CompatibilityForm() {
                 </div>
             }
 
-            {showResults &&
+            {isLoadingRecommendations && (
+
+                <CalculatingAnimation
+                    duration={4000}
+                    onComplete={() => {
+
+                    }}
+                />
+
+            )}
+
+
+            {!isLoadingRecommendations && showResults &&
                 <div className="flex flex-col gap-4">
-                    <h2 className="text-center text-2xl font-bold text-indigo-800 mt-6">Iata cei 3 terapeuti</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-9 px-10 mt-10">
+                    <h1
+                        className="mt-12  text-center text-5xl font-extrabold bg-gradient-to-r from-[#ec4899] via-[#7c3aed] to-[#4f46e5] text-transparent bg-clip-text leading-tight"
+                        style={{
+                            textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
+                            fontFamily: "'Poppins', sans-serif"
+                        }}
+                    >
+                        Iată terapeuții recomandați pentru tine!
+                    </h1>
+
+                    <div className="flex flex-wrap justify-center gap-14 px-10 mt-10">
                         {therapistCards.map(({ therapist, compatibility }) => (
-                            <div key={therapist.id} className="flex flex-col items-center">
+                            <div
+                                key={therapist.id}
+                                className="w-[450px] flex flex-col items-center"
+                            >
                                 <TherapistCard therapist={therapist} />
 
                                 <div className="w-4/5 mt-10 flex flex-col items-center">
-                                {/* proc pe bara! + border, poate gradient cu indigo sau alte culori */}
-                                {/* back de pe details tre sa ma intoarca la formular fara sa dispara terapeutii */}
-                                {/* daca apasa programeaza te pe details => intoarcere in therapists */}
-                                    <div className="w-48 bg-indigo-200 rounded-xl h-8">
+                                    <div className="relative w-48 h-8 rounded-xl bg-gray-200 border border-[#ec4899] overflow-hidden">
                                         <div
-                                            className={`h-8 rounded-xl transition-all duration-700 bg-indigo-700`}
+                                            className="absolute top-0 left-0 h-full rounded-xl bg-gradient-to-r from-[#4f46e5] via-[#7c3aed] to-[#ec4899] transition-all duration-700"
                                             style={{ width: `${compatibility}%` }}
                                         ></div>
+                                        <div className="absolute w-full h-full flex items-center justify-center z-10">
+                                            <span className="text-white font-semibold text-sm drop-shadow-sm">
+                                                {compatibility}%
+                                            </span>
+                                        </div>
                                     </div>
-                                    <p className="text-center text-sm mt-1 font-semibold text-indigo-900">
-                                        Compatibilitate: {compatibility}%
-                                    </p>
                                 </div>
                             </div>
                         ))}
-
                     </div>
+
+                    {/* to do: back de pe details tre sa ma intoarca la formular fara sa dispara terapeutii */}
+
                 </div>
 
             }

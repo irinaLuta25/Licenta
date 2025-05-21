@@ -1,46 +1,62 @@
+import sys
+import json
 import pandas as pd
 import joblib
-import os
-import json
 
-current_dir = os.path.dirname(__file__)
-model_path = os.path.join(current_dir, "model.joblib")
-model = joblib.load(model_path)
+model = joblib.load("ML/model.joblib")
 
-csv_path = os.path.join(current_dir, "export-ml.csv")
-df = pd.read_csv(csv_path)
+if len(sys.argv) < 2:
+    print(json.dumps({"error": "Missing payload"}))
+    exit(1)
 
-target_employee_id = 23
+try:
+    payload_json = sys.argv[1].replace('\\"', '"')
+    data = json.loads(payload_json)
+except Exception as e:
+    print(json.dumps({"error": "Invalid JSON", "details": str(e)}))
+    exit(1)
 
-employee_data = df[df["employeeId"] == target_employee_id].iloc[0]
+employee = data["employee"]
+specialists = data["specialists"]
 
-specialist_ids = df["specialistId"].unique()
-recommendation_data = []
+recommendations = []
 
-for spec_id in specialist_ids:
-    specialist_row = df[df["specialistId"] == spec_id].iloc[0]
+for specialist in specialists:
+    if (
+        employee["preferredGender"] and specialist["gender"] != employee["preferredGender"]
+    ) or (
+        employee["preferredFormation"] and specialist["formation"] != employee["preferredFormation"]
+    ) or (
+        employee["preferredTherapyStyle"] and specialist["therapyStyle"] != employee["preferredTherapyStyle"]
+    ) or (
+        employee["preferredMinAge"] and specialist["age"] < employee["preferredMinAge"]
+    ) or (
+        employee["preferredMaxAge"] and specialist["age"] > employee["preferredMaxAge"]
+    ):
+        continue  
 
     row = {
-        "employeeDepartment": employee_data["employeeDepartment"],
-        "preferredGender": employee_data["preferredGender"],
-        "preferredTherapyStyle": employee_data["preferredTherapyStyle"],
-        "preferredFormation": employee_data["preferredFormation"],
-        "specialistGender": specialist_row["specialistGender"],
-        "formation": specialist_row["formation"],
-        "therapyStyle": specialist_row["therapyStyle"],
-        "preferredMinAge": employee_data["preferredMinAge"],
-        "preferredMaxAge": employee_data["preferredMaxAge"],
-        "specialistAge": specialist_row["specialistAge"]
+        "employeeDepartment": employee["department"],
+        "preferredGender": employee["preferredGender"],
+        "preferredTherapyStyle": employee["preferredTherapyStyle"],
+        "preferredFormation": employee["preferredFormation"],
+        "preferredMinAge": employee["preferredMinAge"],
+        "preferredMaxAge": employee["preferredMaxAge"],
+        "specialistGender": specialist["gender"],
+        "formation": specialist["formation"],
+        "therapyStyle": specialist["therapyStyle"],
+        "specialistAge": specialist["age"]
     }
 
-    row_df = pd.DataFrame([row])
-    predicted_score = model.predict(row_df)[0]
-    recommendation_data.append((spec_id, predicted_score))
+    df = pd.DataFrame([row])
+    score = model.predict(df)[0]
+    recommendations.append((specialist["id"], float(round(score, 2))))
 
-recommendation_data.sort(key=lambda x: x[1], reverse=True)
+recommendations.sort(key=lambda x: x[1], reverse=True)
 
-result_json = json.dumps([
-    {"specialistId": int(spec_id), "score": float(round(score, 2))}
-    for spec_id, score in recommendation_data[:3]
-])
-print(result_json)
+result = [
+    {"specialistId": spec_id, "score": score}
+    for spec_id, score in recommendations[:3]
+]
+
+print(json.dumps(result))
