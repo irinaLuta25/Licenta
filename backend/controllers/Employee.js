@@ -25,7 +25,7 @@ const controller = {
     },
 
     updateEmployee: async (req, res) => {
-        const employeeId = req.params.id;
+        const id = req.params.id;
         const payload = {
             userId:req.body.userId,
             hireDate: req.body.hireDate,
@@ -41,7 +41,7 @@ const controller = {
         };
 
         try {
-            const employee = EmployeeDb.findByPk(employeeId);
+            const employee = await EmployeeDb.findByPk(id);
             if (!employee) {
                 return res.status(400).send("Employee not found");
             }
