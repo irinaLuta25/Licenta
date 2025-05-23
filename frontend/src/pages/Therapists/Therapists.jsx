@@ -119,7 +119,7 @@ function Therapists() {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16 pb-10">
                     {filteredAndSortedTherapists.map((therapist) => (
                         <TherapistCard key={therapist.id} therapist={therapist} />
                     ))}

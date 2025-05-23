@@ -52,8 +52,8 @@ function CompatibilityForm() {
             isManager: employee.isManager,
             department: employee.department,
             preferredGender: form.preferredGender,
-            preferredMinAge: form.preferredMinAge,
-            preferredMaxAge: form.preferredMaxAge,
+            preferredMinAge: form.preferredMinAge || null,
+            preferredMaxAge: form.preferredMaxAge || null,
             preferredFormation: form.preferredFormation,
             preferredSpecialization: form.preferredSpecialization,
             preferredTherapyStyle: form.preferredTherapyStyle,
@@ -88,10 +88,10 @@ function CompatibilityForm() {
             setTimeout(() => {
                 setIsLoadingRecommendations(false);
                 setShowResults(true);
-            }, 2500);
+            }, 1000);
 
         } catch (err) {
-            console.error("🔥 Eroare în handleSubmit:", err);
+            console.error("Eroare in handleSubmit:", err);
             setIsLoadingRecommendations(false);
         }
     };
