@@ -8,13 +8,13 @@ const CustomCarousel = () => {
     const [active, setActive] = useState(3);
 
     const slides = [
-        { icon: <FaSmileBeam size={48} color="#6486f1" />, title: "86% mai puțin stres", text: "Utilizatorii noștri au raportat o reducere semnificativă a stresului." },
-        { icon: <FaUserMd size={48} color="#10b981" />, title: "+120 sesiuni lunare", text: "Terapeuții sunt activi și disponibili să te sprijine oricând." },
-        { icon: <FaChartLine size={48} color="#f59e0b" />, title: "Progres vizibil", text: "Obiceiurile tale sănătoase sunt înregistrate și analizate automat." },
-        { icon: <FaCalendarCheck size={48} color="#3b82f6" />, title: "Programări ușoare", text: "Alege rapid intervalul care ți se potrivește cel mai bine." },
-        { icon: <FaBrain size={48} color="#8b5cf6" />, title: "Focus mental îmbunătățit", text: "Activitățile din aplicație susțin echilibrul tău emoțional." },
-        { icon: <FaHeartbeat size={48} color="#ef4444" />, title: "Stare de bine crescută", text: "Starea generală de sănătate este influențată pozitiv." },
-        { icon: <FaHandsHelping size={48} color="#14b8a6" />, title: "Sprijin constant", text: "Ai parte de susținere în orice moment ai nevoie." },
+        { icon: <FaSmileBeam size={64} color="#6646f1" />, title: "86% mai puțin stres", text: "Utilizatorii noștri au raportat o reducere semnificativă a stresului." },
+        { icon: <FaUserMd size={64} color="#10b981" />, title: "+120 sesiuni lunare", text: "Terapeuții sunt activi și disponibili să te sprijine oricând." },
+        { icon: <FaChartLine size={64} color="#f59e0b" />, title: "Progres vizibil", text: "Obiceiurile tale sănătoase sunt înregistrate și analizate automat." },
+        { icon: <FaCalendarCheck size={64} color="#3b82f6" />, title: "Programări ușoare", text: "Alege rapid intervalul care ți se potrivește cel mai bine." },
+        { icon: <FaBrain size={64} color="#8b5cf6" />, title: "Focus mental îmbunătățit", text: "Activitățile din aplicație susțin echilibrul tău emoțional." },
+        { icon: <FaHeartbeat size={64} color="#ef4444" />, title: "Stare de bine crescută", text: "Starea generală de sănătate este influențată pozitiv." },
+        { icon: <FaHandsHelping size={64} color="#14b8a6" />, title: "Sprijin constant", text: "Ai parte de susținere în orice moment ai nevoie." },
     ];
 
     const getIndex = (index) => {
@@ -75,8 +75,8 @@ const CustomCarousel = () => {
                 >
                     <div className="item-content">
                         <div className="icon" style={{ marginBottom: "10px" }}>{slide.icon}</div>
-                        <h1 style={{ fontSize: "1.1rem", fontWeight: "bold", marginBottom: "8px", color: "#1e3a8a" }}>{slide.title}</h1>
-                        <p style={{ fontSize: "0.9rem", color: "#4b5563", textAlign: "center" }}>{slide.text}</p>
+                        <h1 style={{ fontSize: "1.4rem", fontWeight: "bold", marginBottom: "8px", color: "#1e3a8a" }}>{slide.title}</h1>
+                        <p style={{ fontSize: "1rem", color: "#4b5563", textAlign: "center" }}>{slide.text}</p>
                     </div>
                 </div>
             ))}

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useRef } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import { FaBrain, FaCalendarCheck } from "react-icons/fa";
@@ -7,56 +8,93 @@ import { FaCheckCircle, FaBullseye, FaUserMd, FaChartLine, FaCalendarAlt, FaComm
 import StepsSection from "../components/StepsSection";
 import CustomCarousel from "../components/CustomCarousel/CustomCarousel";
 import { useNavigate } from "react-router-dom";
+import HeroSection from "../components/HeroSection/HeroSection";
 
 
 function HomepageEmployee() {
     const navigate = useNavigate();
+    const howItWorksRef = useRef(null);
 
     return (
-        <div className="pt-24 px-8 sm:px-16 bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800">
+        <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800">
             <Navbar />
 
             <div className="flex flex-col">
                 {/* Hero Section */}
-                <motion.section
-                    className="max-w-7xl mx-auto mt-12 flex flex-col lg:flex-row items-center justify-between gap-12 mb-10"
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                >
-                    {/* Text Section */}
-                    <div className="flex flex-col gap-4 flex-1 text-center lg:text-left">
-                        <TextAnimation
-                            text="Bine ai venit! Grija față de tine începe aici."
-                            className="text-5xl font-bold leading-none tracking-normal text-indigo-900 mb-4"
-                        />
-                        <p className="text-lg text-gray-700 mb-6">
-                            Descoperă un spațiu dedicat stării tale de bine în mediul de lucru.
-                        </p>
-                        <blockquote className="italic text-indigo-800 mb-8">
-                            “A avea grijă de tine nu este egoism — este responsabilitate.”
-                        </blockquote>
-                        <motion.button
-                            className="w-64 bg-orange-500 text-white px-6 py-3 rounded-xl text-lg shadow-md hover:bg-orange-600 transition"
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            Explorează beneficiile
-                        </motion.button>
-                    </div>
+                <HeroSection onExploreClick={() => {
+                    howItWorksRef.current?.scrollIntoView({ behavior: "smooth" });
+                }} />
 
-                    {/* Image Section */}
-                    <div className="flex-2">
-                        <img
-                            src="/assets/hero_img.png"
-                            alt="MindCare Illustration"
-                            className="w-full max-w-md mx-auto lg:mx-0 rounded-xl"
-                        />
+
+                {/* Mental Health awareness */}
+                <section
+                    className="mt-20 py-16 bg-gradient-to-r from-[#dbeafe] via-[#e0f2fe] to-[#f0fdf4] text-center px-4"
+                >
+                    <motion.h2
+                        className="text-3xl font-bold text-indigo-900 mb-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                    >
+                        Sănătatea mintală contează mai mult decât crezi.
+                    </motion.h2>
+
+                    <motion.p
+                        className="text-gray-700 mb-12 mt-10 max-w-2xl mx-auto leading-relaxed text-lg"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                    >
+                        Starea ta emoțională influențează totul — de la relații și productivitate până la calitatea somnului. Acordă-ți timp. Ai dreptul să te simți bine, nu doar să funcționezi.
+                    </motion.p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        {[
+                            {
+                                icon: "🧠",
+                                title: "Conștientizare emoțională",
+                                text: "Învață să-ți recunoști stările interioare. Echilibrul începe cu înțelegerea propriilor emoții.",
+                            },
+                            {
+                                icon: "💬",
+                                title: "Comunicare autentică",
+                                text: "Vorbește deschis despre cum te simți. Dialogul sincer este primul pas către susținere.",
+                            },
+                            {
+                                icon: "🌿",
+                                title: "Pauze și echilibru",
+                                text: "Nu trebuie să fii productiv non-stop. Odihna și claritatea mentală merg mână în mână.",
+                            },
+                        ].map((card, index) => (
+                            <motion.div
+                                key={index}
+                                className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition transform hover:-translate-y-1"
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, delay: 0.6 + index * 0.2 }}
+                                viewport={{ once: true, amount: 0.2 }}
+                            >
+                                <p className="text-4xl mb-4">{card.icon}</p>
+                                <h3 className="text-lg font-semibold text-indigo-800 mb-2">
+                                    {card.title}
+                                </h3>
+                                <p className="text-sm text-gray-700">{card.text}</p>
+                            </motion.div>
+                        ))}
                     </div>
-                </motion.section>
+                </section>
+
+
+
 
                 {/* Statistics */}
-                <section className="mt-20 mb-12 text-center">
-                    <h2 className="text-3xl font-bold text-indigo-900 mb-8">
+                <section className="mt-28 mb-16 text-center px-16">
+                    <h2
+                        className="text-3xl font-bold text-indigo-900 mb-8"
+                        style={{ textShadow: "2px 2px 6px rgba(0, 0, 0, 0.2)" }}
+                    >
                         De ce să folosești MindCare?
                     </h2>
                     <CustomCarousel />
@@ -64,6 +102,7 @@ function HomepageEmployee() {
 
                 {/* How It Works */}
                 <motion.section
+                    ref={howItWorksRef}
                     className="mt-20 max-w-6xl mx-auto"
                     initial="hidden"
                     whileInView="visible"
@@ -75,7 +114,10 @@ function HomepageEmployee() {
                         },
                     }}
                 >
-                    <h2 className="text-3xl font-bold text-center text-indigo-900 mb-10">
+                    <h2
+                        className="text-3xl font-bold text-center text-indigo-900 mb-8"
+                        style={{ textShadow: "2px 2px 6px rgba(0, 0, 0, 0.2)" }}
+                    >
                         Cum funcționează aplicația
                     </h2>
 
@@ -138,17 +180,20 @@ function HomepageEmployee() {
                 </motion.section>
 
                 {/* Call to Action */}
-                {/* <section className="text-center mt-24 mb-20">
+                <section className="text-center mt-24 mb-20">
                     <h3 className="text-2xl font-semibold text-indigo-900 mb-4">
-                        Începe călătoria spre echilibru emoțional
+                        Începe călătoria spre echilibru emoțional!
                     </h3>
                     <button
-                        className="bg-indigo-700 text-white px-6 py-3 rounded-xl shadow hover:bg-indigo-800 transition"
-                        onClick={() => setTimeout(() => navigate("/therapists"), 0)}
+                        onClick={() => {
+                            navigate("/employee/therapists");
+                        }}
+                        className="bg-indigo-700 text-white mt-6 px-6 py-3 rounded-xl shadow hover:bg-indigo-800 transition inline-block text-lg"
                     >
                         Vezi terapeuții disponibili
                     </button>
-                </section> */}
+
+                </section>
 
             </div>
 

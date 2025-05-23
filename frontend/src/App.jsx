@@ -7,6 +7,7 @@ import Login from './pages/Login/Login';
 import MainEmployee from './MainEmployee';
 import MainSpecialist from './MainSpecialist';
 import { getUserFromCookie } from './features/auth/authSlice';
+import ScrollToTop from "./components/ScrollToTop";
 
 axios.defaults.baseURL = "http://localhost:4848/api";
 axios.defaults.withCredentials = true;
@@ -23,24 +24,28 @@ function App() {
   if (loading) return <p>Se încarcă...</p>;
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          user
-            ? user.role === 'angajat'
-              ? <Navigate to="/employee" />
-              : <Navigate to="/specialist" />
-            : <Navigate to="/login" />
-        }
-      />
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            user
+              ? user.role === 'angajat'
+                ? <Navigate to="/employee" />
+                : <Navigate to="/specialist" />
+              : <Navigate to="/login" />
+          }
+        />
 
-      <Route path="/login" element={<Login />} />
-      <Route path="/employee/*" element={<MainEmployee />} />
-      <Route path="/specialist/*" element={<MainSpecialist />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/employee/*" element={<MainEmployee />} />
+        <Route path="/specialist/*" element={<MainSpecialist />} />
 
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </>
+
   );
 }
 
