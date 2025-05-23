@@ -21,10 +21,11 @@ function Navbar() {
 
   if (role === "specialist") {
     navLinks.push(
+      { label: "Home", path: `${basePath}/home` },
       { label: "Events", path: `${basePath}/events` },
       { label: "Clients", path: `${basePath}/clients` },
       { label: "My Schedule", path: `${basePath}/schedule` },
-      { label: "Profile", path: `${basePath}/profile` }
+      { label: "Profile", path: `${basePath}/profile` },
     );
   } else {
     navLinks.push(
