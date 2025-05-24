@@ -124,29 +124,35 @@ const FeedbackForm = () => {
                                 </div>
                             ))}
 
-                            <div className="flex items-center justify-between mb-6">
-                                <label className="text-black font-medium">Send as Anonymous?</label>
-                                <label className="inline-flex relative items-center cursor-pointer">
-                                    <input
-                                        type="checkbox"
-                                        checked={isAnonymous}
-                                        onChange={(e) => setIsAnonymous(e.target.checked)}
-                                        className="sr-only peer"
-                                    />
-                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                                </label>
-                            </div>
+                            {!isTherapy && (
+                                <div className="flex items-center justify-between mb-6">
+                                    <label className="text-black font-medium">Send as Anonymous?</label>
+                                    <label className="inline-flex relative items-center cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={isAnonymous}
+                                            onChange={(e) => setIsAnonymous(e.target.checked)}
+                                            className="sr-only peer"
+                                        />
+                                        <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    </label>
+                                </div>
+                            )}
 
-                            <div className="flex flex-col">
-                                <label className="text-md font-medium text-black mb-2">
-                                    How satisfied were you with this session?
-                                </label>
-                                <CustomDropdown2
-                                    value={satisfactionScore}
-                                    onChange={setSatisfactionScore}
-                                    options={satisfactionOptions}
-                                />
-                            </div>
+
+                            {isTherapy && (
+                                <div className="flex flex-col">
+                                    <label className="text-md font-medium text-black mb-2">
+                                        How satisfied were you with this session?
+                                    </label>
+                                    <CustomDropdown2
+                                        value={satisfactionScore}
+                                        onChange={setSatisfactionScore}
+                                        options={satisfactionOptions}
+                                    />
+                                </div>
+                            )}
+
 
                             <button
                                 type="submit"

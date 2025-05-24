@@ -2,11 +2,11 @@ import './AvailabilityCalendar.css';
 import { React, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"
 import { getTherapistById, getIntervalsForTherapist, resetSelectedTherapist } from "../../features/therapists/therapistsSlice";
-import { createTherapySession, resetTherapySessionStatus } from "../../features/therapySessions/therapySessionsSlice"
+import { createTherapySession, resetTherapySessionStatus, getAllTherapySessionsBySpecialistId } from "../../features/therapySessions/therapySessionsSlice"
 import { getEmployeeByUserId } from "../../features/employee/employeeSlice";
 import { updateIntervalStatus } from "../../features/interval/intervalSlice"
 import { useDispatch, useSelector } from "react-redux";
-import { FaLinkedin, FaFacebook, FaGlobe, FaPhone, FaEnvelope } from "react-icons/fa";
+import { FaLinkedin, FaFacebook, FaGlobe, FaPhone, FaEnvelope, FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { toast } from 'react-toastify';
@@ -32,6 +32,9 @@ function TherapistDetails() {
     const employee = useSelector((state) => state.employee.employee);
 
     const success = useSelector((state) => state.therapySessions.success);
+
+    const allSessions = useSelector((state) => state.therapySessions.list);
+    console.log("allS", allSessions)
 
 
     console.log("user: ", user)
@@ -59,6 +62,13 @@ function TherapistDetails() {
             dispatch(resetTherapySessionStatus());
         }
     }, [success, dispatch]);
+
+    useEffect(() => {
+        if (therapist?.id) {
+            dispatch(getAllTherapySessionsBySpecialistId(therapist.id));
+        }
+    }, [dispatch, therapist]);
+
 
 
     if (status === "loading") return <p>Loading...</p>;
@@ -99,6 +109,28 @@ function TherapistDetails() {
         return intervalDateString === selectedDateString
     })
 
+    const averageSatisfaction = allSessions.length
+        ? allSessions.reduce((acc, s) => acc + (s.satisfactionScore || 0), 0) / allSessions.length
+        : 0;
+
+    const renderStars = (rating) => {
+        const fullStars = Math.floor(rating);
+        const hasHalf = rating - fullStars >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
+
+        return (
+            <div className="flex items-center text-indigo-700 text-xl gap-1">
+                {[...Array(fullStars)].map((_, i) => <FaStar key={`full-${i}`} />)}
+                {hasHalf && <FaStarHalfAlt key="half" />}
+                {[...Array(emptyStars)].map((_, i) => <FaRegStar key={`empty-${i}`} />)}
+                <span className="text-md text-gray-700 ml-2">({rating.toFixed(1)} / 5)</span>
+            </div>
+        );
+    };
+
+
+
+
     return (
         <>
 
@@ -137,6 +169,13 @@ function TherapistDetails() {
                             <p className="text-justify">
                                 {therapist.description}
                             </p>
+
+                            {allSessions.length > 0 && (
+                                <div className="mt-20">
+                                    {renderStars(averageSatisfaction)}
+                                </div>
+                            )}
+
                         </div>
 
                     </div>
@@ -219,9 +258,6 @@ function TherapistDetails() {
                     </div>
 
                     <div className="w-[35%] min-h-[350px] flex flex-col">
-                        {/* <h2 className="text-lg font-bold mb-2 text-indigo-800">
-                            Calendar disponibilitate
-                        </h2> */}
 
                         <Calendar
                             className="custom-calendar"
@@ -311,7 +347,7 @@ function TherapistDetails() {
 
                             <button
                                 className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                                onClick={async() => {
+                                onClick={async () => {
                                     if (selectedInterval && therapist && employee?.id) {
                                         await dispatch(
                                             createTherapySession({
@@ -321,11 +357,11 @@ function TherapistDetails() {
                                             })
 
                                         ).unwrap();
-                                        
+
                                         await dispatch(updateIntervalStatus({ id: selectedInterval.id, status: true })).unwrap();
 
                                         await dispatch(getIntervalsForTherapist(therapist.id)).unwrap();
-                                        
+
                                         console.log("Programare confirmată!");
                                     } else {
                                         console.warn("Date insuficiente pentru a crea sesiunea!");

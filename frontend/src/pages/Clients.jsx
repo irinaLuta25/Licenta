@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import FeedbackModal from "../components/FeedbackModal";
@@ -12,11 +12,15 @@ import {
     updateQuestion,
     getAllQuestions
 } from "../features/question/questionSlice";
+import { FaEdit } from "react-icons/fa";
+
 
 const defaultProfile = "/assets/Default_pfp.jpg";
 
 function Clients() {
     const dispatch = useDispatch();
+    const modalRef = useRef();
+
     const { list: sessions } = useSelector((state) => state.therapySessions);
     const { user } = useSelector((state) => state.auth);
     const storeQuestions = useSelector((state) => state.question.list || []);
@@ -168,7 +172,7 @@ function Clients() {
         const text = noteInput[sessionId]?.trim();
         if (text) {
             await dispatch(updateTherapySession({ therapySessionId: sessionId, updates: { notes: text } }));
-            await dispatch(getAllTherapySessionsBySpecialistId(user.id)); 
+            await dispatch(getAllTherapySessionsBySpecialistId(user.id));
         }
         cancelEditNote(sessionId);
     };
@@ -214,71 +218,99 @@ function Clients() {
 
                                 {expandedClientIds.includes(client.id) && (
                                     <div className="mt-4 space-y-6">
-                                        {client.sessions.map((session) => (
-                                            <div key={session.id} className="bg-white border border-indigo-200 rounded-xl p-6 shadow-md">
-                                                <div className="flex justify-between items-center">
-                                                    <p className="text-lg font-medium text-indigo-800">📅 {formatDateRO(session.date)}</p>
-                                                    <p className="text-lg font-medium text-indigo-800">🕰️ {session.time}</p>
-                                                    {isFuture(session.date) ? (
-                                                        <button
-                                                            onClick={() => openQuestionModal(session)}
-                                                            className="px-3 py-1 bg-indigo-500 text-white text-md rounded hover:bg-indigo-600"
-                                                        >
-                                                            {hasQuestionsForSession(session.id) ? "Editează întrebări feedback" : "Încarcă întrebări feedback"}
-                                                        </button>
-                                                    ) : (
-                                                        <button
-                                                            onClick={() => openFeedbackModal(session)}
-                                                            className="px-3 py-1 bg-indigo-500 text-white text-md rounded hover:bg-indigo-600"
-                                                        >
-                                                            Vezi feedback
-                                                        </button>
-                                                    )}
+                                        {/* Ședințe viitoare */}
+                                        {client.sessions.filter(s => isFuture(s.date)).length > 0 && (
+                                            <div>
+                                                <h3 className="text-lg font-bold text-indigo-800 mb-2">Programări viitoare</h3>
+                                                <div className="space-y-4">
+                                                    {client.sessions
+                                                        .filter(s => isFuture(s.date))
+                                                        .map((session) => (
+                                                            <div key={session.id} className="bg-white border border-indigo-200 rounded-xl p-6 shadow-md">
+                                                                <div className="flex justify-between items-center">
+                                                                    <p className="text-lg font-medium text-indigo-800">📅 {formatDateRO(session.date)}</p>
+                                                                    <p className="text-lg font-medium text-indigo-800">🕰️ {session.time}</p>
+                                                                    <button
+                                                                        onClick={() => openQuestionModal(session)}
+                                                                        className="px-3 py-1 bg-indigo-500 text-white text-md rounded hover:bg-indigo-600"
+                                                                    >
+                                                                        {hasQuestionsForSession(session.id) ? "Editează întrebări feedback" : "Încarcă întrebări feedback"}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
                                                 </div>
-
-                                                <p className="text-md font-semibold mt-4 text-indigo-700">Notițele mele</p>
-                                                {!editNotes[session.id] ? (
-                                                    <div className="mt-1 bg-indigo-50 p-3 rounded flex justify-between items-start">
-                                                        <p className="text-sm whitespace-pre-wrap">{session.notes || "Nicio notiță adăugată."}</p>
-                                                        <button
-                                                            onClick={() => toggleEditNote(session.id, session.notes || "")}
-                                                            className="ml-4 text-sm text-indigo-700 underline"
-                                                        >
-                                                            Editează
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <div className="mt-2">
-                                                        <textarea
-                                                            className="w-full border rounded p-2"
-                                                            value={noteInput[session.id]}
-                                                            onChange={(e) =>
-                                                                setNoteInput((prev) => ({
-                                                                    ...prev,
-                                                                    [session.id]: e.target.value,
-                                                                }))
-                                                            }
-                                                        />
-                                                        <div className="flex gap-2 mt-2">
-                                                            <button
-                                                                onClick={() => saveNote(session.id)}
-                                                                className="bg-indigo-600 text-white px-3 py-1 rounded"
-                                                            >
-                                                                Salvează
-                                                            </button>
-                                                            <button
-                                                                onClick={() => cancelEditNote(session.id)}
-                                                                className="bg-gray-300 text-gray-800 px-3 py-1 rounded"
-                                                            >
-                                                                Anulează
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )}
                                             </div>
-                                        ))}
+                                        )}
+
+                                        {/* Ședințe trecute */}
+                                        {client.sessions.filter(s => !isFuture(s.date)).length > 0 && (
+                                            <div>
+                                                <h3 className="text-lg font-bold text-indigo-800 mb-2">Programări trecute</h3>
+                                                <div className="space-y-4">
+                                                    {client.sessions
+                                                        .filter(s => !isFuture(s.date))
+                                                        .map((session) => (
+                                                            <div key={session.id} className="bg-white border border-indigo-200 rounded-xl p-6 shadow-md">
+                                                                <div className="flex justify-between items-center">
+                                                                    <p className="text-lg font-medium text-indigo-800">📅 {formatDateRO(session.date)}</p>
+                                                                    <p className="text-lg font-medium text-indigo-800">🕰️ {session.time}</p>
+                                                                    <button
+                                                                        onClick={() => openFeedbackModal(session)}
+                                                                        className="px-3 py-1 bg-indigo-500 text-white text-md rounded hover:bg-indigo-600"
+                                                                    >
+                                                                        Vezi feedback
+                                                                    </button>
+                                                                </div>
+
+                                                                <p className="text-md font-semibold mt-4 text-indigo-700">Notițele mele</p>
+                                                                {!editNotes[session.id] ? (
+                                                                    <div className="mt-1 bg-indigo-50 p-3 rounded flex justify-between items-start">
+                                                                        <p className="text-sm whitespace-pre-wrap">{session.notes || "Nicio notiță adăugată."}</p>
+                                                                        <button
+                                                                            onClick={() => toggleEditNote(session.id, session.notes || "")}
+                                                                            className="ml-4 text-indigo-800 hover:text-indigo-600"
+                                                                            title="Editează notița"
+                                                                        >
+                                                                            <FaEdit size={18} />
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="mt-2">
+                                                                        <textarea
+                                                                            className="w-full border rounded p-2"
+                                                                            value={noteInput[session.id]}
+                                                                            onChange={(e) =>
+                                                                                setNoteInput((prev) => ({
+                                                                                    ...prev,
+                                                                                    [session.id]: e.target.value,
+                                                                                }))
+                                                                            }
+                                                                        />
+                                                                        <div className="flex gap-2 mt-2">
+                                                                            <button
+                                                                                onClick={() => saveNote(session.id)}
+                                                                                className="bg-indigo-600 text-white px-3 py-1 rounded"
+                                                                            >
+                                                                                Salvează
+                                                                            </button>
+                                                                            <button
+                                                                                onClick={() => cancelEditNote(session.id)}
+                                                                                className="bg-gray-300 text-gray-800 px-3 py-1 rounded"
+                                                                            >
+                                                                                Anulează
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
+
                             </div>
                         ))}
                     </div>
@@ -296,8 +328,13 @@ function Clients() {
 
             {showModal && <FeedbackModal session={selectedSession} onClose={closeFeedbackModal} />}
             {showQuestionModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-2xl w-full max-w-2xl shadow-2xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70">
+                <div onMouseDown={(e) => {
+                    if (modalRef.current && !modalRef.current.contains(e.target)) {
+                        closeQuestionModal();
+                    }
+                }}
+                    className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div ref={modalRef} className="bg-white/90 backdrop-blur-xl rounded-xl shadow-2xl p-10 w-full max-w-3xl border border-indigo-100">
                         <h2 className="text-2xl font-bold mb-10 text-indigo-800 text-center">Formular feedback</h2>
                         <div className="mb-6 text-indigo-800 text-md space-y-1">
                             <p><b>Client:</b> {questionSession?.employee?.user?.firstName} {questionSession?.employee?.user?.lastName}</p>
@@ -311,7 +348,7 @@ function Clients() {
                                     type="text"
                                     value={q.text}
                                     onChange={(e) => updateQuestionText(idx, e.target.value)}
-                                    className="w-full p-3 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner"
+                                    className="w-full p-3 bg-indigo-100 border-l-4 border-indigo-400 rounded-md shadow-sm rounded-xl text-gray-700 placeholder-gray-500 focus:outline-indigo-600 shadow-inner"
                                     placeholder={`Întrebare ${idx + 1}`}
                                 />
                             ))}
