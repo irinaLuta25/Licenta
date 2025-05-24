@@ -8,8 +8,8 @@ router.get("/:id",questionController.getQuestionById);
 router.get("/getAllQuestionsByEventId/:eventId",questionController.getAllQuestionsByEventId);
 router.get("/getAllQuestionsByTherapySessionId/:therapySessionId",questionController.getAllQuestionsByTherapySessionId);
 router.get("/getAllQuestionsBySpecialistId/:specialistId",questionController.getAllQuestionsBySpecialistId);
-router.post("/create",questionController.createQuestionForEvent);
-router.post("/create",questionController.createQuestionForTherapySession);
+router.post("/createForEvent", questionController.createQuestionForEvent);
+router.post("/createForTherapy", questionController.createQuestionForTherapySession);
 router.put("/update/:id",questionController.updateQuestion);
 router.delete("/delete/:id",questionController.deleteQuestion);
 

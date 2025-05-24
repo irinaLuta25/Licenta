@@ -3,17 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import { useDispatch, useSelector } from 'react-redux';
 import { getEmployeeByUserId } from "../features/employee/employeeSlice";
-import { getAllEvents, getAllEventsByTargetDepartment } from "../features/event/eventSlice";
+import { getAllEvents, getAllEventsByTargetDepartment, deleteEventById } from "../features/event/eventSlice";
 import { getSpecialistByUserId } from "../features/therapists/therapistsSlice";
-import { getEmployeeEventsByEmployeeId } from "../features/employeeEvent/employeeEventSlice";
-import { getAllIntervals } from "../features/interval/intervalSlice";
+import { getEmployeeEventsByEmployeeId, createEmployeeEvent } from "../features/employeeEvent/employeeEventSlice";
+import { getAllIntervals, updateIntervalStatus } from "../features/interval/intervalSlice";
 import EventCard from "../components/EventCard";
 import { FiPlusCircle } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 function Events() {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [activeTab, setActiveTab] = useState("upcoming");
+    const [modalEvent, setModalEvent] = useState(null);
+    const [modalType, setModalType] = useState(""); // "signUp" | "delete"
 
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
@@ -61,6 +64,34 @@ function Events() {
         `${event.name} ${event.description}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleSignUp = async () => {
+        try {
+            await dispatch(createEmployeeEvent({ employeeId: employee?.id, eventId: modalEvent?.id }));
+            await dispatch(getEmployeeEventsByEmployeeId(employee?.id));
+            toast.success("Te-ai înscris cu succes!");
+        } catch (err) {
+            toast.error("Eroare la înscriere.");
+        }
+        setModalEvent(null);
+        setModalType("");
+    };
+
+    const handleDelete = async () => {
+        try {
+            await dispatch(deleteEventById(modalEvent?.id));
+            await dispatch(updateIntervalStatus({ id: modalEvent.intervalId, status: false }));
+            toast.success("Eveniment șters!");
+        } catch (err) {
+            toast.error("Eroare la ștergere.");
+        }
+        setModalEvent(null);
+        setModalType("");
+    };
+
+    const eventDate = modalEvent?.intervalId && intervals[modalEvent.intervalId]?.date
+        ? new Date(intervals[modalEvent.intervalId].date).toLocaleDateString("ro-RO")
+        : "necunoscută";
+
     return (
         <div className="pt-24 px-8 sm:px-16 bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
             <Navbar />
@@ -88,9 +119,9 @@ function Events() {
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`w-32 py-2 font-medium rounded-xl backdrop-blur-sm shadow-md transition-all
-      bg-gradient-to-r from-[#cbc0f3] via-[#cadbf9] to-[#deecff] text-indigo-700
-      ${activeTab === tab ? "ring-2 ring-indigo-400" : ""}
-    `}
+                                bg-gradient-to-r from-[#cbc0f3] via-[#cadbf9] to-[#deecff] text-indigo-700
+                                ${activeTab === tab ? "ring-2 ring-indigo-400" : ""}
+                            `}
                         >
                             {{
                                 upcoming: "Upcoming",
@@ -100,7 +131,6 @@ function Events() {
                             }[tab]}
                         </button>
                     ))}
-
                 </div>
 
                 {user?.role === "specialist" && (
@@ -126,10 +156,36 @@ function Events() {
                             employee={employee}
                             index={index}
                             loggedSpecialist={specialist}
+                            onRequestSignUp={(ev) => { setModalEvent(ev); setModalType("signUp"); }}
+                            onRequestDelete={(ev) => { setModalEvent(ev); setModalType("delete"); }}
                         />
                     ))
                 )}
             </div>
+
+            {modalEvent && modalType && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+                        <h2 className="text-xl font-bold mb-4 text-center text-indigo-800">
+                            {modalType === "signUp" ? "Confirmare înscriere" : "Confirmare ștergere"}
+                        </h2>
+                        <p className="text-indigo-700 mb-6 text-center">
+                            {modalType === "signUp"
+                                ? <>Vrei să te înscrii la evenimentul <strong>{modalEvent?.name}</strong> pe data de <strong>{eventDate}</strong>?</>
+                                : <>Sigur vrei să ștergi evenimentul <strong>{modalEvent?.name}</strong>?</>}
+                        </p>
+                        <div className="flex justify-center gap-4">
+                            <button className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setModalEvent(null)}>Anulează</button>
+                            <button
+                                className={`px-4 py-2 text-white rounded ${modalType === "signUp" ? "bg-indigo-700 hover:bg-indigo-500" : "bg-red-600 hover:bg-red-700"}`}
+                                onClick={modalType === "signUp" ? handleSignUp : handleDelete}
+                            >
+                                Da, confirmă
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

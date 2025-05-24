@@ -1,80 +1,91 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../components/Navbar";
 import FeedbackModal from "../components/FeedbackModal";
-import { FaQuestion } from "react-icons/fa";
+import {
+    getAllTherapySessionsBySpecialistId,
+    updateTherapySession,
+} from "../features/therapySessions/therapySessionsSlice";
+import {
+    getQuestionsByTherapySessionId,
+    createQuestionForTherapySession,
+    updateQuestion,
+    getAllQuestions
+} from "../features/question/questionSlice";
+
+const defaultProfile = "/assets/Default_pfp.jpg";
 
 function Clients() {
-    const profileImage = "/assets/Default_pfp.jpg";
+    const dispatch = useDispatch();
+    const { list: sessions } = useSelector((state) => state.therapySessions);
+    const { user } = useSelector((state) => state.auth);
+    const storeQuestions = useSelector((state) => state.question.list || []);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [expandedClientIds, setExpandedClientIds] = useState([]);
-    const [noteTexts, setNoteTexts] = useState({});
-    const [savedNotes, setSavedNotes] = useState({});
     const [showModal, setShowModal] = useState(false);
     const [selectedSession, setSelectedSession] = useState(null);
-    const [expandAnonymous, setExpandAnonymous] = useState(false);
+    const [showQuestionModal, setShowQuestionModal] = useState(false);
+    const [questionSession, setQuestionSession] = useState(null);
+    const [questions, setQuestions] = useState([]);
+    const [editNotes, setEditNotes] = useState({});
+    const [noteInput, setNoteInput] = useState({});
 
-    const clients = [
-        {
-            id: 1,
-            name: "Maria Popescu",
-            email: "maria.popescu@gmail.com",
-            department: "HR",
-            sessions: [
-                {
-                    id: 101,
-                    date: "2025-05-20",
-                    time: "10:00",
-                    notes: "Discutat despre burnout și echilibru muncă-viață.",
-                    feedbacks: [
-                        { content: "A fost foarte utilă sesiunea.", isAnonymous: false },
-                        { content: "Mi-a plăcut deschiderea terapeutului.", isAnonymous: true }
-                    ]
-                },
-                {
-                    id: 102,
-                    date: "2025-05-15",
-                    time: "14:00",
-                    notes: null,
-                    feedbacks: []
-                }
-            ]
-        },
-        {
-            id: 2,
-            name: "Andrei Ionescu",
-            email: "andrei.ionescu@gmail.com",
-            department: "IT",
-            sessions: []
+    useEffect(() => {
+        if (user?.id) {
+            dispatch(getAllTherapySessionsBySpecialistId(user.id));
+            dispatch(getAllQuestions());
         }
-    ];
+    }, [dispatch, user]);
 
-    const allAnonymousFeedbacks = clients.flatMap(c =>
-        c.sessions?.flatMap(s =>
-            s.feedbacks?.filter(f => f.isAnonymous).map(f => ({ content: f.content, session: s, client: c })) || []
-        ) || []
-    );
+    const formatDateRO = (dateStr) => {
+        if (!dateStr) return "";
+        const date = new Date(dateStr);
+        return date.toLocaleDateString("ro-RO");
+    };
 
-    const filteredClients = clients.filter((client) =>
-        client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        client.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const formatTimeRange = (begin, end) => {
+        const format = (t) => t?.slice(0, 5) || "";
+        return `${format(begin)} - ${format(end)}`;
+    };
+
+    const groupedClients = sessions.reduce((acc, session) => {
+        const emp = session.employee;
+        const user = emp?.user;
+        if (!user) return acc;
+
+        if (!acc[user.id]) {
+            acc[user.id] = {
+                id: user.id,
+                name: `${user.firstName} ${user.lastName}`,
+                email: user.email,
+                department: emp.department,
+                profileImage: user.profileImage || defaultProfile,
+                sessions: [],
+            };
+        }
+
+        acc[user.id].sessions.push({
+            ...session,
+            date: session.interval?.date,
+            time: formatTimeRange(session.interval?.beginTime, session.interval?.endTime),
+        });
+
+        return acc;
+    }, {});
+
+    const clients = Object.values(groupedClients);
+
+    const filteredClients = clients.filter(
+        (client) =>
+            client.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            client.email.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const toggleExpand = (id) => {
         setExpandedClientIds((prev) =>
             prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
         );
-    };
-
-    const handleNoteChange = (sessionId, value) => {
-        setNoteTexts((prev) => ({ ...prev, [sessionId]: value }));
-    };
-
-    const handleNoteSave = (e, sessionId) => {
-        e.preventDefault();
-        if (noteTexts[sessionId]?.trim()) {
-            setSavedNotes((prev) => ({ ...prev, [sessionId]: noteTexts[sessionId] }));
-        }
     };
 
     const openFeedbackModal = (session) => {
@@ -87,13 +98,86 @@ function Clients() {
         setSelectedSession(null);
     };
 
+    const isFuture = (dateStr) => new Date(dateStr) > new Date();
+
+    const openQuestionModal = async (session) => {
+        setQuestionSession(session);
+        setShowQuestionModal(true);
+        await dispatch(getQuestionsByTherapySessionId(session.id));
+    };
+
+    const closeQuestionModal = () => {
+        setShowQuestionModal(false);
+        setQuestionSession(null);
+        setQuestions([]);
+    };
+
+    useEffect(() => {
+        if (showQuestionModal && questionSession) {
+            const current = storeQuestions.filter(q => q.therapySessionId === questionSession.id);
+            setQuestions(current.map(q => ({ id: q.id, text: q.text })));
+        }
+    }, [showQuestionModal, questionSession, storeQuestions]);
+
+    const addQuestion = () => {
+        setQuestions((prev) => [...prev, { id: null, text: "" }]);
+    };
+
+    const updateQuestionText = (index, value) => {
+        setQuestions((prev) => {
+            const updated = [...prev];
+            updated[index].text = value;
+            return updated;
+        });
+    };
+
+    const handleSubmitQuestions = async () => {
+        for (const q of questions) {
+            if (q.text.trim() === "") continue;
+
+            if (q.id) {
+                await dispatch(updateQuestion({ id: q.id, text: q.text }));
+            } else {
+                await dispatch(createQuestionForTherapySession({
+                    text: q.text,
+                    therapySessionId: questionSession.id,
+                }));
+            }
+        }
+        closeQuestionModal();
+    };
+
+    const hasQuestionsForSession = (sessionId) =>
+        storeQuestions.some(q => q.therapySessionId === sessionId);
+
+    const toggleEditNote = (sessionId, currentNote) => {
+        setEditNotes(prev => ({ ...prev, [sessionId]: true }));
+        setNoteInput(prev => ({ ...prev, [sessionId]: currentNote }));
+    };
+
+    const cancelEditNote = (sessionId) => {
+        setEditNotes(prev => ({ ...prev, [sessionId]: false }));
+        setNoteInput(prev => {
+            const newState = { ...prev };
+            delete newState[sessionId];
+            return newState;
+        });
+    };
+
+    const saveNote = async (sessionId) => {
+        const text = noteInput[sessionId]?.trim();
+        if (text) {
+            await dispatch(updateTherapySession({ therapySessionId: sessionId, updates: { notes: text } }));
+            await dispatch(getAllTherapySessionsBySpecialistId(user.id)); 
+        }
+        cancelEditNote(sessionId);
+    };
+
     return (
         <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800 p-6">
             <Navbar />
-
-            <div className="mx-14">
-                {/* Search bar */}
-                <div className="relative w-full sm:w-96 mb-14 mt-24">
+            <div className="mx-14 mt-24">
+                <div className="relative w-full sm:w-96 mb-14">
                     <input
                         type="text"
                         placeholder="Caută client..."
@@ -108,41 +192,13 @@ function Clients() {
                     </div>
                 </div>
 
-                {/* Main container: clients + summary */}
                 <div className="flex flex-col lg:flex-row gap-10">
-                    {/* Stanga */}
                     <div className="lg:w-2/3 w-full">
-                        {allAnonymousFeedbacks.length > 0 && (
-                            <div className="bg-white/70 border border-indigo-300 shadow-xl rounded-2xl p-8 mb-6">
-                                <div className="flex justify-between items-center">
-                                    <div className="flex items-center gap-2">
-                                        <FaQuestion className="text-indigo-800 text-[42px] m-2" />
-                                        <h3 className="text-2xl font-bold ml-3 text-indigo-800">Feedback anonim</h3>
-                                    </div>
-                                    <button
-                                        onClick={() => setExpandAnonymous((prev) => !prev)}
-                                        className="text-lg px-4 py-1 rounded-full bg-indigo-600 text-white hover:bg-indigo-700"
-                                    >
-                                        {expandAnonymous ? "Ascunde feedback" : "Vezi feedback"}
-                                    </button>
-                                </div>
-                                {expandAnonymous && (
-                                    <ul className="mt-4 space-y-3">
-                                        {allAnonymousFeedbacks.map((fb, index) => (
-                                            <li key={index} className="bg-white border border-indigo-200 rounded-xl p-4 shadow-md text-md text-gray-800">
-                                                “{fb.content}”
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                        )}
-
                         {filteredClients.map((client) => (
                             <div key={client.id} className="bg-white/70 backdrop-blur rounded-2xl shadow-xl p-8 mb-6">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-4">
-                                        <img src={profileImage} alt="Profil" className="w-16 h-16 rounded-full object-cover shadow-md" />
+                                        <img src={client.profileImage} alt="Profil" className="w-16 h-16 rounded-full object-cover shadow-md" />
                                         <div>
                                             <h2 className="text-2xl font-bold text-indigo-800">{client.name}</h2>
                                             <p className="text-md text-gray-600">{client.email} – {client.department}</p>
@@ -157,67 +213,133 @@ function Clients() {
                                 </div>
 
                                 {expandedClientIds.includes(client.id) && (
-                                    <div className="mt-4 space-y-4">
-                                        {client.sessions.length === 0 ? (
-                                            <p className="text-lg text-gray-500">Nicio sesiune încă</p>
-                                        ) : (
-                                            client.sessions.map((session) => (
-                                                <div key={session.id} className="bg-white border border-indigo-200 rounded-xl p-8 shadow-md">
-                                                    <div className="flex justify-between items-center">
-                                                        <p className="text-lg font-medium text-indigo-800">🗓️ {session.date} – {session.time}</p>
+                                    <div className="mt-4 space-y-6">
+                                        {client.sessions.map((session) => (
+                                            <div key={session.id} className="bg-white border border-indigo-200 rounded-xl p-6 shadow-md">
+                                                <div className="flex justify-between items-center">
+                                                    <p className="text-lg font-medium text-indigo-800">📅 {formatDateRO(session.date)}</p>
+                                                    <p className="text-lg font-medium text-indigo-800">🕰️ {session.time}</p>
+                                                    {isFuture(session.date) ? (
+                                                        <button
+                                                            onClick={() => openQuestionModal(session)}
+                                                            className="px-3 py-1 bg-indigo-500 text-white text-md rounded hover:bg-indigo-600"
+                                                        >
+                                                            {hasQuestionsForSession(session.id) ? "Editează întrebări feedback" : "Încarcă întrebări feedback"}
+                                                        </button>
+                                                    ) : (
                                                         <button
                                                             onClick={() => openFeedbackModal(session)}
                                                             className="px-3 py-1 bg-indigo-500 text-white text-md rounded hover:bg-indigo-600"
                                                         >
                                                             Vezi feedback
                                                         </button>
-                                                    </div>
-
-                                                    <p className="text-md font-semibold mt-4 text-indigo-700">Notițele mele</p>
-                                                    {session.notes || savedNotes[session.id] ? (
-                                                        <div className="mt-1 bg-indigo-50 p-3 rounded">
-                                                            <p className="text-md">{session.notes || savedNotes[session.id]}</p>
-                                                        </div>
-                                                    ) : (
-                                                        <form onSubmit={(e) => handleNoteSave(e, session.id)} className="mt-2">
-                                                            <textarea
-                                                                className="w-full border rounded p-2"
-                                                                placeholder="Adaugă notițe..."
-                                                                value={noteTexts[session.id] || ""}
-                                                                onChange={(e) => handleNoteChange(session.id, e.target.value)}
-                                                            />
-                                                            <button
-                                                                type="submit"
-                                                                className="mt-2 bg-indigo-600 text-white px-3 py-1 rounded"
-                                                            >
-                                                                Salvează notițele
-                                                            </button>
-                                                        </form>
                                                     )}
                                                 </div>
-                                            ))
-                                        )}
+
+                                                <p className="text-md font-semibold mt-4 text-indigo-700">Notițele mele</p>
+                                                {!editNotes[session.id] ? (
+                                                    <div className="mt-1 bg-indigo-50 p-3 rounded flex justify-between items-start">
+                                                        <p className="text-sm whitespace-pre-wrap">{session.notes || "Nicio notiță adăugată."}</p>
+                                                        <button
+                                                            onClick={() => toggleEditNote(session.id, session.notes || "")}
+                                                            className="ml-4 text-sm text-indigo-700 underline"
+                                                        >
+                                                            Editează
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div className="mt-2">
+                                                        <textarea
+                                                            className="w-full border rounded p-2"
+                                                            value={noteInput[session.id]}
+                                                            onChange={(e) =>
+                                                                setNoteInput((prev) => ({
+                                                                    ...prev,
+                                                                    [session.id]: e.target.value,
+                                                                }))
+                                                            }
+                                                        />
+                                                        <div className="flex gap-2 mt-2">
+                                                            <button
+                                                                onClick={() => saveNote(session.id)}
+                                                                className="bg-indigo-600 text-white px-3 py-1 rounded"
+                                                            >
+                                                                Salvează
+                                                            </button>
+                                                            <button
+                                                                onClick={() => cancelEditNote(session.id)}
+                                                                className="bg-gray-300 text-gray-800 px-3 py-1 rounded"
+                                                            >
+                                                                Anulează
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
                                     </div>
                                 )}
                             </div>
                         ))}
-
-                        {showModal && <FeedbackModal session={selectedSession} onClose={closeFeedbackModal} />}
                     </div>
 
-                    {/* Dreapta */}
                     <div className="lg:w-1/3 w-full bg-white/70 rounded-2xl shadow-xl p-10 pb-20 flex flex-col gap-4 h-fit">
                         <h2 className="text-2xl font-bold text-indigo-800 mb-6">Sumar activitate</h2>
                         <div className="text-xl text-gray-800 space-y-4">
                             <p className="font-semibold">👥 Număr clienți: <span className="font-bold text-indigo-800">{clients.length}</span></p>
-                            <p className="font-semibold">📅 Număr total sesiuni: <span className="font-bold text-indigo-800">{clients.reduce((acc, c) => acc + c.sessions.length, 0)}</span></p>
-                            <p className="font-semibold">🕵️‍♂️ Feedback anonim: <span className="font-bold text-indigo-800">{allAnonymousFeedbacks.length} </span></p>
-                            <p className="font-semibold">⭐ Scor satisfacție mediu: <span className="font-bold text-indigo-800">4.6 / 5</span></p>
+                            <p className="font-semibold">📅 Număr total sesiuni: <span className="font-bold text-indigo-800">{sessions.length}</span></p>
+                            <p className="font-semibold">⭐ Scor satisfacție mediu: <span className="font-bold text-indigo-800">{(sessions.reduce((acc, s) => acc + (s.satisfactionScore || 0), 0) / sessions.length || 0).toFixed(1)} / 5</span></p>
                         </div>
                     </div>
-
                 </div>
             </div>
+
+            {showModal && <FeedbackModal session={selectedSession} onClose={closeFeedbackModal} />}
+            {showQuestionModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-white p-8 rounded-2xl w-full max-w-2xl shadow-2xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70">
+                        <h2 className="text-2xl font-bold mb-10 text-indigo-800 text-center">Formular feedback</h2>
+                        <div className="mb-6 text-indigo-800 text-md space-y-1">
+                            <p><b>Client:</b> {questionSession?.employee?.user?.firstName} {questionSession?.employee?.user?.lastName}</p>
+                            <p><b>Data:</b> {formatDateRO(questionSession?.interval?.date)}</p>
+                            <p><b>Interval orar:</b> {formatTimeRange(questionSession?.interval?.beginTime, questionSession?.interval?.endTime)}</p>
+                        </div>
+                        <div className="space-y-4 mb-6">
+                            {questions.map((q, idx) => (
+                                <input
+                                    key={idx}
+                                    type="text"
+                                    value={q.text}
+                                    onChange={(e) => updateQuestionText(idx, e.target.value)}
+                                    className="w-full p-3 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner"
+                                    placeholder={`Întrebare ${idx + 1}`}
+                                />
+                            ))}
+                            <button
+                                type="button"
+                                onClick={addQuestion}
+                                className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
+                            >
+                                Adaugă întrebare
+                            </button>
+                        </div>
+                        <div className="flex justify-end gap-4 mt-6">
+                            <button
+                                onClick={handleSubmitQuestions}
+                                className="px-5 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                            >
+                                Trimite
+                            </button>
+                            <button
+                                onClick={closeQuestionModal}
+                                className="px-5 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                            >
+                                Închide
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,21 +1,13 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getIntervalById } from "../features/interval/intervalSlice";
 import { getTherapistById } from "../features/therapists/therapistsSlice";
-import { createEmployeeEvent, getEmployeeEventsByEmployeeId } from "../features/employeeEvent/employeeEventSlice";
-import { deleteEventById } from "../features/event/eventSlice";
-import { updateIntervalStatus } from "../features/interval/intervalSlice";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 
-function EventCard({ event, role, employee, index }) {
+function EventCard({ event, role, employee, index, loggedSpecialist, onRequestSignUp, onRequestDelete }) {
     const dispatch = useDispatch();
-    const [showModal, setShowModal] = useState(false);
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
     const specialists = useSelector((state) => state.therapists.specialistsById);
-    const loggedInSpecialist = useSelector((state) => state.therapists.loggedInTherapist);
     const interval = useSelector((state) => state.interval.intervalsById?.[event.intervalId]);
     const employeeEvents = useSelector((state) => state.employeeEvent.employeeEvents || []);
     const isSignedUp = employeeEvents.some(ev => ev.eventId === event.id);
@@ -58,30 +50,10 @@ function EventCard({ event, role, employee, index }) {
 
     const isCreator =
         role === "specialist" &&
-        loggedInSpecialist?.id === event?.specialistId;
-
-    const handleSignUp = async () => {
-        try {
-            await dispatch(createEmployeeEvent({ employeeId: employee?.id, eventId: event?.id }));
-            await dispatch(getEmployeeEventsByEmployeeId(employee?.id));
-        } catch (err) {
-            console.error("Eroare la înscriere:", err);
-        }
-    };
-
-    const confirmDelete = async () => {
-        try {
-            await dispatch(deleteEventById(event?.id));
-            await dispatch(updateIntervalStatus({ id: event.intervalId, status: false }));
-            toast.success("Evenimentul a fost șters cu succes!");
-            setDeleteModalOpen(false);
-        } catch (err) {
-            toast.error("Eroare la ștergerea evenimentului.");
-        }
-    };
+        loggedSpecialist?.id === event?.specialistId;
 
     return (
-        <div className={`w-full max-w-6xl mx-auto flex flex-col ${layoutClass} items-center justify-between gap-6 text-indigo-900 rounded-2xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 border border-indigo-300/30 backdrop-blur-xl shadow-xl hover:shadow-2xl rounded-xl transition transform duration-300 hover:-translate-y-1 p-6 my-6`}>
+        <div className={`w-full max-w-6xl mx-auto flex flex-col ${layoutClass} items-center justify-between gap-6 text-indigo-900 rounded-2xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 border border-indigo-300/30 backdrop-blur-xl shadow-xl hover:shadow-2xl transition transform duration-300 hover:-translate-y-1 p-6 my-6`}>
             {event.image && (
                 <div className="w-full md:w-1/2 flex justify-center">
                     <img src={event.image} alt="Event" className="rounded-xl object-cover max-h-72 w-full md:max-w-md" />
@@ -119,14 +91,14 @@ function EventCard({ event, role, employee, index }) {
                             ) : isSignedUp ? (
                                 <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md" disabled>Signed up</button>
                             ) : (
-                                <button className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md" onClick={() => setShowModal(true)}>Sign up</button>
+                                <button className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md" onClick={() => onRequestSignUp(event)}>Sign up</button>
                             )
                         )}
 
                         {isCreator && !isEventPast && (
                             <button
                                 className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md"
-                                onClick={() => setDeleteModalOpen(true)}
+                                onClick={() => onRequestDelete(event)}
                             >
                                 Delete
                             </button>
@@ -135,38 +107,6 @@ function EventCard({ event, role, employee, index }) {
 
                     <p className="text-sm text-indigo-800 mt-2 md:mt-0">Registration closes on: {formattedDate.toLocaleDateString("ro-RO")}</p>
                 </div>
-
-                {/* Modal înscriere */}
-                {showModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-                            <h2 className="text-xl font-bold mb-4 text-center text-indigo-800">Confirmare înscriere</h2>
-                            <p className="text-indigo-700 mb-6 text-center">
-                                Vrei să te înscrii la evenimentul <strong>{event?.name}</strong> pe data de <strong>{eventDate.toLocaleDateString("ro-RO")}</strong>?
-                            </p>
-                            <div className="flex justify-center gap-4">
-                                <button className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setShowModal(false)}>Anulează</button>
-                                <button className="px-4 py-2 bg-indigo-700 text-white rounded hover:bg-indigo-500" onClick={() => { handleSignUp(); setShowModal(false); }}>Da, confirmă</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Modal ștergere */}
-                {deleteModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-                            <h2 className="text-xl font-bold mb-4 text-center text-red-600">Confirmare ștergere</h2>
-                            <p className="text-indigo-700 mb-6 text-center">
-                                Sigur vrei să ștergi evenimentul <strong>{event.name}</strong>?
-                            </p>
-                            <div className="flex justify-center gap-4">
-                                <button className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400" onClick={() => setDeleteModalOpen(false)}>Anulează</button>
-                                <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700" onClick={confirmDelete}>Da, șterge</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
         </div>
     );

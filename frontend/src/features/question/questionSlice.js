@@ -65,7 +65,7 @@ export const getAllQuestions = createAsyncThunk(
     'questions/createForEvent',
     async (payload, { rejectWithValue }) => {
       try {
-        const res = await axios.post('/question/create', payload);
+        const res = await axios.post('/question/createForEvent', payload);
         return res.data;
       } catch (err) {
         return rejectWithValue(err.response?.data || err.message);
@@ -77,7 +77,7 @@ export const getAllQuestions = createAsyncThunk(
     'questions/createForTherapy',
     async (payload, { rejectWithValue }) => {
       try {
-        const res = await axios.post('/question/create', payload);
+        const res = await axios.post('/question/createForTherapy', payload);
         return res.data;
       } catch (err) {
         return rejectWithValue(err.response?.data || err.message);

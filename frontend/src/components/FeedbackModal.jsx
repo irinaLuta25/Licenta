@@ -84,9 +84,11 @@ const FeedbackModal = ({ onClose, session }) => {
                               className="bg-white/70 p-3 rounded-md border border-gray-200 shadow-sm overflow-x-auto max-w-full"
                             >
                               <p className="text-gray-900 text-sm break-words whitespace-pre-wrap">“{a.answer}”</p>
-                              <p className="text-xs text-right text-gray-500 mt-1">
-                                — {a.isAnonymous ? "Anonymous" : a.employee.user.firstName + " " + a.employee.user.lastName}
-                              </p>
+                              {!isTherapySession && (
+  <p className="text-xs text-right text-gray-500 mt-1">
+    — {a.isAnonymous ? "Anonymous" : a.employee.user.firstName + " " + a.employee.user.lastName}
+  </p>
+)}
                             </div>
                           ))
                       )}

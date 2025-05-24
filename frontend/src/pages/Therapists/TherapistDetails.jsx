@@ -290,7 +290,7 @@ function TherapistDetails() {
             </div>
 
             {showModal && selectedInterval && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                <div className="inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                     <div
                         className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
                         onClick={(e) => e.stopPropagation()}
