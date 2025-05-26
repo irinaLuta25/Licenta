@@ -74,7 +74,7 @@ const controller = {
         }
         try {
             const emotionalStates = await EmotionalStateDb.findAll({
-                where: {employeeId}
+                where: {employeeId},
             });
             res.status(200).send(emotionalStates);
         } catch (err) {

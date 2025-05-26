@@ -8,6 +8,7 @@ import EmployeeSchedule from "./pages/EmployeeSchedule";
 import FeedbackForm from "./pages/FeedbackForm";
 import CompatibilityForm from "./pages/CompatibilityForm";
 import HomepageEmployee from "./pages/HomepageEmployee";
+import Wellbeing from "./pages/Wellbeing";
 // import { useSelector } from "react-redux";
 
 
@@ -28,8 +29,9 @@ function MainEmployee() {
             <Route path="schedule/therapySession/:id" element={<FeedbackForm />} />
             <Route path="therapists/compatibilityForm" element={<CompatibilityForm />} />
             <Route path="home" element={<HomepageEmployee />} />
+            <Route path="wellbeing" element={<Wellbeing />} />
             {/* <Route path="profile" element={<Profile />} />
-            <Route path="habits" element={<Habits />} />
+            
             {employee?.isManager && <Route path="reports" element={<Reports />} />} */}
         </Routes>
     )

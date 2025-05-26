@@ -5,7 +5,7 @@ const employeeGoalController=require("../controllers").employeeGoalController;
 
 router.get("/getAll",employeeGoalController.getAllEmployeeGoals);
 router.get("/:id",employeeGoalController.getEmployeeGoalById);
-router.get("/getAllEmployeeGoalsByEmployeeId/:id",employeeGoalController.getAllEmployeeGoalsByEmployeeId);
+router.get("/getAllEmployeeGoalsByEmployeeId/:employeeId",employeeGoalController.getAllEmployeeGoalsByEmployeeId);
 router.post("/create",employeeGoalController.createEmployeeGoal);
 router.put("/update/:id",employeeGoalController.updateEmployeeGoal);
 router.delete("/delete/:id",employeeGoalController.deleteEmployeeGoal);

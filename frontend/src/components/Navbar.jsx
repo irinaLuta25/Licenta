@@ -21,23 +21,23 @@ function Navbar() {
 
   if (role === "specialist") {
     navLinks.push(
-      { label: "Home", path: `${basePath}/home` },
-      { label: "Events", path: `${basePath}/events` },
-      { label: "Clients", path: `${basePath}/clients` },
-      { label: "My Schedule", path: `${basePath}/schedule` },
-      { label: "Profile", path: `${basePath}/profile` },
+      { label: "ACASĂ", path: `${basePath}/home` },
+      { label: "EVENIMENTE", path: `${basePath}/events` },
+      { label: "CLIENȚI", path: `${basePath}/clients` },
+      { label: "PROGRAM", path: `${basePath}/schedule` },
+      { label: "PROFIL", path: `${basePath}/profile` },
     );
   } else {
     navLinks.push(
-      { label: "Home", path: `${basePath}/home` },
-      { label: "Therapists", path: `${basePath}/therapists` },
-      { label: "Events", path: `${basePath}/events` },
-      { label: "My Schedule", path: `${basePath}/schedule` },
-      { label: "Habits", path: `${basePath}/habits` },
-      { label: "Profile", path: `${basePath}/profile` }
+      { label: "ACASĂ", path: `${basePath}/home` },
+      { label: "TERAPEUȚI", path: `${basePath}/therapists` },
+      { label: "EVENIMENTE", path: `${basePath}/events` },
+      { label: "PROGRAM", path: `${basePath}/schedule` },
+      { label: "ECHILIBRU PERSONAL", path: `${basePath}/wellbeing` },
+      { label: "PROFIL", path: `${basePath}/profile` }
     );
     if (employee?.isManager) {
-      navLinks.push({ label: "Reports", path: `${basePath}/reports` });
+      navLinks.push({ label: "RAPOARTE", path: `${basePath}/reports` });
     }
   }
 
@@ -46,7 +46,7 @@ function Navbar() {
 
       <div className="text-2xl font-bold">MindCare</div>
 
-      <ul className="hidden md:flex space-x-6">
+      <ul className="hidden md:flex space-x-10">
         {navLinks.map(({ label, path }) => {
           const isActive = location.pathname.includes(path);
           return (

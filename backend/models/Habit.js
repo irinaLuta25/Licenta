@@ -9,6 +9,10 @@ const HabitModel = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
+        category: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         unit: {
             type: DataTypes.STRING,
             allowNull: false

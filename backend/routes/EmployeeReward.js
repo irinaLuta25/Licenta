@@ -5,7 +5,7 @@ const employeeRewardController=require("../controllers").employeeRewardControlle
 
 router.get("/getAll",employeeRewardController.getAllEmployeeRewards);
 router.get("/:id",employeeRewardController.getEmployeeRewardById);
-router.get("/getAllRewardsByEmployeeId/:id",employeeRewardController.getAllRewardsByEmployeeId);
+router.get("/getAllRewardsByEmployeeId/:employeeId",employeeRewardController.getAllRewardsByEmployeeId);
 router.get("/getAllRewardsByRewardId/:id",employeeRewardController.getAllRewardsByRewardId);
 router.post("/create",employeeRewardController.createEmployeeReward);
 router.put("/update/:id",employeeRewardController.updateEmployeeReward);

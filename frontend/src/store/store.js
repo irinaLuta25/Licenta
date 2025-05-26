@@ -10,7 +10,12 @@ import userReducer from "../features/user/userSlice";
 import questionReducer from "../features/question/questionSlice"
 import answerReducer from "../features/answer/answerSlice"
 import recommendationReducer from '../features/recommendation/recommendationSlice';
-
+import habitTrackingReducer from "../features/habitTracking/habitTrackingSlice";
+import employeeGoalsReducer from "../features/employeeGoals/employeeGoalSlice";
+import habitReducer from "../features/habit/habitSlice";
+import employeeRewardReducer from "../features/employeeReward/employeeRewardSlice"
+import rewardReducer from "../features/reward/rewardSlice"
+import emotionalStateReducer from "../features/emotionalState/emotionalStateSlice"
 
 export const store = configureStore({
     reducer: {
@@ -24,6 +29,12 @@ export const store = configureStore({
         user: userReducer,
         question: questionReducer,
         answer: answerReducer,
-        recommendation: recommendationReducer
+        recommendation: recommendationReducer,
+        habitTracking: habitTrackingReducer,
+        employeeGoals: employeeGoalsReducer,
+        habit: habitReducer,
+        employeeReward: employeeRewardReducer,
+        reward: rewardReducer,
+        emotionalState: emotionalStateReducer
     }
 })

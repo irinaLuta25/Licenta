@@ -5,7 +5,7 @@ const emotionalStateController=require("../controllers").emotionalStateControlle
 
 router.get("/getAll",emotionalStateController.getAllEmotionalStates);
 router.get("/:id",emotionalStateController.getEmotionalStateById);
-router.get("/getAllEmotionalStatesByEmployeeId/:id",emotionalStateController.getAllEmotionalStatesByEmployeeId);
+router.get("/getAllEmotionalStatesByEmployeeId/:employeeId",emotionalStateController.getAllEmotionalStatesByEmployeeId);
 router.post("/create",emotionalStateController.createEmotionalState);
 router.put("/update/:id",emotionalStateController.updateEmotionalState);
 router.delete("/delete/:id",emotionalStateController.deleteEmotionalState);

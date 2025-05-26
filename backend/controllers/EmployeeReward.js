@@ -1,4 +1,5 @@
 const EmployeeRewardDb = require("../models").EmployeeReward;
+const RewardDb = require("../models").Reward;
 
 const controller = {
     createEmployeeReward: async (req, res) => {
@@ -69,7 +70,9 @@ const controller = {
         }
         try {
             const rewards = await EmployeeRewardDb.findAll({
-                where: {employeeId}
+                where: {employeeId},
+                include: [{ model: RewardDb, as: "reward" }],
+                order: [["receivedAt", "ASC"]],
             });
             res.status(200).send(rewards);
         } catch (err) {
