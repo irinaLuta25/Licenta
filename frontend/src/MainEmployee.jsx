@@ -9,17 +9,16 @@ import FeedbackForm from "./pages/FeedbackForm";
 import CompatibilityForm from "./pages/CompatibilityForm";
 import HomepageEmployee from "./pages/HomepageEmployee";
 import Wellbeing from "./pages/Wellbeing";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import Reports from "./pages/Reports";
 
 
 
 function MainEmployee() {
-    // const employee = useSelector((state) => state.employee.employee);
+    const employee = useSelector((state) => state.employee.employee);
 
     return(
         <Routes>
-            {/* pages in navbar: therapists, events, habits, profile */}
-            {/* daca isManager==true => si pagina de reports */}
             <Route path="/" element={<Navigate to="home" />} />
             <Route path="therapists" element={<Therapists />} />
             <Route path="therapists/:id" element={<TherapistDetails />} />
@@ -30,9 +29,9 @@ function MainEmployee() {
             <Route path="therapists/compatibilityForm" element={<CompatibilityForm />} />
             <Route path="home" element={<HomepageEmployee />} />
             <Route path="wellbeing" element={<Wellbeing />} />
-            {/* <Route path="profile" element={<Profile />} />
+             {/* <Route path="profile" element={<Profile />} />  */}
             
-            {employee?.isManager && <Route path="reports" element={<Reports />} />} */}
+            {employee?.isManager && <Route path="reports" element={<Reports />} />}
         </Routes>
     )
     

@@ -1,6 +1,8 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../features/auth/authSlice';
+import { useEffect } from 'react';
+import { getEmployeeByUserId } from '../features/employee/employeeSlice';
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -13,6 +15,12 @@ function Navbar() {
     await dispatch(logout());
     navigate("/login");
   };
+
+  useEffect(() => {
+    if(user?.role=="angajat") {
+      dispatch(getEmployeeByUserId(user?.id))
+    }
+  },[dispatch,user])
 
   const role = user?.role;
   const basePath = role === "specialist" ? "/specialist" : "/employee";

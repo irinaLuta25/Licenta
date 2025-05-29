@@ -17,6 +17,7 @@ const specialistSpecializationController = require('./SpecialistSpecialization')
 const specializationController = require('./Specialization');
 const therapySessionController = require('./TherapySession');
 const recommendationController = require("./recommendation");
+const reportsController = require("./Report");
 
 module.exports = {
     userController,
@@ -37,5 +38,6 @@ module.exports = {
     specialistSpecializationController,
     specializationController,
     therapySessionController,
-    recommendationController
+    recommendationController,
+    reportsController
 };
