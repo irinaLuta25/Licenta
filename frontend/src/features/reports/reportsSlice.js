@@ -122,8 +122,6 @@ const reportsSlice = createSlice({
         state.error = null;
       })
       .addCase(getTherapySatisfactionDistribution.fulfilled, (state, action) => {
-        console.log("raspuns back",action.payload)
-
         state.loading = false;
         state.therapySatisfactionDistribution = action.payload;
       })

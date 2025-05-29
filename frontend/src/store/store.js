@@ -17,6 +17,7 @@ import employeeRewardReducer from "../features/employeeReward/employeeRewardSlic
 import rewardReducer from "../features/reward/rewardSlice"
 import emotionalStateReducer from "../features/emotionalState/emotionalStateSlice"
 import reportsReducer from "../features/reports/reportsSlice"
+import problemReducer from "../features/problem/problemSlice"
 
 export const store = configureStore({
     reducer: {
@@ -37,6 +38,7 @@ export const store = configureStore({
         employeeReward: employeeRewardReducer,
         reward: rewardReducer,
         emotionalState: emotionalStateReducer,
-        reports: reportsReducer
+        reports: reportsReducer,
+        problem: problemReducer
     }
 })

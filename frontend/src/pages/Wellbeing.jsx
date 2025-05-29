@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { deleteEmployeeGoal } from "../features/employeeGoals/employeeGoalSlice";
 import { FaTrash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import AddProgressModal from "../components/AddProgressModal";
 import AddGoalModal from "../components/AddGoalModal";
 import MoodListModal from "../components/MoodListModal";
+import MoodModal from "../components/MoodModal";
+
 
 import BadgeIcon from "../components/BadgeIcon";
 
@@ -13,12 +14,11 @@ import Calendar from "react-calendar";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchHabitTrackingByGoalId, createHabitTracking } from "../features/habitTracking/habitTrackingSlice";
-import { fetchEmployeeGoals } from "../features/employeeGoals/employeeGoalSlice";
+import { fetchEmployeeGoals, deleteEmployeeGoal } from "../features/employeeGoals/employeeGoalSlice";
 import { getEmployeeByUserId } from "../features/employee/employeeSlice";
 import { fetchRewardsByEmployee } from "../features/employeeReward/employeeRewardSlice";
 import { fetchAllRewards } from "../features/reward/rewardSlice";
 import { fetchEmotionalStatesByEmployeeId } from "../features/emotionalState/emotionalStateSlice";
-import MoodModal from "../components/MoodModal";
 
 const categoryColors = {
     "productivitate": "#6366f1", // indigo
