@@ -41,5 +41,9 @@ code {
   font-weight: 500;
 }
 
+.recharts-pie-sector:focus {
+  outline: none !important;
+}
+
 
 
