@@ -35,7 +35,7 @@ function LoginCard() {
 
     for (let field of requiredFields) {
       if (!form[field]) {
-        toast.error("Please complete all fields.");
+        toast.error("Te rugăm să completezi toate câmpurile.");
         return;
       }
     }
@@ -48,14 +48,14 @@ function LoginCard() {
         });
       } else {
         await axios.post("/user/register", form);
-        toast.success("Account successfully created! 🎉");
+        toast.success("Cont creat cu succes!");
       }
 
       await dispatch(getUserFromCookie());
       navigate('/');
     } catch (err) {
       console.error(err);
-      const message = err?.response?.data?.message || "Error during login/register";
+      const message = err?.response?.data?.message || "Eroare la autentificare/înregistrare";
       toast.error(message);
     }
   };
@@ -64,17 +64,17 @@ function LoginCard() {
     <div className="h-screen w-full flex items-center justify-center px-4">
       <div className="z-10 w-full max-w-md px-11 py-7 rounded-[30px] backdrop-blur-[12px] bg-white/10 border border-[#77B0AA] shadow-[0_0_20px_rgba(119,176,170,0.6)] animate-fade-in">
         <h2 className="text-2xl font-bold text-indigo-800 mb-5 text-center">
-          {isLogin ? "Login" : "Register"}
+          {isLogin ? "Autentificare" : "Înregistrare"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5 text-sm">
           {!isLogin && (
             <>
-              <input type="text" name="firstName" placeholder="First Name" value={form.firstName} onChange={handleChange}
+              <input type="text" name="firstName" placeholder="Prenume" value={form.firstName} onChange={handleChange}
                 className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-              <input type="text" name="lastName" placeholder="Last Name" value={form.lastName} onChange={handleChange}
+              <input type="text" name="lastName" placeholder="Nume" value={form.lastName} onChange={handleChange}
                 className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-              <input type="tel" name="phoneNumber" placeholder="Phone Number" value={form.phoneNumber} onChange={handleChange}
+              <input type="tel" name="phoneNumber" placeholder="Număr de telefon" value={form.phoneNumber} onChange={handleChange}
                 className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
               <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange}
                 className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 focus:outline-none shadow-inner" />
@@ -83,10 +83,10 @@ function LoginCard() {
                 value={form.gender}
                 onChange={(val) => setForm(prev => ({ ...prev, gender: val }))}
                 options={[
-                  { label: "Gender", value: "" },
-                  { label: "Female", value: "feminin" },
-                  { label: "Male", value: "masculin" },
-                  { label: "Other", value: "altul" },
+                  { label: "Gen", value: "" },
+                  { label: "Feminin", value: "feminin" },
+                  { label: "Masculin", value: "masculin" },
+                  { label: "Altul", value: "altul" },
                 ]}
               />
 
@@ -94,7 +94,7 @@ function LoginCard() {
                 value={form.role}
                 onChange={(val) => setForm(prev => ({ ...prev, role: val }))}
                 options={[
-                  { label: "Employee", value: "angajat" },
+                  { label: "Angajat", value: "angajat" },
                   { label: "Specialist", value: "specialist" },
                 ]}
               />
@@ -103,22 +103,22 @@ function LoginCard() {
 
           <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange}
             className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-          <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange}
+          <input type="password" name="password" placeholder="Parolă" value={form.password} onChange={handleChange}
             className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
 
           <button type="submit"
             className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm">
-            {isLogin ? "Login" : "Register"}
+            {isLogin ? "Autentifică-te" : "Înregistrează-te"}
           </button>
         </form>
 
-        <p className="mt-5 text-center text-xs text-indigo-900">
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+        <p className="mt-5 text-center text-sm text-indigo-900">
+          {isLogin ? "Nu ai un cont?" : "Ai deja un cont?"}{" "}
           <span
             className="text-indigo-700 font-medium hover:underline cursor-pointer"
             onClick={() => setIsLogin(!isLogin)}
           >
-            {isLogin ? "Register" : "Login"}
+            {isLogin ?  "Înregistrează-te" : "Autentifică-te"}
           </span>
         </p>
       </div>

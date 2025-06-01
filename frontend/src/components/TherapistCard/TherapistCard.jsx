@@ -8,15 +8,13 @@ function TherapistCard({ therapist }) {
   const user = therapist.user;
   const description = therapist.description;
   const formation = therapist.formation;
-  const specialistSpecializations = therapist.specialist_specializations;
+  const specialization = therapist.specialization;
 
   const shortDescription = description
     ? description.length > 100
       ? description.slice(0, 100) + '...'
       : description
     : 'Fără descriere';
-
-  const specializations = specialistSpecializations?.map(s => s.specialization?.name).join(', ');
 
   return (
     <div className="bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-xl hover:shadow-2xl rounded-xl transition transform duration-300 hover:-translate-y-1 overflow-hidden p-4 flex flex-col justify-between">
@@ -38,7 +36,7 @@ function TherapistCard({ therapist }) {
     </p>
 
     <p className="text-sm text-indigo-700">
-      <span className="font-medium text-indigo-900">Specializări:</span> {specializations || 'Nespecificate'}
+      <span className="font-medium text-indigo-900">Specializare:</span> {specialization || 'Nespecificată'}
     </p>
   </div>
 
@@ -47,7 +45,7 @@ function TherapistCard({ therapist }) {
       to={`${basePath}/therapists/${therapist.id}`}
       className="inline-block bg-indigo-700 text-white text-sm px-4 py-2 rounded-md transition duration-200 hover:bg-indigo-500"
     >
-      Read more
+      Vezi mai mult
     </Link>
   </div>
 </div>

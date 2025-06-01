@@ -11,7 +11,7 @@ const emojiMap = {
 
 const MoodListModal = ({ date, emotionalStates, onClose }) => {
     const selectedEntries = emotionalStates.filter((entry) => {
-        const recorded = new Date(entry.recordedAt);
+        const recorded = new Date(entry.createdAt);
         return (
             recorded.getFullYear() === date.getFullYear() &&
             recorded.getMonth() === date.getMonth() &&
@@ -51,9 +51,9 @@ const MoodListModal = ({ date, emotionalStates, onClose }) => {
                     ) : (
                         <ul className="flex flex-col gap-4">
                             {selectedEntries
-                                .sort((a, b) => new Date(b.recordedAt) - new Date(a.recordedAt))
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                                 .map((entry, index) => {
-                                    const time = new Date(entry.recordedAt).toLocaleTimeString([], {
+                                    const time = new Date(entry.createdAt).toLocaleTimeString([], {
                                         hour: "2-digit",
                                         minute: "2-digit",
                                     });

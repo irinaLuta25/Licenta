@@ -6,7 +6,6 @@ const controller = {
             const emotionalState = await EmotionalStateDb.create({
                 mood: req.body.mood,
                 intensity: req.body.intensity,
-                recordedAt: req.body.recordedAt,
                 details: req.body.details,
                 employeeId:req.body.employeeId
             });
@@ -25,7 +24,6 @@ const controller = {
             const updated = await emotionalState.update({
                 mood: req.body.mood,
                 intensity: req.body.intensity,
-                recordedAt: req.body.recordedAt,
                 details: req.body.details,
                 employeeId:req.body.employeeId
             });

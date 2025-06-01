@@ -58,7 +58,6 @@ function CreateEvent() {
         enrollmentDeadline: "",
         type: "",
         department: "",
-        isManagerParticipant: false,
         interval: null,
         image: null,
         questions: [],
@@ -67,10 +66,6 @@ function CreateEvent() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleToggle = () => {
-        setForm((prev) => ({ ...prev, isManagerParticipant: !prev.isManagerParticipant }));
     };
 
     const handleDateSelect = (date) => {
@@ -122,7 +117,6 @@ function CreateEvent() {
             formData.append("targetDepartment", form.department);
             formData.append("intervalId", form.interval.id);
             formData.append("type", form.type);
-            formData.append("managerIsParticipant", form.isManagerParticipant);
             formData.append("dateTime", selectedDate.toISOString());
 
             const res = await fetch("http://localhost:4848/api/event/create", {
@@ -130,7 +124,7 @@ function CreateEvent() {
                 body: formData,
             });
 
-            if (!res.ok) throw new Error("Failed to create event");
+            if (!res.ok) throw new Error("Evenimentul nu s-a putut crea!");
             const eventData = await res.json();
 
             for (const text of form.questions) {
@@ -140,17 +134,17 @@ function CreateEvent() {
             }
 
             await dispatch(updateIntervalStatus({ id: form.interval.id, status: true }));
-            toast.success("Success creating event!");
+            toast.success("Eveniment creat cu succes!");
             navigate(-1);
         } catch (err) {
-            toast.error(err.message || "Something went wrong.");
+            toast.error(err.message || "Evenimentul nu s-a putut crea!");
         }
     };
 
     const nextStep = () => {
         if (step === 1) {
             if (!form.name || !form.description || !form.type || !form.department) {
-                toast.warning("All fields are required.");
+                toast.warning("Toate câmpurile sunt obligatorii.");
                 return;
             }
 
@@ -158,7 +152,7 @@ function CreateEvent() {
 
         if (step === 2) {
             if (!form.enrollmentDeadline || !form.interval) {
-                toast.warning("All fields are required.");
+                toast.warning("Toate câmpurile sunt obligatorii.");
                 return;
             }
 
@@ -169,13 +163,13 @@ function CreateEvent() {
             const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
             if (diffInDays < 1) {
-                toast.warning("Enrollment  deadline needs to be at least 24h before the event!");
+                toast.warning("Termenul limită pentru înscriere trebuie să fie cu minimum 24h înainte de desfășurare.");
                 return;
             }
         }
 
         if (step === 3 && !form.image) {
-            toast.warning("Please upload an event image.");
+            toast.warning("Te rog încarcă o imagine!");
             return;
         }
 
@@ -187,7 +181,7 @@ function CreateEvent() {
         <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
             <div className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
                 <button onClick={() => navigate(-1)} className="text-2xl font-bold hover:underline">
-                    ← Back
+                    ← Înapoi
                 </button>
             </div>
 
@@ -195,29 +189,29 @@ function CreateEvent() {
                 <form noValidate className="w-full max-w-3xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-xl hover:shadow-2xl border border-indigo-300/30 drop-shadow-lg rounded-2xl p-6 space-y-6">
 
 
-                    <h1 className="text-2xl font-bold text-center text-indigo-800 mb-4">Create a New Event</h1>
+                    <h1 className="text-2xl font-bold text-center text-indigo-800 mb-4">Crează un eveniment nou</h1>
 
                     {step === 1 && (
                         <>
                             <div>
-                                <label className="font-medium">Event Name</label>
+                                <label className="font-medium">Denumire</label>
                                 <input name="name" value={form.name} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" required />
                             </div>
 
                             <div>
-                                <label className="font-medium">Description</label>
+                                <label className="font-medium">Descriere</label>
                                 <textarea name="description" value={form.description} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" required />
                             </div>
 
 
 
                             <div>
-                                <label className="block font-semibold mb-1">Type</label>
+                                <label className="block font-semibold mb-1">Tip</label>
                                 <CustomDropdown2
                                     value={form.type}
                                     onChange={(val) => setForm((prev) => ({ ...prev, type: val }))}
                                     options={[
-                                        { label: "Select type", value: "" },
+                                        { label: "Selectează tip", value: "" },
                                         { label: "Workshop", value: "workshop" },
                                         { label: "Training", value: "training" },
                                     ]}
@@ -225,34 +219,20 @@ function CreateEvent() {
                             </div>
 
                             <div>
-                                <label className="block font-semibold mb-1">Target Department</label>
+                                <label className="block font-semibold mb-1">Departament vizat</label>
                                 <CustomDropdown2
                                     value={form.department}
                                     onChange={(val) => setForm((prev) => ({ ...prev, department: val }))}
                                     options={[
-                                        { label: "HR", value: "HR" },
+                                        { label: "General", value: "General" },
+                                        { label: "Resurse Umane", value: "HR" },
                                         { label: "IT", value: "IT" },
                                         { label: "Marketing", value: "Marketing" },
-                                        { label: "Sales", value: "Sales" },
-                                        { label: "General", value: "General" },
+                                        { label: "Financiar", value: "Sales" },
                                     ]}
                                 />
                             </div>
 
-                            <div className="flex items-center justify-between mt-4">
-                                <label className="font-semibold mr-4">Is manager a participant?</label>
-                                <button
-                                    type="button"
-                                    onClick={handleToggle}
-                                    className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${form.isManagerParticipant ? "bg-indigo-600" : "bg-gray-300"
-                                        }`}
-                                >
-                                    <div
-                                        className={`w-5 h-5 bg-white rounded-full shadow-md transform duration-300 ${form.isManagerParticipant ? "translate-x-7" : ""
-                                            }`}
-                                    />
-                                </button>
-                            </div>
                         </>
                     )}
 
@@ -260,7 +240,7 @@ function CreateEvent() {
                         <div className="flex flex-col sm:flex-row justify-between items-start gap-8">
                             {/* Calendar */}
                             <div>
-                                <label className="font-medium block mb-2">Choose Event Interval</label>
+                                <label className="font-medium block mb-2">Alege un interval</label>
                                 <Calendar
                                     className="custom-calendar2"
                                     onChange={(date) => {
@@ -274,14 +254,14 @@ function CreateEvent() {
                                 />
                                 {selectedDate && (
                                     <p className="mt-4 text-sm  text-indigo-700 font-medium">
-                                        Selected date: {selectedDate.toLocaleDateString("ro-RO")}
+                                        Dată selectată: {selectedDate.toLocaleDateString("ro-RO")}
                                     </p>
                                 )}
                             </div>
 
                             {/* Enrollment + Intervals */}
                             <div className="w-full sm:w-1/2">
-                                <label className="font-medium block mb-2">Enrollment Deadline</label>
+                                <label className="font-medium block mb-2">Termen limită pentru înscriere</label>
                                 <input
                                     type="date"
                                     name="enrollmentDeadline"
@@ -293,11 +273,11 @@ function CreateEvent() {
 
                                 <div className="w-full flex justify-center">
                                     <div className="w-64 min-h-[120px] p-4 rounded-xl bg-white/70 shadow-inner text-gray-700 overflow-hidden">
-                                        <h3 className="text-indigo-800 font-semibold mb-2 text-center">Available Intervals</h3>
+                                        <h3 className="text-indigo-800 font-semibold mb-2 text-center">Intervale disponibile</h3>
 
                                         <div className="flex flex-col gap-2 items-center w-full">
                                             {intervalsForSelectedDate.length === 0 ? (
-                                                <p className="text-gray-600 italic text-center text-sm">No available intervals for this date.</p>
+                                                <p className="text-gray-600 italic text-center text-sm">Nu ai setat intervale disponibile pentru această zi..</p>
                                             ) : (
                                                 intervalsForSelectedDate.map((interval) => {
                                                     const isSelected = form.interval?.id === interval.id;
@@ -324,7 +304,7 @@ function CreateEvent() {
 
                                 {form.interval && (
                                     <p className="mt-4 text-sm  text-indigo-700 font-medium">
-                                        Selected interval:{" "}
+                                        Interval selectat:{" "}
                                         {form.interval.beginTime.slice(0, 5)} - {form.interval.endTime.slice(0, 5)}
                                     </p>
                                 )}
@@ -334,14 +314,14 @@ function CreateEvent() {
 
                     {step === 3 && (
                         <div>
-                            <h2 className="text-lg font-semibold mb-2">Upload Event Image</h2>
+                            <h2 className="text-lg font-semibold mb-2">Încarcă o imagine pentru eveniment</h2>
                             <ImageUpload onImageUpload={(file) => setForm(prev => ({ ...prev, image: file }))} />
                         </div>
                     )}
 
                     {step === 4 && (
                         <div>
-                            <h2 className="font-semibold mb-3">Feedback Form</h2>
+                            <h2 className="font-semibold mb-3">Formular de feedback</h2>
                             {form.questions.map((q, idx) => (
                                 <div key={idx} className="mb-3">
                                     <input
@@ -349,12 +329,12 @@ function CreateEvent() {
                                         value={q}
                                         onChange={(e) => updateQuestion(idx, e.target.value)}
                                         className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner"
-                                        placeholder={`Question ${idx + 1}`}
+                                        placeholder={`Întrebarea ${idx + 1}`}
                                     />
                                 </div>
                             ))}
                             <button type="button" onClick={addQuestion} className="bg-indigo-500 text-white px-4 py-1 rounded hover:bg-indigo-600">
-                                Add Question
+                                Adaugă întrebare
                             </button>
                         </div>
                     )}
@@ -362,16 +342,16 @@ function CreateEvent() {
                     <div className="flex justify-between pt-2">
                         {step > 1 && (
                             <button type="button" onClick={prevStep} className="bg-indigo-100 text-indigo-800 px-4 py-2 rounded hover:bg-indigo-300">
-                                Back
+                                Înapoi
                             </button>
                         )}
                         {step < 4 ? (
                             <button type="button" onClick={nextStep} className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 ml-auto">
-                                Next
+                                Continuă
                             </button>
                         ) : (
                             <button type="button" onClick={handleSubmit} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 ml-auto">
-                                Submit
+                                Trimite
                             </button>
                         )}
                     </div>

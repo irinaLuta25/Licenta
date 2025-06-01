@@ -93,10 +93,7 @@ function TherapistDetails() {
         age = calculateAge(therapist.user?.birthdate);
     }
 
-    let specializations = [];
-    if (therapist.specialist_specializations) {
-        specializations = therapist.specialist_specializations?.map(s => s.specialization?.name).join(', ');
-    }
+    let specialization=therapist.specialization;
 
     console.log("Therapist " + id + ":", therapist)
     console.log(freeIntervals)
@@ -140,7 +137,7 @@ function TherapistDetails() {
                     onClick={() => navigate("/employee/therapists")}
                     className="text-2xl font-bold hover:underline"
                 >
-                    ← Back
+                    ← Înapoi
                 </button>
             </div>
 
@@ -233,7 +230,7 @@ function TherapistDetails() {
                             </p>
 
                             <p className="text-sm text-gray-500">
-                                <span className="font-medium text-gray-700">Specializări:</span> {specializations || 'Nespecificate'}
+                                <span className="font-medium text-gray-700">Specializare:</span> {specialization || 'Nespecificată'}
                             </p>
 
                             <p className="text-sm text-gray-500">

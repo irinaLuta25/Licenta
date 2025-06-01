@@ -13,10 +13,6 @@ const EmotionalStateModel = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        recordedAt: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
         details: {
             type: DataTypes.TEXT,
             allowNull: true

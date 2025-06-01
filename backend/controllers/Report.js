@@ -43,7 +43,7 @@ const controller = {
       const states = await EmotionalState.findAll({
         where: {
           employeeId: { [Op.in]: employeeIds },
-          recordedAt: { [Op.between]: [startDate, endDate] },
+          createdAt: { [Op.between]: [startDate, endDate] },
         },
         raw: true,
       });
@@ -51,7 +51,7 @@ const controller = {
       // 4. Grupare date: pe zi + mood
       const grouped = {};
       for (const s of states) {
-        const date = s.recordedAt.toISOString().split("T")[0];
+        const date = s.createdAt.toISOString().split("T")[0];
         if (!grouped[date]) grouped[date] = {};
         if (!grouped[date][s.mood]) grouped[date][s.mood] = [];
         grouped[date][s.mood].push(s.intensity);
@@ -102,7 +102,7 @@ const controller = {
       const states = await EmotionalState.findAll({
         where: {
           employeeId: { [Op.in]: employeeIds },
-          recordedAt: { [Op.between]: [startDate, endDate] },
+          createdAt: { [Op.between]: [startDate, endDate] },
         },
         raw: true,
       });

@@ -15,8 +15,6 @@ const problemRouter=require("./Problem");
 const questionRouter=require("./Question");
 const rewardRouter=require("./Reward");
 const specialistRouter=require("./Specialist");
-const specialistSpecializationRouter=require("./SpecialistSpecialization");
-const specializationRouter=require("./Specialization");
 const therapySessionRouter=require("./TherapySession");
 const userRouter=require("./User");
 
@@ -38,8 +36,6 @@ router.use("/problem",problemRouter);
 router.use("/question",questionRouter);
 router.use("/reward",rewardRouter);
 router.use("/specialist",specialistRouter);
-router.use("/specialistSpecialization",specialistSpecializationRouter);
-router.use("/specialization",specializationRouter);
 router.use("/specialist",therapySessionRouter);
 router.use("/therapySession",therapySessionRouter);
 router.use("/user",userRouter);

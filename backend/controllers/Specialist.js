@@ -1,9 +1,6 @@
-const { User } = require("../models");
-
 const SpecialistDb = require("../models").Specialist;
 const UserDb = require("../models").User;
-const SpecializationDb = require("../models").Specialization;
-const SpecialistSpecializationDb=require("../models").SpecialistSpecialization;
+
 
 const controller = {
     createSpecialist: async (req, res) => {
@@ -13,9 +10,9 @@ const controller = {
             linkedin: req.body.linkedin,
             facebook: req.body.facebook,
             website: req.body.website,
-            specialization: req.body.specialization,
             isTherapist: req.body.isTherapist,
             formationName: req.body.formationName,
+            specialization: req.body.specialization,
             therapyStyle: req.body.therapyStyle,
         };
 
@@ -93,14 +90,6 @@ const controller = {
                       model: UserDb,      
                       as: 'user',            
                     },
-                    {
-                        model: SpecialistSpecializationDb,
-                        include: [
-                          {
-                            model: SpecializationDb,
-                          },
-                        ],
-                      },
                 ]
             });
             res.status(200).send(specialist);
@@ -120,14 +109,6 @@ const controller = {
                       model: UserDb,      
                       as: 'user',            
                     },
-                    {
-                        model: SpecialistSpecializationDb,
-                        include: [
-                          {
-                            model: SpecializationDb,
-                          },
-                        ],
-                      },
                 ]
             });
             res.status(200).json(therapists);

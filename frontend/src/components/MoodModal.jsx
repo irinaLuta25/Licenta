@@ -56,7 +56,7 @@ const MoodModal = ({ onClose, employeeId, onSave }) => {
         const payload = {
             mood: selectedState,
             intensity,
-            recordedAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
             details,
             employeeId,
         };

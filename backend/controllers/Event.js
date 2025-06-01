@@ -7,25 +7,6 @@ const bucket = require("../config/firebaseConfig");
 
 
 const controller = {
-    // createEvent: async (req, res) => {
-    //     try {
-    //         const event = await EventDb.create({
-    //             name: req.body.name,
-    //             description: req.body.description,
-    //             specialistId:req.body.specialistId,
-    //             dateTime: req.body.dateTime,
-    //             enrollmentDeadline: req.body.enrollmentDeadline,
-    //             targetDepartment: req.body.targetDepartment,
-    //             intervalId:req.body.intervalId,
-    //             type:req.body.type,
-    //             managerIsParticipant:req.body.managerIsParticipant,
-    //             image: req.body.image
-    //         });
-    //         res.status(200).send(event);
-    //     } catch (err) {
-    //         res.status(500).send(err.message);
-    //     }
-    // },
 
     createEvent: async (req, res) => {
         try {
@@ -37,7 +18,6 @@ const controller = {
             targetDepartment,
             intervalId,
             type,
-            managerIsParticipant,
             dateTime,
           } = req.body;
       
@@ -73,7 +53,6 @@ const controller = {
             targetDepartment,
             intervalId,
             type,
-            managerIsParticipant,
             dateTime,
             image: imageUrl,
           });
@@ -100,7 +79,6 @@ const controller = {
                 targetDepartment: req.body.targetDepartment,
                 intervalId:req.body.intervalId,
                 type:req.body.type,
-                managerIsParticipant:req.body.managerIsParticipant,
                 image: req.body.image
             });
             res.status(200).send(updated);
@@ -180,7 +158,7 @@ const controller = {
                 where: {
                     [Op.or]: [
                         { targetDepartment: department },             
-                        { targetDepartment: 'general' }
+                        { targetDepartment: 'General' }
                     ]
                 }
             });
@@ -216,18 +194,6 @@ const controller = {
         }
     },
 
-    getAllEventsForManagers: async (req, res) => {
-        try {
-            const events = await EventDb.findAll({
-                where: {
-                    managerIsParticipant:true
-                }
-            });
-            res.status(200).send(events);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
-    },
 };
 
 module.exports = controller;

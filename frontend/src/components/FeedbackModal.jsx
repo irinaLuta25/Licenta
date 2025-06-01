@@ -49,10 +49,10 @@ const FeedbackModal = ({ onClose, session }) => {
        className="bg-white/90 backdrop-blur-xl rounded-xl shadow-2xl p-10 w-full max-w-3xl border border-indigo-100"
       >
         <h2 className="text-2xl font-bold text-indigo-800 mb-4">
-          Feedback for{" "}
+          Feedback pentru{" "}
           {(session?.type === "training" || session?.type === "workshop")
             ? session?.name
-            : "Therapy Session - " + session?.employee?.user?.firstName + " " + session?.employee?.user?.lastName}
+            : "sesiunea de terapie - " + session?.employee?.user?.firstName + " " + session?.employee?.user?.lastName}
         </h2>
         <p className="text-md text-black mb-4">
           {"🕰️" + session?.interval?.beginTime.slice(0, 5) + " - " + session?.interval?.endTime.slice(0, 5)}
@@ -60,7 +60,7 @@ const FeedbackModal = ({ onClose, session }) => {
 
         <div className="space-y-3 max-h-[50vh] overflow-y-auto">
           {questions.length === 0 ? (
-            <p className="italic text-gray-600">No feedback questions available for this session.</p>
+            <p className="italic text-gray-600">Nu există feedback.</p>
           ) : (
             questions.map((q, i) => (
               <div key={q.id} className="bg-[#e0e7ff] border-l-4 border-indigo-400 rounded-md shadow-sm">
@@ -68,13 +68,13 @@ const FeedbackModal = ({ onClose, session }) => {
                   onClick={() => toggleAccordion(i, q.id)}
                   className={`w-full flex justify-between items-center p-4 text-left font-medium text-indigo-800 rounded-lg ${expandedIndex !== i ? 'hover:bg-gray-3  00' : ''}`}>
 
-                  <span>Q: {q.text}</span>
+                  <span>{q.text}</span>
                   {expandedIndex === i ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </button>
                 {expandedIndex === i && (
                   <div className="px-4 pb-4 space-y-2">
                     {answers.filter(a => !(isTherapySession && a.isAnonymous)).length === 0 ? (
-                      <p className="text-sm text-gray-600 italic">No answers available yet.</p>
+                      <p className="text-sm text-gray-600 italic">Nu există încă răspunsuri.</p>
                     ) : (
                       answers
                         .filter(a => !(isTherapySession && a.isAnonymous))
@@ -86,7 +86,7 @@ const FeedbackModal = ({ onClose, session }) => {
                             <p className="text-gray-900 text-sm break-words whitespace-pre-wrap">“{a.answer}”</p>
                             {!isTherapySession && (
                               <p className="text-xs text-right text-gray-500 mt-1">
-                                — {a.isAnonymous ? "Anonymous" : a.employee.user.firstName + " " + a.employee.user.lastName}
+                                — {a.isAnonymous ? "Anonim" : a.employee.user.firstName + " " + a.employee.user.lastName}
                               </p>
                             )}
                           </div>
@@ -104,7 +104,7 @@ const FeedbackModal = ({ onClose, session }) => {
             onClick={onClose}
             className="px-4 py-2 bg-indigo-700 hover:bg-indigo-800 text-white rounded"
           >
-            Close
+            Închide
           </button>
         </div>
       </div>

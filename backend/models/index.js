@@ -15,8 +15,6 @@ const ProblemModel=require("./Problem")
 const QuestionModel=require("./Question")
 const RewardModel=require("./Reward")
 const SpecialistModel=require("./Specialist")
-const SpecialistSpecializationModel=require("./SpecialistSpecialization")
-const SpecializationModel=require("./Specialization")
 const TherapySessionModel=require("./TherapySession")
 const UserModel=require("./User")
 
@@ -34,8 +32,6 @@ const Problem=ProblemModel(db,sequelize)
 const Question=QuestionModel(db,sequelize)
 const Reward=RewardModel(db,sequelize)
 const Specialist=SpecialistModel(db,sequelize)
-const SpecialistSpecialization=SpecialistSpecializationModel(db,sequelize)
-const Specialization=SpecializationModel(db,sequelize)
 const TherapySession=TherapySessionModel(db,sequelize)
 const User=UserModel(db,sequelize)
 
@@ -44,12 +40,6 @@ Employee.belongsTo(User)
 
 User.hasOne(Specialist)
 Specialist.belongsTo(User)
-
-Specialist.hasMany(SpecialistSpecialization)
-SpecialistSpecialization.belongsTo(Specialist)
-
-Specialization.hasMany(SpecialistSpecialization)
-SpecialistSpecialization.belongsTo(Specialization)
 
 Specialist.hasMany(Interval)
 Interval.belongsTo(Specialist)
@@ -122,8 +112,6 @@ module.exports = {
     Question,
     Reward,
     Specialist,
-    SpecialistSpecialization,
-    Specialization,
     TherapySession,
     db
 }

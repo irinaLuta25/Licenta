@@ -17,7 +17,7 @@ export const createHabitTracking = createAsyncThunk(
     const res = await axios.post("/habitTracking/create", {
       employeeGoalId,
       value,
-      recordedAt: new Date(),
+      createdAt: new Date(),
     });
     return res.data;
   }

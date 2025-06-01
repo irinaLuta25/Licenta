@@ -15,6 +15,7 @@ import { deleteTherapySession } from "../features/therapySessions/therapySession
 import { updateIntervalStatus } from "../features/interval/intervalSlice";
 import { deleteEmployeeEvent } from "../features/employeeEvent/employeeEventSlice";
 import { checkHasFeedbackForEvent, checkHasFeedbackForTherapySession } from "../features/answer/answerSlice"
+import { ro } from "date-fns/locale";
 
 
 const EmployeeSchedule = () => {
@@ -59,18 +60,18 @@ const EmployeeSchedule = () => {
                         id: intervalId,
                         status: false
                     }));
-                    toast.success("Therapy session canceled!");
+                    toast.success("Sesiune de terapie anulată!");
                 })
-                .catch(() => toast.error("Failed to cancel therapy session."));
+                .catch(() => toast.error("Eroare la anularea sesiunii."));
         } else if (selectedToDelete.type === "event") {
             const employeeEventId = selectedToDelete.original.id;
 
             dispatch(deleteEmployeeEvent(employeeEventId))
                 .unwrap()
                 .then(() => {
-                    toast.success("Unregistered from event!");
+                    toast.success("Te-ai retras de la eveniment cu succes!");
                 })
-                .catch(() => toast.error("Failed to unregister from event."));
+                .catch(() => toast.error("Retragere de la eveniment nereușită."));
         }
 
         setShowModal(false);
@@ -110,7 +111,7 @@ const EmployeeSchedule = () => {
             realSchedule[dateKey] = realSchedule[dateKey] || [];
             realSchedule[dateKey].push({
                 type: "therapy",
-                title: `Therapy Session - ${session.interval.specialist?.user?.firstName || "Specialist"
+                title: `Sesiune de terapie - ${session.interval.specialist?.user?.firstName || "Specialist"
                     } ${session.interval.specialist?.user?.lastName || ""}`,
                 time: `${begin}–${end}`,
                 original: session,
@@ -181,12 +182,13 @@ const EmployeeSchedule = () => {
                     <div className="lg:w-[55%] w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                             <h1 className="text-3xl font-semibold text-indigo-800">
-                                My Schedule
+                                Programul meu
                             </h1>
                         </div>
 
                         <Calendar
                             className="custom-schedule-calendar"
+                            locale="ro"
                             onClickDay={handleDayClick}
                             value={selectedDate}
                             tileContent={({ date }) => {
@@ -205,7 +207,7 @@ const EmployeeSchedule = () => {
                                         ))}
                                         {events.length > 3 && (
                                             <span className="text-[9px] text-gray-200">
-                                                +{events.length - 3} more
+                                                + încă {events.length - 3}
                                             </span>
                                         )}
                                     </div>
@@ -216,12 +218,12 @@ const EmployeeSchedule = () => {
 
                     <div className="lg:w-[45%] w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
                         <h2 className="text-2xl font-bold text-indigo-800 mb-4">
-                            {format(selectedDate, "MMMM dd, yyyy")}
+                            {format(selectedDate, "dd MMMM yyyy", { locale: ro })}
                         </h2>
                         <div className="space-y-3">
                             {getEventsForDate(selectedDate).length === 0 ? (
                                 <p className="text-gray-600 italic text-center">
-                                    No activities scheduled.
+                                    Nu ai activități programate în această zi.
                                 </p>
                             ) : (
                                 getEventsForDate(selectedDate).map((ev, idx) => {
@@ -237,7 +239,7 @@ const EmployeeSchedule = () => {
 
                                     return (
                                         <div key={idx} className={`p-4 rounded shadow-sm ${getColorClass(ev)}`}>
-                                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                                            <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-2">
                                                 <div>
                                                     <span className="font-medium block">{ev.title}</span>
                                                     <span className="text-sm block">{ev.time}</span>
@@ -255,7 +257,7 @@ const EmployeeSchedule = () => {
                                                                     : 'bg-purple-400 hover:bg-purple-500'
                                                                 } text-white px-3 py-2 rounded`}
                                                         >
-                                                            {hasFeedback ? 'Feedback Added' : 'Add Feedback'}
+                                                            {hasFeedback ? 'Feedback adăugat' : 'Adaugă feedback'}
                                                         </Link>
 
 
@@ -264,7 +266,7 @@ const EmployeeSchedule = () => {
                                                             onClick={() => handleDelete(ev)}
                                                             className="text-sm bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
                                                         >
-                                                            {ev.type === "therapy" ? "Cancel Session" : "Unregister"}
+                                                            {ev.type === "therapy" ? "Anulează" : "Retrage-te"}
                                                         </button>
                                                     )}
                                                 </div>
@@ -282,23 +284,23 @@ const EmployeeSchedule = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
                     <div ref={modalRef} className="bg-white rounded-xl p-8 shadow-xl max-w-md w-full text-center space-y-4">
                         <h3 className="text-xl font-semibold text-indigo-800">
-                            {selectedToDelete.type === "therapy" ? "Cancel Therapy Session?" : "Unregister from Event?"}
+                            {selectedToDelete.type === "therapy" ? "Confirmă anularea sesiunii" : "Confirmă anularea evenimentului"}
                         </h3>
                         <p className="text-gray-600">
-                            Are you sure you want to {selectedToDelete.type === "therapy" ? "cancel this therapy session" : "unregister from this event"}?
+                            Ești sigur că vrei să {selectedToDelete.type === "therapy" ? "anulezi ședința" : "te retragi de la acest eveniment"}?
                         </p>
                         <div className="flex justify-center gap-4 pt-4">
                             <button
                                 onClick={confirmDelete}
                                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
                             >
-                                Yes, Confirm
+                                Da, confirm
                             </button>
                             <button
                                 onClick={() => setShowModal(false)}
                                 className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg"
                             >
-                                Cancel
+                                Anulează
                             </button>
                         </div>
                     </div>

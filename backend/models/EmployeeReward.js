@@ -12,10 +12,6 @@ const EmployeeRewardModel = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: 1,
       },
-      receivedAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
     },
     {
       underscored: true,

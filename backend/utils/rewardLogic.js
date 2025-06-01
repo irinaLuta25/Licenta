@@ -17,7 +17,7 @@ const checkAndUpdateReward = async (employeeId, models) => {
 
     const today = new Date();
     const relevant = trackings.filter((t) => {
-      const d = new Date(t.recordedAt);
+      const d = new Date(t.createdAt);
       if (goal.period === "zilnic") return d.toDateString() === today.toDateString();
       if (goal.period === "săptămânal") {
         const start = new Date(today);
@@ -54,7 +54,7 @@ const checkAndUpdateReward = async (employeeId, models) => {
       await EmployeeReward.create({
         employeeId,
         rewardId: reward.id,
-        receivedAt: new Date(),
+        createdAt: new Date(),
         level: currentLevel + 1,
       });
     }

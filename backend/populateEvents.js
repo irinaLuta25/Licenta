@@ -112,7 +112,6 @@ const createEventsWithParticipants = async () => {
           enrollmentDeadline: new Date(interval.date.getTime() - 86400000),
           targetDepartment: faker.helpers.arrayElement(departments),
           type: faker.helpers.arrayElement(eventTypes),
-          managerIsParticipant: faker.datatype.boolean(),
           image: null,
           specialistId: specialist.id,
           intervalId: interval.id,

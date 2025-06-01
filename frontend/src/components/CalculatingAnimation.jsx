@@ -6,7 +6,7 @@ function CalculatingAnimation({ duration = 3000, onComplete }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setPercentage(randomPercentage());
-    }, 400); 
+    }, 200); 
 
     const timeout = setTimeout(() => {
       clearInterval(interval);

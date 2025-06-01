@@ -26,7 +26,7 @@ router.post("/simulate-reward/:employeeId", async (req, res) => {
       await HabitTracking.create({
         employeeGoalId: goal.id,
         value: 1,
-        recordedAt: fakeDate,
+        createdAt: fakeDate,
       });
     }
 

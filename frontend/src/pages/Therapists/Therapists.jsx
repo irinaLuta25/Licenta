@@ -9,8 +9,8 @@ import { useLocation } from "react-router-dom";
 
 
 const sortOptions = [
-    { label: "Nume A-Z", value: "name-asc" },
-    { label: "Nume Z-A", value: "name-desc" },
+    { label: "Nume (A-Z)", value: "name-asc" },
+    { label: "Nume (Z-A)", value: "name-desc" },
 ];
 const genderOptions = [
     { label: "Gen", value: "" },
@@ -77,7 +77,7 @@ function Therapists() {
 
                             <input
                                 type="text"
-                                placeholder="Search therapist..."
+                                placeholder="Caută terapeut..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full pl-10 pr-4 py-2 bg-gradient-to-r from-[#cbc0f3] via-[#cadbf9] to-[#deecff] text-indigo-800 placeholder:text-indigo-600 rounded-xl backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-md"
@@ -114,7 +114,7 @@ function Therapists() {
                         className="bg-gradient-to-r from-[#4f46e5] via-[#7c3aed] to-[#ec4899] text-white shadow-md hover:brightness-110 hover:scale-105 font-semibold px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"
                     >
                         <span>✨</span>
-                        Compatibility Search
+                        Găsește terapeut compatibil
                         <span>✨</span>
                     </button>
                 </div>

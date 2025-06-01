@@ -190,7 +190,7 @@ function Wellbeing() {
                                     if (view !== "month" || !emotionalStates?.length) return null;
 
                                     const dayEntries = emotionalStates.filter((e) => {
-                                        const recordedDate = new Date(e.recordedAt);
+                                        const recordedDate = new Date(e.createdAt);
                                         return (
                                             recordedDate.getFullYear() === date.getFullYear() &&
                                             recordedDate.getMonth() === date.getMonth() &&
@@ -201,7 +201,7 @@ function Wellbeing() {
                                     if (dayEntries.length === 0) return null;
 
                                     const latestEntry = [...dayEntries].sort(
-                                        (a, b) => new Date(b.recordedAt) - new Date(a.recordedAt)
+                                        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
                                     )[0];
 
                                     return (
@@ -255,7 +255,7 @@ function Wellbeing() {
 
                                 const today = new Date();
                                 const relevantTrackings = goalTrackings.filter((t) => {
-                                    const recDate = new Date(t.recordedAt);
+                                    const recDate = new Date(t.createdAt);
 
                                     if (period === "zilnic") {
                                         return recDate.toDateString() === today.toDateString();

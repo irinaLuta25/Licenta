@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import 'react-calendar/dist/Calendar.css'
 import './CustomSchedule.css'
 import { format } from 'date-fns'
+import { ro } from "date-fns/locale";
 import Navbar from '../components/Navbar'
 import FeedbackModal from '../components/FeedbackModal';
 import { getSpecialistByUserId, getIntervalsForTherapist } from "../features/therapists/therapistsSlice"
@@ -13,9 +14,6 @@ import { createInterval } from '../features/interval/intervalSlice';
 import { getEmployeeEventsByEventId } from '../features/employeeEvent/employeeEventSlice';
 import { toast } from "react-toastify";
 import { useRef } from 'react';
-
-
-// !! de adus numarul de participani din back (findAndCountAll din EmployeeEvent where eventId)
 
 
 const SpecialistCalendar = () => {
@@ -61,7 +59,7 @@ const SpecialistCalendar = () => {
       realSchedule[dateKey] = realSchedule[dateKey] || [];
       realSchedule[dateKey].push({
         type: 'therapy',
-        title: `Therapy Session - ${session.employee.user.firstName} ${session.employee.user.lastName}`,
+        title: `Sesiune de terapie - ${session.employee.user.firstName} ${session.employee.user.lastName}`,
         time: `${begin}–${end}`,
         original: session
       });
@@ -94,7 +92,7 @@ const SpecialistCalendar = () => {
       realSchedule[dateKey] = realSchedule[dateKey] || [];
       realSchedule[dateKey].push({
         type: 'free',
-        title: 'Free slot',
+        title: 'Interval disponibil',
         time: `${begin}–${end}`
       });
     });
@@ -121,7 +119,7 @@ const SpecialistCalendar = () => {
     })).then(() => {
       dispatch(getIntervalsForTherapist(specialist.id));
       setShowModal(false);
-      toast.success("Interval Added!");
+      toast.success("Interval adăugat!");
       setIntervalForm({ date: '', beginTime: '', endTime: '' });
     });
   }
@@ -164,13 +162,14 @@ const SpecialistCalendar = () => {
 
           <div className="lg:w-[55%] w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-              <h1 className="text-3xl font-semibold text-indigo-800">My Schedule</h1>
+              <h1 className="text-3xl font-semibold text-indigo-800">Programul meu</h1>
               <button onClick={() => setShowModal(true)} className="bg-indigo-700 text-white px-4 py-2 rounded hover:bg-indigo-800 transition">
-                + Add Free Slot
+                + Adaugă interval disponibil
               </button>
             </div>
             <Calendar
               className="custom-schedule-calendar"
+              locale='ro'
               onClickDay={handleDayClick}
               value={selectedDate}
               tileContent={({ date }) => {
@@ -182,7 +181,7 @@ const SpecialistCalendar = () => {
                         {ev.title}
                       </div>
                     ))}
-                    {events.length > 3 && <span className="text-[9px] text-gray-200">+{events.length - 3} more</span>}
+                    {events.length > 3 && <span className="text-[9px] text-gray-200">+ încă {events.length - 3}</span>}
                   </div>
                 )
               }}
@@ -190,10 +189,12 @@ const SpecialistCalendar = () => {
           </div>
 
           <div className="lg:w-[45%] w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
-            <h2 className="text-2xl font-bold text-indigo-800 mb-4">{format(selectedDate, 'MMMM dd, yyyy')}</h2>
+            <h2 
+              className="text-2xl font-bold text-indigo-800 mb-4">{format(selectedDate, "dd MMMM yyyy", { locale: ro })}
+            </h2>
             <div className="space-y-3">
               {getEventsForDate(selectedDate).length === 0 ? (
-                <p className="text-gray-600 italic text-center">No activities scheduled.</p>
+                <p className="text-gray-600 italic text-center">Nu există activități programate în această zi.</p>
               ) : (
                 getEventsForDate(selectedDate).map((ev, idx) => (
                   <div key={idx} className={`p-4 rounded shadow-sm ${getColorClass(ev)}`}>
@@ -204,7 +205,7 @@ const SpecialistCalendar = () => {
 
                         {(ev.type === 'event') && (
                           <p className="text-xs text-gray-700 mt-1">
-                            Participants: <span className="font-semibold">{participantCounts[ev.original.id] ?? '...'}</span>
+                            Participanți: <span className="font-semibold">{participantCounts[ev.original.id] ?? '...'}</span>
                           </p>
                         )}
                       </div>
@@ -213,7 +214,7 @@ const SpecialistCalendar = () => {
                           onClick={() => setSelectedFeedbackSession(ev.original)}
                           className="text-sm bg-purple-400 text-white px-3 py-2 rounded hover:bg-purple-500"
                         >
-                          See Feedback
+                          Vezi feedback
                         </button>
                       )}
                     </div>
@@ -228,7 +229,7 @@ const SpecialistCalendar = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
           <div ref={modalRef} className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl">
-            <h2 className="text-xl font-semibold text-indigo-800 mb-4">Add Free Interval</h2>
+            <h2 className="text-xl font-semibold text-indigo-800 mb-4">Adaugă interval disponibil</h2>
             <div className="space-y-3">
               <input
                 type="date"
@@ -249,8 +250,8 @@ const SpecialistCalendar = () => {
                 onChange={(e) => setIntervalForm({ ...intervalForm, endTime: e.target.value })}
               />
               <div className="flex justify-end gap-2 mt-4">
-                <button onClick={() => setShowModal(false)} className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">Cancel</button>
-                <button onClick={handleAddInterval} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">Add</button>
+                <button onClick={() => setShowModal(false)} className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">Anulează</button>
+                <button onClick={handleAddInterval} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded">Adaugă</button>
               </div>
             </div>
           </div>

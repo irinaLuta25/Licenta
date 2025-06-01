@@ -98,7 +98,7 @@ const FeedbackForm = () => {
                     onClick={() => navigate(-1)}
                     className="text-2xl font-bold hover:underline"
                 >
-                    ← Back
+                    ← Înapoi
                 </button>
             </div>
 

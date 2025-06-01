@@ -5,7 +5,6 @@ const controller = {
     createEmployeeReward: async (req, res) => {
         try {
             const reward = await EmployeeRewardDb.create({
-                receivedAt: req.body.receivedAt,
                 employeeId: req.body.employeeId,
                 rewardId:req.body.rewardId
             });
@@ -21,7 +20,6 @@ const controller = {
             if (!reward) return res.status(400).send("Employee reward not found");
 
             const updated = await reward.update({
-                receivedAt: req.body.receivedAt,
                 employeeId: req.body.employeeId,
                 rewardId:req.body.rewardId
             });
@@ -72,7 +70,7 @@ const controller = {
             const rewards = await EmployeeRewardDb.findAll({
                 where: {employeeId},
                 include: [{ model: RewardDb, as: "reward" }],
-                order: [["receivedAt", "ASC"]],
+                order: [["createdAt", "ASC"]],
             });
             res.status(200).send(rewards);
         } catch (err) {

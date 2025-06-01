@@ -10,7 +10,6 @@ router.get("/getAll",eventController.getAllEvents);
 router.get("/:id",eventController.getEventById);
 router.get("/getAllEventsBySpecialistId/:specialistId",eventController.getAllEventsBySpecialistId);
 router.get("/getAllEventsByTargetDepartment/:department",eventController.getAllEventsByTargetDepartment);
-router.get("/getAllEventsForManagers",eventController.getAllEventsForManagers);
 router.get("/getAllTrainings",eventController.getAllTrainings);
 router.get("/getAllWorkshops",eventController.getAllWorkshops);
 router.post("/create", upload.single("file"), eventController.createEvent);

@@ -25,10 +25,6 @@ const EventModel = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        managerIsParticipant: {
-            type: DataTypes.BOOLEAN,
-            allowNull: false
-        },
         image: {
             type: DataTypes.STRING,
             allowNull: true,

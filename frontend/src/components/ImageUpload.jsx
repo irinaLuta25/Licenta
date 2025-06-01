@@ -32,12 +32,11 @@ function ImageUpload({ onImageUpload }) {
             onDragLeave={() => setDragOver(false)}
             className={`border-2 border-dashed ${dragOver ? "border-indigo-500 bg-indigo-50" : "border-indigo-300"} p-6 text-center rounded-md transition-colors duration-300`}
         >
-
-            <p className="font-semibold text-indigo-700">Drag image here to upload</p>
-            <p className="text-gray-500 text-sm mb-4">or click to browse (max 4MB)</p>
+            <p className="font-semibold text-indigo-700">Trage o imagine aici pentru a o încărca</p>
+            <p className="text-gray-500 text-sm mb-4">sau fă clic pentru a selecta un fișier (max. 4MB)</p>
 
             <label className="cursor-pointer inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
-                Select file
+                Selectează fișier
                 <input
                     type="file"
                     accept="image/*"
@@ -47,7 +46,7 @@ function ImageUpload({ onImageUpload }) {
             </label>
 
             {fileName && (
-                <p className="mt-3 text-sm text-gray-700">Selected: {fileName}</p>
+                <p className="mt-3 text-sm text-gray-700">Fișier selectat: {fileName}</p>
             )}
         </div>
     );

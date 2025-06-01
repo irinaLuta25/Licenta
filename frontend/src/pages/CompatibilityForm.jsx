@@ -99,31 +99,31 @@ function CompatibilityForm() {
 
 
     const genderOptions = [
-        { label: "Nicio preferinta", value: "" },
+        { label: "Nicio preferință", value: "" },
         { label: "Feminin", value: "feminin" },
         { label: "Masculin", value: "masculin" },
         { label: "Altul", value: "altul" }
     ];
 
     const formationOptions = [
-        { label: "Nicio preferinta", value: "" },
+        { label: "Nicio preferință", value: "" },
         { label: "CBT", value: "CBT" },
         { label: "Psihanaliza", value: "Psihanaliza" },
         { label: "Sistemica", value: "Sistemica" },
         { label: "Experientiala", value: "Experientiala" }
     ];
 
-    // de schimbat candva si integrat in ML - doar daca fac sa poata avea o singura specializare
+    // de schimbat candva si integrat in ML SAU DE SCOS!
     const specializationOptions = [
         { label: "Nicio preferinta", value: "" },
-        { label: "Anxiety", value: "Anxiety" },
-        { label: "Depression", value: "Depression" },
-        { label: "Trauma", value: "Trauma" },
+        { label: "Adictii", value: "Adictii" },
+        { label: "Tulburări de anxietate și depresie", value: "Tulburări de anxietate și depresie" },
+        { label: "Traumă și abuz", value: "Traumă și abuz" },
         { label: "Burnout", value: "Burnout" }
     ];
 
     const therapyStyleOptions = [
-        { label: "Nicio preferinta", value: "" },
+        { label: "Nicio preferință", value: "" },
         { label: "Directiv", value: "Directiv" },
         { label: "Non-Directiv", value: "Non-Directiv" },
         { label: "Empatic", value: "Empatic" },
@@ -135,7 +135,7 @@ function CompatibilityForm() {
         <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
             <div className="bg-indigo-700 text-white px-6 py-3 flex justify-between items-center shadow-md">
                 <button onClick={() => navigate(-1)} className="text-2xl font-bold hover:underline">
-                    ← Back
+                    ← Înapoi
                 </button>
             </div>
 
@@ -210,7 +210,7 @@ function CompatibilityForm() {
             {isLoadingRecommendations && (
 
                 <CalculatingAnimation
-                    duration={4000}
+                    duration={2000}
                     onComplete={() => {
 
                     }}

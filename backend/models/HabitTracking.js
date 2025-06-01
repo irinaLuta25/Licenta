@@ -9,10 +9,6 @@ const HabitTrackingModel = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        recordedAt: {
-            type: DataTypes.DATE,
-            allowNull: false
-        }
     }, {
         underscored: true,
         freezeTableName: true,

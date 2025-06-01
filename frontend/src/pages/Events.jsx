@@ -101,7 +101,7 @@ function Events() {
                     <div className="relative w-full sm:w-64">
                         <input
                             type="text"
-                            placeholder="Search events..."
+                            placeholder="Caută evenimente..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 bg-gradient-to-r from-[#cbc0f3] via-[#cadbf9] to-[#deecff] text-indigo-800 placeholder:text-indigo-600 rounded-xl backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-md"
@@ -124,10 +124,10 @@ function Events() {
                             `}
                         >
                             {{
-                                upcoming: "Upcoming",
-                                workshop: "Workshops",
-                                training: "Trainings",
-                                past: "Past",
+                                upcoming: "Viitoare",
+                                workshop: "Workshop-uri",
+                                training: "Training-uri",
+                                past: "Trecute",
                             }[tab]}
                         </button>
                     ))}
@@ -139,14 +139,14 @@ function Events() {
                         className="bg-indigo-700 hover:bg-indigo-800 text-white font-semibold px-6 py-2 font-medium rounded-lg backdrop-blur-sm shadow-md flex items-center gap-2"
                     >
                         <FiPlusCircle className="text-lg" />
-                        <span>Create Event</span>
+                        <span>Crează eveniment</span>
                     </button>
                 )}
             </div>
 
-            <div className="flex flex-col items-center gap-6 px-4 pb-12">
+            <div className="flex flex-col items-center gap-6 pb-12">
                 {searchedEvents.length === 0 ? (
-                    <p className="text-indigo-800 text-center">No events match your search.</p>
+                    <p className="text-indigo-800 text-center">Nu există evenimente care corespund căutării.</p>
                 ) : (
                     searchedEvents.map((event, index) => (
                         <EventCard

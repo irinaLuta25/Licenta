@@ -44,9 +44,7 @@ function EventCard({ event, role, employee, index, loggedSpecialist, onRequestSi
     const facilitator = specialists?.[event.specialistId];
     const facilitatorUser = facilitator?.user;
 
-    const canSignUp =
-        role === "angajat" &&
-        (!employee?.isManager || (employee?.isManager && event?.managerIsParticipant));
+    const canSignUp = role === "angajat";
 
     const isCreator =
         role === "specialist" &&
@@ -62,7 +60,7 @@ function EventCard({ event, role, employee, index, loggedSpecialist, onRequestSi
 
             <div className="w-full md:w-1/2">
                 <div className="flex flex-row gap-6">
-                    <h2 className="text-2xl font-semibold">{event.name}</h2>
+                    <h2 className="text-2xl font-semibold mb-4">{event.name}</h2>
                     <div className="flex gap-4 items-center justify-end mt-2 text-sm text-indigo-800">
                         <span className="flex items-center gap-1"><FaCalendarAlt /> {eventDate.toLocaleDateString("ro-RO")}</span>
                         <span className="flex items-center gap-1"><FaClock /> {interval?.beginTime?.slice(0, 5)} - {interval?.endTime?.slice(0, 5)}</span>
@@ -85,13 +83,13 @@ function EventCard({ event, role, employee, index, loggedSpecialist, onRequestSi
                     <div className="flex gap-2 flex-wrap">
                         {canSignUp && (
                             isEventPast ? (
-                                <button className="mt-2 bg-gray-400 text-white px-4 py-2 rounded-md" disabled>Event ended</button>
+                                <button className="mt-2 bg-gray-400 text-white px-4 py-2 rounded-md" disabled>Eveniment încheiat</button>
                             ) : isEnrollmentClosed ? (
-                                <button className="mt-2 bg-gray-400 text-white px-4 py-2 rounded-md" disabled>Sign-up ended</button>
+                                <button className="mt-2 bg-gray-400 text-white px-4 py-2 rounded-md" disabled>Înscriere închisă</button>
                             ) : isSignedUp ? (
-                                <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md" disabled>Signed up</button>
+                                <button className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md" disabled>Înscris</button>
                             ) : (
-                                <button className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md" onClick={() => onRequestSignUp(event)}>Sign up</button>
+                                <button className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md" onClick={() => onRequestSignUp(event)}>Înscrie-te</button>
                             )
                         )}
 
@@ -100,12 +98,12 @@ function EventCard({ event, role, employee, index, loggedSpecialist, onRequestSi
                                 className="mt-2 bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-md"
                                 onClick={() => onRequestDelete(event)}
                             >
-                                Delete
+                                Șterge
                             </button>
                         )}
                     </div>
 
-                    <p className="text-sm text-indigo-800 mt-2 md:mt-0">Registration closes on: {formattedDate.toLocaleDateString("ro-RO")}</p>
+                    <p className="text-sm text-indigo-800 mt-2 md:mt-0">Termen limită pentru înscriere: {formattedDate.toLocaleDateString("ro-RO")}</p>
                 </div>
             </div>
         </div>

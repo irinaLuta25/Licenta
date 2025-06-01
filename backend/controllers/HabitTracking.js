@@ -8,7 +8,6 @@ const controller = {
       const record = await HabitTrackingDb.create({
         employeeGoalId: req.body.employeeGoalId,
         value: req.body.value,
-        recordedAt: req.body.recordedAt,
       });
 
       const goal = await EmployeeGoalDb.findByPk(req.body.employeeGoalId);
@@ -30,7 +29,6 @@ const controller = {
       const updated = await record.update({
         employeeGoalId: req.body.employeeGoalId,
         value: req.body.value,
-        recordedAt: req.body.recordedAt,
       });
       res.status(200).send(updated);
     } catch (err) {

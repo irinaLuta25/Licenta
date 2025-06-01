@@ -13,8 +13,6 @@ const problemController = require('./Problem');
 const questionController = require('./Question');
 const rewardController = require('./Reward');
 const specialistController = require('./Specialist');
-const specialistSpecializationController = require('./SpecialistSpecialization');
-const specializationController = require('./Specialization');
 const therapySessionController = require('./TherapySession');
 const recommendationController = require("./recommendation");
 const reportsController = require("./Report");
@@ -35,8 +33,6 @@ module.exports = {
     questionController,
     rewardController,
     specialistController,
-    specialistSpecializationController,
-    specializationController,
     therapySessionController,
     recommendationController,
     reportsController
