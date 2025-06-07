@@ -88,7 +88,7 @@ const FeedbackForm = () => {
 
     const satisfactionOptions = [1, 2, 3, 4, 5].map((score) => ({
         value: score,
-        label: `${score} – ${["Very Poor", "Poor", "Average", "Good", "Excellent"][score - 1]}`
+        label: `${score} – ${["Foarte nemulțumit", "Nemulțumit", "Neutru", "Mulțumit", "Foarte mulțumit"][score - 1]}`
     }));
 
     return (
@@ -104,10 +104,10 @@ const FeedbackForm = () => {
 
             <div className="flex flex-col items-center min-h-[calc(100vh-64px)] justify-center py-8">
                 <div className="w-full max-w-xl bg-white/30 backdrop-blur-xl border border-white/30 rounded-2xl p-8 shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
-                    <h1 className="text-2xl font-bold text-center text-indigo-800 mb-8">Feedback Form</h1>
+                    <h1 className="text-2xl font-bold text-center text-indigo-800 mb-8">Formular de feedback</h1>
 
                     {questions.length === 0 ? (
-                        <p className="text-gray-700 text-center">No questions available.</p>
+                        <p className="text-gray-700 text-center">Nu există întrebări disponibile.</p>
                     ) : (
                         <form className="space-y-6" onSubmit={handleSubmit}>
                             {questions.map((question) => (
@@ -117,7 +117,7 @@ const FeedbackForm = () => {
                                     </label>
                                     <textarea
                                         className="rounded-lg border border-gray-300 p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-                                        placeholder="Your answer..."
+                                        placeholder="Răspunsul tău..."
                                         value={answers[question.id] || ""}
                                         onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                                     />
@@ -126,7 +126,7 @@ const FeedbackForm = () => {
 
                             {!isTherapy && (
                                 <div className="flex items-center justify-between mb-6">
-                                    <label className="text-black font-medium">Send as Anonymous?</label>
+                                    <label className="text-black font-medium">Trimiți formularul în mod anonim?</label>
                                     <label className="inline-flex relative items-center cursor-pointer">
                                         <input
                                             type="checkbox"
@@ -143,7 +143,7 @@ const FeedbackForm = () => {
                             {isTherapy && (
                                 <div className="flex flex-col">
                                     <label className="text-md font-medium text-black mb-2">
-                                        How satisfied were you with this session?
+                                        Cât de mulțumit ai fost cu această sesiune?
                                     </label>
                                     <CustomDropdown2
                                         value={satisfactionScore}
@@ -158,7 +158,7 @@ const FeedbackForm = () => {
                                 type="submit"
                                 className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2 rounded-lg transition"
                             >
-                                Submit Feedback
+                                Trimite Feedback
                             </button>
                         </form>
                     )}

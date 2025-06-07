@@ -147,7 +147,7 @@ function TherapistDetails() {
 
                     <div className="flex flex-row gap-10 bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-2xl rounded-xl p-8">
                         <img
-                            src={"/assets/pfp.jpeg"}
+                            src={therapist?.user?.profileImage || "/assets/pfp.jpeg"}
                             alt="Therapist"
                             className="w-auto max-h-[300px] object-cover rounded-lg"
                         />

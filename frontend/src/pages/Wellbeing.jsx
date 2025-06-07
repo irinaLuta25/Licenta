@@ -5,6 +5,8 @@ import AddProgressModal from "../components/AddProgressModal";
 import AddGoalModal from "../components/AddGoalModal";
 import MoodListModal from "../components/MoodListModal";
 import MoodModal from "../components/MoodModal";
+import GoalProgressChart from "../components/Charts/GoalProgressChart";
+
 
 
 import BadgeIcon from "../components/BadgeIcon";
@@ -360,7 +362,7 @@ function Wellbeing() {
                                     disabled={currentPage === 1}
                                     className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
                                 >
-                                    ‹ Prev
+                                    ‹ Înapoi
                                 </button>
                                 <span className="text-sm text-gray-700">
                                     Pagina {currentPage} din {totalPages}
@@ -370,7 +372,7 @@ function Wellbeing() {
                                     disabled={currentPage === totalPages}
                                     className="text-sm px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
                                 >
-                                    Next ›
+                                    Înainte ›
                                 </button>
                             </div>
                         )}
@@ -379,6 +381,11 @@ function Wellbeing() {
 
 
                 </div>
+
+                <GoalProgressChart
+  employeeGoals={employeeGoals}
+  trackingsByGoalId={trackingsByGoalId}
+/>
 
                 <div className="w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow">
                     <h2 className="text-xl font-semibold text-indigo-800 mb-6">Badge-urile mele</h2>

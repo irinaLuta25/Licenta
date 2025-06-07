@@ -182,7 +182,7 @@ function HomepageEmployee() {
                 {/* Call to Action */}
                 <section className="text-center mt-24 mb-20">
                     <h3 className="text-2xl font-semibold text-indigo-900 mb-4">
-                        Începe călătoria spre echilibru emoțional!
+                        Vrei să ne semnalezi o problemă?
                     </h3>
                     <button
                         onClick={() => {
@@ -190,7 +190,7 @@ function HomepageEmployee() {
                         }}
                         className="bg-indigo-700 text-white mt-6 px-6 py-3 rounded-xl shadow hover:bg-indigo-800 transition inline-block text-lg"
                     >
-                        Vezi terapeuții disponibili
+                        Raportează
                     </button>
 
                 </section>

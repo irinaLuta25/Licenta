@@ -20,8 +20,8 @@ function Reports() {
 
     const dispatch = useDispatch();
 
-    const [selectedMonth, setSelectedMonth] = useState(3);
-    const [selectedYear, setSelectedYear] = useState(2024);
+    const [selectedMonth, setSelectedMonth] = useState(5);
+    const [selectedYear, setSelectedYear] = useState(2025);
 
     const [selectedProblemYear, setSelectedProblemYear] = useState(2025);
     const [selectedEventYear, setSelectedEventYear] = useState(2025);

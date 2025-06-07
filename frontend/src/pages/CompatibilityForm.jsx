@@ -29,6 +29,19 @@ function CompatibilityForm() {
         dispatch(getEmployeeByUserId(user?.id))
     }, [dispatch, user?.id]);
 
+    useEffect(() => {
+    if (employee) {
+        setForm({
+            preferredGender: employee.preferredGender || "",
+            preferredMinAge: employee.preferredMinAge || "",
+            preferredMaxAge: employee.preferredMaxAge || "",
+            preferredFormation: employee.preferredFormation || "",
+            preferredSpecialization: employee.preferredSpecialization || "",
+            preferredTherapyStyle: employee.preferredTherapyStyle || "",
+        });
+    }
+    }, [employee]);
+
     const [form, setForm] = useState({
         preferredGender: "",
         preferredMinAge: "",
@@ -37,6 +50,8 @@ function CompatibilityForm() {
         preferredSpecialization: "",
         preferredTherapyStyle: ""
     });
+
+
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -70,7 +85,7 @@ function CompatibilityForm() {
             const scoresWithPercentage = response.map(r => ({
                 specialistId: r.specialistId,
                 score: r.score,
-                compatibility: Math.round((r.score / 5) * 100)
+                compatibility:  Math.round(r.score * 100)
             }));
 
             const therapists = await Promise.all(
@@ -113,7 +128,6 @@ function CompatibilityForm() {
         { label: "Experientiala", value: "Experientiala" }
     ];
 
-    // de schimbat candva si integrat in ML SAU DE SCOS!
     const specializationOptions = [
         { label: "Nicio preferinta", value: "" },
         { label: "Adictii", value: "Adictii" },
@@ -140,10 +154,10 @@ function CompatibilityForm() {
             </div>
 
             {!showResults && !isLoadingRecommendations &&
-                <div className="flex justify-center items-center mt-10">
+                <div className="flex justify-center items-center mt-6 pb-6">
                     <form
                         onSubmit={handleSubmit}
-                        className="bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-xl hover:shadow-2xl border border-indigo-300/30 drop-shadow-lg rounded-2xl p-8 w-full max-w-xl"
+                        className="bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-xl hover:shadow-2xl border border-indigo-300/30 drop-shadow-lg rounded-2xl p-6 w-full max-w-xl"
                     >
                         <h2 className="text-center text-2xl font-bold text-indigo-800 mb-6">Haide să găsim terapeutul potrivit pentru tine!</h2>
 
@@ -161,7 +175,7 @@ function CompatibilityForm() {
                                 name="preferredMinAge"
                                 value={form.preferredMinAge}
                                 onChange={handleChange}
-                                placeholder="Min Age"
+                                placeholder="Vârstă minimă"
                                 min={18}
                                 className="w-1/2 p-2 rounded bg-white bg-opacity-70 text-indigo-900"
                             />
@@ -170,7 +184,7 @@ function CompatibilityForm() {
                                 name="preferredMaxAge"
                                 value={form.preferredMaxAge}
                                 onChange={handleChange}
-                                placeholder="Max Age"
+                                placeholder="Vârstă maximă"
                                 max={90}
                                 className="w-1/2 p-2 rounded bg-white bg-opacity-70 text-indigo-900"
                             />
@@ -222,7 +236,7 @@ function CompatibilityForm() {
             {!isLoadingRecommendations && showResults &&
                 <div className="flex flex-col gap-4">
                     <h1
-                        className="mt-12  text-center text-5xl font-extrabold bg-gradient-to-r from-[#ec4899] via-[#7c3aed] to-[#4f46e5] text-transparent bg-clip-text leading-tight"
+                        className="mt-12 text-center text-4xl font-extrabold bg-gradient-to-r from-[#ec4899] via-[#7c3aed] to-[#4f46e5] text-transparent bg-clip-text leading-tight"
                         style={{
                             textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
                             fontFamily: "'Poppins', sans-serif"
@@ -231,11 +245,11 @@ function CompatibilityForm() {
                         Iată terapeuții recomandați pentru tine!
                     </h1>
 
-                    <div className="flex flex-wrap justify-center gap-14 px-10 mt-10">
+                    <div className="flex flex-wrap justify-center gap-14 px-10 mt-6">
                         {therapistCards.map(({ therapist, compatibility }) => (
                             <div
                                 key={therapist.id}
-                                className="w-[450px] flex flex-col items-center"
+                                className="w-[400px]  flex flex-col items-center pb-6"
                             >
                                 <TherapistCard therapist={therapist} />
 

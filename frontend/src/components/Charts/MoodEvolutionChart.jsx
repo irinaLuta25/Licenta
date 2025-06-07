@@ -50,12 +50,39 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
         }
     }, [dispatch, managerId, selectedMonth, selectedYear]);
 
-    const formattedData = Array.isArray(moodEvolution)
-        ? moodEvolution.map((entry) => ({
-            ...entry,
-            date: new Date(entry.date).toLocaleDateString("ro-RO"),
-        }))
-        : [];
+    const generateMonthDates = (year, month) => {
+        const dates = [];
+        const date = new Date(year, month - 1, 1);
+        while (date.getMonth() === month - 1) {
+            dates.push(date.toISOString().split("T")[0]);
+            date.setDate(date.getDate() + 1);
+        }
+        return dates;
+    };
+
+    const formattedData = (() => {
+        if (!Array.isArray(moodEvolution)) return [];
+
+        const dataMap = {};
+        moodEvolution.forEach((entry) => {
+            const key = new Date(entry.date).toISOString().split("T")[0];
+            dataMap[key] = { ...entry, date: key };
+        });
+
+        const allDates = generateMonthDates(selectedYear, selectedMonth);
+        const complete = allDates.map((dateStr) => {
+            const dayEntry = dataMap[dateStr] || { date: dateStr };
+            emotions.forEach(({ key }) => {
+                if (dayEntry[key] === undefined) {
+                    dayEntry[key] = 0;
+                }
+            });
+            return dayEntry;
+        });
+
+        return complete;
+    })();
+    console.log(formattedData)
 
     const handleCheckboxChange = (emotion) => {
         setSelectedEmotions((prev) =>
@@ -110,7 +137,7 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
                     <CartesianGrid stroke="#9ca3af" strokeDasharray="4 4" />
                     <XAxis
                         dataKey="date"
-                        stroke="#374151" 
+                        stroke="#374151"
                         tick={{ fill: "#374151", fontSize: 12 }}
                     />
                     <YAxis
@@ -127,7 +154,7 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
                         labelStyle={{ color: "#111827", fontWeight: 600 }}
                         itemStyle={{ color: "#111827" }}
                     />
-                    
+
 
                     {emotions
                         .filter(({ key }) => selectedEmotions.includes(key))

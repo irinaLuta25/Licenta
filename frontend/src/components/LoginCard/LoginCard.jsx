@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
@@ -9,8 +9,11 @@ import CustomDropdown2 from "../CustomDropdown2";
 function LoginCard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const fileInputRef = useRef();
 
   const [isLogin, setIsLogin] = useState(true);
+  const [step, setStep] = useState(1);
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -20,25 +23,69 @@ function LoginCard() {
     gender: "",
     password: "",
     role: "angajat",
+    department: "",
+    hireDate: "",
+    allowAnonymous: false,
+    description: "",
+    linkedin: "",
+    facebook: "",
+    website: "",
+    isTherapist: false,
+    formation: "",
+    specialization: "",
+    therapyStyle: "",
+    profileImage: null,
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm(prev => ({ ...prev, profileImage: file }));
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setForm(prev => ({ ...prev, profileImage: file }));
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const validateStepOne = () => {
+    const fields = ["firstName", "lastName", "phoneNumber", "birthdate", "gender", "role"];
+    for (let f of fields) {
+      if (!form[f]) return false;
+    }
+    return true;
+  };
+
+  const validateStepTwo = () => {
+    if (form.role === "angajat") {
+      return form.department && form.hireDate && form.profileImage;
+    } else {
+      if (!form.description || !form.profileImage) return false;
+      if (form.isTherapist && (!form.formation || !form.specialization || !form.therapyStyle)) return false;
+      return true;
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const requiredFields = isLogin
-      ? ["email", "password"]
-      : ["firstName", "lastName", "email", "phoneNumber", "birthdate", "gender", "password"];
 
-    for (let field of requiredFields) {
-      if (!form[field]) {
-        toast.error("Te rugăm să completezi toate câmpurile.");
-        return;
-      }
-    }
+    if (!isLogin && step === 1) return;
 
     try {
       if (isLogin) {
@@ -47,7 +94,14 @@ function LoginCard() {
           password: form.password,
         });
       } else {
-        await axios.post("/user/register", form);
+        const formData = new FormData();
+        Object.entries(form).forEach(([key, val]) => {
+          if (val !== null && val !== "") {
+            formData.append(key, val);
+          }
+        });
+
+        await axios.post("/user/register", formData);
         toast.success("Cont creat cu succes!");
       }
 
@@ -60,6 +114,123 @@ function LoginCard() {
     }
   };
 
+  const genderOptions = [
+    { label: "Gen", value: "" },
+    { label: "Feminin", value: "feminin" },
+    { label: "Masculin", value: "masculin" },
+    { label: "Altul", value: "altul" },
+  ];
+
+  const roleOptions = [
+    { label: "Angajat", value: "angajat" },
+    { label: "Specialist", value: "specialist" },
+  ];
+
+  const departmentOptions = [
+    { label: "HR", value: "HR" },
+    { label: "IT", value: "IT" },
+    { label: "Marketing", value: "Marketing" },
+    { label: "Financiar", value: "Financiar" },
+  ];
+
+  const formationOptions = [
+    { label: "CBT", value: "CBT" },
+    { label: "Psihanaliza", value: "Psihanaliza" },
+    { label: "Sistemica", value: "Sistemica" },
+    { label: "Experientiala", value: "Experientiala" },
+  ];
+
+  const specializationOptions = [
+    { label: "Adictii", value: "Adictii" },
+    { label: "Tulburări de anxietate și depresie", value: "Tulburări de anxietate și depresie" },
+    { label: "Traumă și abuz", value: "Traumă și abuz" },
+    { label: "Burnout", value: "Burnout" },
+  ];
+
+  const therapyStyleOptions = [
+    { label: "Directiv", value: "Directiv" },
+    { label: "Non-Directiv", value: "Non-Directiv" },
+    { label: "Empatic", value: "Empatic" },
+    { label: "Explorator", value: "Explorator" },
+    { label: "Orientat pe obiective", value: "Orientat pe obiective" },
+  ];
+
+  const UploadProfileImage = () => (
+    <div className="border-2 border-dashed border-indigo-300 rounded-xl p-5 text-center bg-white/50 text-sm text-gray-700" onDrop={handleDrop} onDragOver={handleDragOver}>
+      <p className="text-indigo-700 font-semibold">Încarcă o imagine de profil</p>
+      <p className="text-gray-500 mb-2">sau fă clic pentru a selecta un fișier (max. 4MB)</p>
+      <button
+        type="button"
+        onClick={() => fileInputRef.current.click()}
+        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 mt-1 rounded-md text-sm font-medium"
+      >
+        Selectează fișier
+      </button>
+      <input
+        type="file"
+        accept="image/*"
+        name="profileImage"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        className="hidden"
+      />
+    </div>
+  );
+
+  const renderStepOne = () => (
+    <>
+      <input type="text" name="firstName" placeholder="Prenume" value={form.firstName} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+      <input type="text" name="lastName" placeholder="Nume" value={form.lastName} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+      <input type="tel" name="phoneNumber" placeholder="Număr de telefon" value={form.phoneNumber} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+      <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 focus:outline-none shadow-inner" />
+      <CustomDropdown2 value={form.gender} onChange={(val) => setForm(prev => ({ ...prev, gender: val }))} options={genderOptions} />
+      <CustomDropdown2 value={form.role} onChange={(val) => setForm(prev => ({ ...prev, role: val }))} options={roleOptions} />
+    </>
+  );
+
+  const renderStepTwo = () => {
+    const commonFields = (
+      <>
+        <UploadProfileImage />
+      </>
+    );
+
+    if (form.role === "angajat") {
+      return (
+        <>
+          <CustomDropdown2 value={form.department} onChange={(val) => setForm(prev => ({ ...prev, department: val }))} options={departmentOptions} />
+          <input type="date" name="hireDate" value={form.hireDate} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 focus:outline-none shadow-inner" />
+          {commonFields}
+          <label className="flex items-start gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="allowAnonymous" checked={form.allowAnonymous} onChange={handleChange} className="accent-indigo-600 mt-1" />
+            <span className="text-sm">Permiți prelucrarea anonimă a datelor tale în scopul analizei interne și al îmbunătățirii serviciilor oferite?</span>
+          </label>
+        </>
+      );
+    } else {
+      return (
+        <>
+          <textarea name="description" placeholder="Descriere profesională" value={form.description} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+          <input type="text" name="linkedin" placeholder="Profil LinkedIn" value={form.linkedin} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+          <input type="text" name="facebook" placeholder="Profil Facebook" value={form.facebook} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+          <input type="text" name="website" placeholder="Website personal" value={form.website} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+          {commonFields}
+          <label className="flex items-start gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="isTherapist" checked={form.isTherapist} onChange={handleChange} className="accent-indigo-600 mt-1" />
+            <span className="text-sm">Ești terapeut?</span>
+          </label>
+          {form.isTherapist && (
+            <>
+              <CustomDropdown2 value={form.formation} onChange={(val) => setForm(prev => ({ ...prev, formation: val }))} options={formationOptions} />
+              <CustomDropdown2 value={form.specialization} onChange={(val) => setForm(prev => ({ ...prev, specialization: val }))} options={specializationOptions} />
+              <CustomDropdown2 value={form.therapyStyle} onChange={(val) => setForm(prev => ({ ...prev, therapyStyle: val }))} options={therapyStyleOptions} />
+            </>
+          )}
+        </>
+      );
+    }
+  };
+
   return (
     <div className="h-screen w-full flex items-center justify-center px-4">
       <div className="z-10 w-full max-w-md px-11 py-7 rounded-[30px] backdrop-blur-[12px] bg-white/10 border border-[#77B0AA] shadow-[0_0_20px_rgba(119,176,170,0.6)] animate-fade-in">
@@ -68,63 +239,55 @@ function LoginCard() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5 text-sm">
-          {!isLogin && (
+          {isLogin ? (
             <>
-              <input type="text" name="firstName" placeholder="Prenume" value={form.firstName} onChange={handleChange}
-                className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-              <input type="text" name="lastName" placeholder="Nume" value={form.lastName} onChange={handleChange}
-                className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-              <input type="tel" name="phoneNumber" placeholder="Număr de telefon" value={form.phoneNumber} onChange={handleChange}
-                className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-              <input type="date" name="birthdate" value={form.birthdate} onChange={handleChange}
-                className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 focus:outline-none shadow-inner" />
+              <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+              <input type="password" name="password" placeholder="Parolă" value={form.password} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
+              <button type="submit" className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm">
+                Autentifică-te
+              </button>
+            </>
+          ) : (
+            <>
+              {step === 1 && renderStepOne()}
+              {step === 2 && renderStepTwo()}
 
-              <CustomDropdown2
-                value={form.gender}
-                onChange={(val) => setForm(prev => ({ ...prev, gender: val }))}
-                options={[
-                  { label: "Gen", value: "" },
-                  { label: "Feminin", value: "feminin" },
-                  { label: "Masculin", value: "masculin" },
-                  { label: "Altul", value: "altul" },
-                ]}
-              />
-
-              <CustomDropdown2
-                value={form.role}
-                onChange={(val) => setForm(prev => ({ ...prev, role: val }))}
-                options={[
-                  { label: "Angajat", value: "angajat" },
-                  { label: "Specialist", value: "specialist" },
-                ]}
-              />
+              <div className="flex gap-2">
+                {step === 2 && (
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm"
+                  >
+                    Înapoi
+                  </button>
+                )}
+                <button
+                  type={step === 2 ? "submit" : "button"}
+                  onClick={step === 1 ? () => {
+                    if (!validateStepOne()) {
+                      toast.error("Te rugăm să completezi toate câmpurile obligatorii.");
+                      return;
+                    }
+                    setStep(2);
+                  } : undefined}
+                  className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm"
+                >
+                  {step === 1 ? "Următorul" : "Înregistrează-te"}
+                </button>
+              </div>
             </>
           )}
-
-          <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange}
-            className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-          <input type="password" name="password" placeholder="Parolă" value={form.password} onChange={handleChange}
-            className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
-
-          <button type="submit"
-            className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm">
-            {isLogin ? "Autentifică-te" : "Înregistrează-te"}
-          </button>
         </form>
 
         <p className="mt-5 text-center text-sm text-indigo-900">
-          {isLogin ? "Nu ai un cont?" : "Ai deja un cont?"}{" "}
-          <span
-            className="text-indigo-700 font-medium hover:underline cursor-pointer"
-            onClick={() => setIsLogin(!isLogin)}
-          >
-            {isLogin ?  "Înregistrează-te" : "Autentifică-te"}
+          {isLogin ? "Nu ai un cont?" : "Ai deja un cont?"} {" "}
+          <span className="text-indigo-700 font-medium hover:underline cursor-pointer" onClick={() => { setIsLogin(!isLogin); setStep(1); }}>
+            {isLogin ? "Înregistrează-te" : "Autentifică-te"}
           </span>
         </p>
       </div>
     </div>
-
-
   );
 }
 
