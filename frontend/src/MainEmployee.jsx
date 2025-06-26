@@ -11,6 +11,7 @@ import HomepageEmployee from "./pages/HomepageEmployee";
 import Wellbeing from "./pages/Wellbeing";
 import { useSelector } from "react-redux";
 import Reports from "./pages/Reports";
+import Profile from "./pages/Profile";
 
 
 
@@ -29,7 +30,7 @@ function MainEmployee() {
             <Route path="therapists/compatibilityForm" element={<CompatibilityForm />} />
             <Route path="home" element={<HomepageEmployee />} />
             <Route path="wellbeing" element={<Wellbeing />} />
-             {/* <Route path="profile" element={<Profile />} />  */}
+            <Route path="profile" element={<Profile />} /> 
             
             {employee?.isManager && <Route path="reports" element={<Reports />} />}
         </Routes>

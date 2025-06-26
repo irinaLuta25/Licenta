@@ -1,4 +1,3 @@
-// rewardLogic.js
 const { EmployeeGoal, Habit, EmployeeReward, Reward, HabitTracking} = require("../models");
 
 const checkAndUpdateReward = async (employeeId, models) => {
@@ -9,7 +8,6 @@ const checkAndUpdateReward = async (employeeId, models) => {
 
   const completedCounts = {};
 
-  // Numărăm câte obiective au fost îndeplinite pe categorie
   for (const goal of goals) {
     const trackings = await HabitTracking.findAll({
       where: { employeeGoalId: goal.id },
@@ -37,7 +35,6 @@ const checkAndUpdateReward = async (employeeId, models) => {
     }
   }
 
-  // Pentru fiecare categorie, verificăm dacă trebuie acordat un nou level
   for (const [category, count] of Object.entries(completedCounts)) {
     const reward = await Reward.findOne({ where: { category } });
     if (!reward) continue;
@@ -48,7 +45,7 @@ const checkAndUpdateReward = async (employeeId, models) => {
     });
 
     const currentLevel = existing ? existing.level : 0;
-    const needed = 5 * (currentLevel + 1); // Ex: pt level 1 trebuie 5, pt 2 → 10
+    const needed = 5 * (currentLevel + 1);
 
     if (count >= needed) {
       await EmployeeReward.create({

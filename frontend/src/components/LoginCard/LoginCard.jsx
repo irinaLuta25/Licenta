@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { getUserFromCookie } from '../../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import CustomDropdown2 from "../CustomDropdown2";
+import { FiUpload } from "react-icons/fi";
 
 function LoginCard() {
   const dispatch = useDispatch();
@@ -20,10 +21,10 @@ function LoginCard() {
     email: "",
     phoneNumber: "",
     birthdate: "",
-    gender: "",
+    gender: "feminin",
     password: "",
     role: "angajat",
-    department: "",
+    department: "HR",
     hireDate: "",
     allowAnonymous: false,
     description: "",
@@ -65,18 +66,21 @@ function LoginCard() {
   };
 
   const validateStepOne = () => {
-    const fields = ["firstName", "lastName", "phoneNumber", "birthdate", "gender", "role"];
+    const fields = ["firstName", "lastName", "phoneNumber", "birthdate", "gender", "role", "email", "password"];
     for (let f of fields) {
-      if (!form[f]) return false;
+      if (!form[f] || form[f] === "") {
+        console.log(form[f])
+        return false;
+      }
     }
     return true;
   };
 
   const validateStepTwo = () => {
     if (form.role === "angajat") {
-      return form.department && form.hireDate && form.profileImage;
+      return form.department && form.hireDate;
     } else {
-      if (!form.description || !form.profileImage) return false;
+      if (!form.description) return false;
       if (form.isTherapist && (!form.formation || !form.specialization || !form.therapyStyle)) return false;
       return true;
     }
@@ -84,8 +88,16 @@ function LoginCard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form values:", form);
 
-    if (!isLogin && step === 1) return;
+    if (!isLogin && step === 2 && !validateStepTwo()) {
+      console.log("aaaaaaaaaaaaaaaa")
+
+      toast.error("Te rugăm să completezi toate câmpurile.");
+      return;
+    }
+
+    // if (!isLogin && step === 1) return;
 
     try {
       if (isLogin) {
@@ -115,7 +127,6 @@ function LoginCard() {
   };
 
   const genderOptions = [
-    { label: "Gen", value: "" },
     { label: "Feminin", value: "feminin" },
     { label: "Masculin", value: "masculin" },
     { label: "Altul", value: "altul" },
@@ -127,7 +138,7 @@ function LoginCard() {
   ];
 
   const departmentOptions = [
-    { label: "HR", value: "HR" },
+    { label: "Resurse Umane", value: "Resurse Umane" },
     { label: "IT", value: "IT" },
     { label: "Marketing", value: "Marketing" },
     { label: "Financiar", value: "Financiar" },
@@ -156,16 +167,25 @@ function LoginCard() {
   ];
 
   const UploadProfileImage = () => (
-    <div className="border-2 border-dashed border-indigo-300 rounded-xl p-5 text-center bg-white/50 text-sm text-gray-700" onDrop={handleDrop} onDragOver={handleDragOver}>
-      <p className="text-indigo-700 font-semibold">Încarcă o imagine de profil</p>
-      <p className="text-gray-500 mb-2">sau fă clic pentru a selecta un fișier (max. 4MB)</p>
-      <button
-        type="button"
-        onClick={() => fileInputRef.current.click()}
-        className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 mt-1 rounded-md text-sm font-medium"
-      >
-        Selectează fișier
-      </button>
+    <div
+      className="relative border-2 border-dashed border-indigo-300 rounded-xl p-6 text-center bg-white/50 text-sm text-gray-700 cursor-pointer hover:bg-white/70 transition-all duration-200"
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onClick={() => fileInputRef.current.click()}
+    >
+      <div className="flex flex-col items-center space-y-2">
+        <FiUpload className="text-4xl text-indigo-500" />
+
+        <p className="font-semibold text-indigo-700">Trage o imagine aici</p>
+        <p className="text-gray-600 text-sm">sau fă clic pentru a selecta un fișier (max. 4MB)</p>
+
+        {form.profileImage && (
+          <p className="mt-2 px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-medium">
+            Fișier selectat: {form.profileImage.name}
+          </p>
+        )}
+      </div>
+
       <input
         type="file"
         accept="image/*"
@@ -177,8 +197,26 @@ function LoginCard() {
     </div>
   );
 
+
+
   const renderStepOne = () => (
     <>
+      <input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+        className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner"
+      />
+      <input
+        type="password"
+        name="password"
+        placeholder="Parolă"
+        value={form.password}
+        onChange={handleChange}
+        className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner"
+      />
       <input type="text" name="firstName" placeholder="Prenume" value={form.firstName} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
       <input type="text" name="lastName" placeholder="Nume" value={form.lastName} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
       <input type="tel" name="phoneNumber" placeholder="Număr de telefon" value={form.phoneNumber} onChange={handleChange} className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner" />
@@ -217,7 +255,7 @@ function LoginCard() {
           {commonFields}
           <label className="flex items-start gap-2 text-sm text-gray-700">
             <input type="checkbox" name="isTherapist" checked={form.isTherapist} onChange={handleChange} className="accent-indigo-600 mt-1" />
-            <span className="text-sm">Ești terapeut?</span>
+            <span className="text-sm">Practici psihoterapia?</span>
           </label>
           {form.isTherapist && (
             <>
@@ -262,19 +300,31 @@ function LoginCard() {
                     Înapoi
                   </button>
                 )}
-                <button
-                  type={step === 2 ? "submit" : "button"}
-                  onClick={step === 1 ? () => {
-                    if (!validateStepOne()) {
-                      toast.error("Te rugăm să completezi toate câmpurile obligatorii.");
-                      return;
-                    }
-                    setStep(2);
-                  } : undefined}
-                  className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm"
-                >
-                  {step === 1 ? "Următorul" : "Înregistrează-te"}
-                </button>
+
+                {step === 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!validateStepOne()) {
+                        toast.error("Te rugăm să completezi toate câmpurile.");
+                        return;
+                      }
+                      console.log("Step 1 values:", form);
+                      setStep(2);
+                    }}
+                    className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm"
+                  >
+                    Următorul
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="w-full bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-2.5 rounded-xl transition duration-200 shadow-lg text-sm"
+                  >
+                    Înregistrează-te
+                  </button>
+                )}
               </div>
             </>
           )}

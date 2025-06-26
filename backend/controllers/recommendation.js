@@ -18,7 +18,6 @@ const controller = {
 
       const specialists = await Specialist.findAll({ include: User });
 
-      // === 1. Calculează scorurile medii de satisfacție per specialist ===
       const sessions = await TherapySession.findAll({
         include: {
           model: Interval,

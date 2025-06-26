@@ -8,27 +8,25 @@ import TherapistDetails from "./pages/Therapists/TherapistDetails";
 import SpecialistSchedule from "./pages/SpecialistSchedule";
 import Clients from "./pages/Clients";
 import HomepageSpecialist from "./pages/HomepageSpecialist";
+import Profile from "./pages/Profile";
 
 
 function MainSpecialist() {
 
-    return(
+    return (
         <Routes>
             {/* pages in navbar: clients, events, calendar, profile */}
             <Route path="/" element={<Navigate to="home" />} />
-            <Route path="events" element={<Events />}/>
+            <Route path="events" element={<Events />} />
             <Route path="events/create-event" element={<CreateEvent />} />
-             <Route path="schedule" element={<SpecialistSchedule />} />
+            <Route path="schedule" element={<SpecialistSchedule />} />
             <Route path="clients" element={<Clients />} />
             <Route path="home" element={<HomepageSpecialist />} />
-            {/* <Route path="profile" element={<Profile />} /> 
-            <Route path="clients" element={<Clients />} /> 
-            */
-            }
+            <Route path="profile" element={<Profile />} />
 
         </Routes>
     )
-    
+
 }
 
 export default MainSpecialist

@@ -48,26 +48,6 @@ app.get("/reset",async(req,res) => {
 
 app.use("/api",router);
 
-
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, "./uploads");
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname);
-    },
-  });
-  
-  const upload = multer({ storage });
-  
-  app.post("/api/upload", upload.single("file"), function (req, res, next) {
-    console.log(req.file);
-    res.send({ message: "Project uploaded successfully" });
-  });
-
-
-
 app.use("/",(req,res) => {
     res.status(200).send("Merge server")
 })

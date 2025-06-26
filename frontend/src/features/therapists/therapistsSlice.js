@@ -1,6 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const updateSpecialist = createAsyncThunk(
+  "therapists/updateSpecialist",
+  async ({ id, specialist }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`/specialist/update/${id}`, specialist);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
 export const getAllTherapists = createAsyncThunk(
   "therapists/getAllTherapists",
   async (_, { rejectWithValue }) => {
@@ -30,7 +42,9 @@ export const getSpecialistByUserId = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       console.log("FETCH SPECIALIST for USER ID: ", userId);
-      const res = await axios.get(`/specialist/getSpecialistByUserId/${userId}`);
+      const res = await axios.get(
+        `/specialist/getSpecialistByUserId/${userId}`
+      );
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -56,9 +70,9 @@ const therapistsSlice = createSlice({
   name: "therapists",
   initialState: {
     list: [],
-    loggedInTherapist: null,        
-    selectedTherapist: null,        
-    specialistsById: {},            // facilitatorii altor evenimente
+    loggedInTherapist: null,
+    selectedTherapist: null,
+    specialistsById: {}, // facilitatorii altor evenimente
     freeIntervals: [],
     loading: false,
     error: null,
@@ -69,7 +83,7 @@ const therapistsSlice = createSlice({
       state.selectedTherapist = null;
       state.freeIntervals = [];
       state.status = "idle";
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -98,7 +112,7 @@ const therapistsSlice = createSlice({
         state.status = "succeeded";
         const therapist = action.payload;
 
-        state.selectedTherapist = therapist; 
+        state.selectedTherapist = therapist;
         state.specialistsById[therapist.id] = therapist;
       })
       .addCase(getTherapistById.rejected, (state, action) => {
@@ -115,8 +129,9 @@ const therapistsSlice = createSlice({
         state.status = "succeeded";
 
         const therapist = action.payload;
-        state.loggedInTherapist = therapist;             
-        state.specialistsById[therapist.id] = therapist;  
+        state.loggedInTherapist = therapist;
+        state.specialistsById[therapist.id] = therapist;
+        state.therapist = action.payload;
       })
       .addCase(getSpecialistByUserId.rejected, (state, action) => {
         state.status = "failed";
@@ -132,17 +147,24 @@ const therapistsSlice = createSlice({
       .addCase(getIntervalsForTherapist.fulfilled, (state, action) => {
         state.loading = false;
         state.status = "succeeded";
-        state.freeIntervals = action.payload.filter(interval => interval.status === false);
+        state.freeIntervals = action.payload.filter(
+          (interval) => interval.status === false
+        );
       })
       .addCase(getIntervalsForTherapist.rejected, (state, action) => {
         state.loading = false;
         state.status = "failed";
         state.error = action.payload;
+      })
+
+      // ---- updateSpecialist ----
+      .addCase(updateSpecialist.fulfilled, (state, action) => {
+        const updated = action.payload;
+        state.loggedInTherapist = updated;
+        state.specialistsById[updated.id] = updated;
       });
   },
 });
 
-
 export default therapistsSlice.reducer;
 export const { resetSelectedTherapist } = therapistsSlice.actions;
-

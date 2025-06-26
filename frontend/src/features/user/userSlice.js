@@ -1,6 +1,35 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async ({ id, user }, thunkAPI) => {
+    try {
+      const formData = new FormData();
+
+      for (const key in user) {
+        if (key === "profileImage") {
+          // doar dacă e obiect File
+          if (user.profileImage instanceof File) {
+            formData.append("profileImage", user.profileImage);
+          }
+        } else {
+          formData.append(key, user[key]);
+        }
+      }
+
+      const response = await axios.put(`/user/update/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+
 export const getUserById = createAsyncThunk(
   "user/getById",
   async (id, { rejectWithValue }) => {
@@ -26,15 +55,22 @@ const userSlice = createSlice({
       state.user = null;
       state.status = "idle";
       state.error = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(getUserById.fulfilled, (state, action) => {
         const user = action.payload;
         state.usersById[user.id] = user;
+        state.user = user;
       })
-  }
+
+      .addCase(updateUser.fulfilled, (state, action) => {
+        const updated = action.payload;
+        state.user = updated;
+        state.usersById[updated.id] = updated;
+      });
+  },
 });
 
 export const { resetUserState } = userSlice.actions;
