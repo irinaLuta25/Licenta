@@ -16,7 +16,7 @@ import {
             <span>{selected.label}</span>
             <ChevronDownIcon className="h-5 w-5 text-indigo-600" aria-hidden="true" />
           </ListboxButton>
-          <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white text-gray-800 py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
+          <ListboxOptions className="absolute z-10 mt-1 max-h-120 w-full overflow-auto rounded-xl bg-white text-gray-800 py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
             {options.map((opt) => (
               <ListboxOption
                 key={opt.value}

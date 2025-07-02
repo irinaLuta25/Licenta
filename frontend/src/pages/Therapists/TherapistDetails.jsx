@@ -129,7 +129,7 @@ function TherapistDetails() {
 
 
     return (
-        <>
+        <div>
 
 
             <div className="bg-indigo-700 text-white px-6 py-3 pb-4 flex justify-between items-center shadow-md">
@@ -323,7 +323,7 @@ function TherapistDetails() {
             </div>
 
             {showModal && selectedInterval && (
-                <div className="inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                     <div
                         className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
                         onClick={(e) => e.stopPropagation()}
@@ -373,7 +373,7 @@ function TherapistDetails() {
                 </div>
             )}
 
-        </>
+        </div>
 
     )
 }

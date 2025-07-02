@@ -15,7 +15,7 @@ const TextAnimation = ({ text, className = "", onComplete }) => {
 
     const timeout = setTimeout(() => {
       setVisibleLetterCount((prev) => prev + 1);
-    }, 35);
+    }, 25);
 
     return () => clearTimeout(timeout);
   }, [visibleLetterCount, totalLetters, onComplete]);

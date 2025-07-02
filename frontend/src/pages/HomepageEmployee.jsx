@@ -1,5 +1,4 @@
-import React, { useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useRef, useState } from "react";
 import Navbar from "../components/Navbar";
 import { motion } from "framer-motion";
 import { FaBrain, FaCalendarCheck } from "react-icons/fa";
@@ -9,11 +8,15 @@ import StepsSection from "../components/StepsSection";
 import CustomCarousel from "../components/CustomCarousel/CustomCarousel";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "../components/HeroSection/HeroSection";
+import ReportProblemModal from "../components/ReportProblemModal";
 
 
 function HomepageEmployee() {
     const navigate = useNavigate();
     const howItWorksRef = useRef(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     return (
         <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800">
@@ -85,9 +88,6 @@ function HomepageEmployee() {
                         ))}
                     </div>
                 </section>
-
-
-
 
                 {/* Statistics */}
                 <section className="mt-28 mb-16 text-center px-16">
@@ -186,7 +186,7 @@ function HomepageEmployee() {
                     </h3>
                     <button
                         onClick={() => {
-                            navigate("/employee/therapists");
+                            setIsModalOpen(true)
                         }}
                         className="bg-indigo-700 text-white mt-6 px-6 py-3 rounded-xl shadow hover:bg-indigo-800 transition inline-block text-lg"
                     >
@@ -196,6 +196,12 @@ function HomepageEmployee() {
                 </section>
 
             </div>
+
+            {isModalOpen && (
+                <ReportProblemModal
+                    onClose={() => setIsModalOpen(false)}
+                />
+            )}
 
 
         </div>

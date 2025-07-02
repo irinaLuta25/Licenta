@@ -51,17 +51,17 @@ function EventCard({ event, role, employee, index, loggedSpecialist, onRequestSi
         loggedSpecialist?.id === event?.specialistId;
 
     return (
-        <div className={`w-full max-w-6xl mx-auto flex flex-col ${layoutClass} items-center justify-between gap-6 text-indigo-900 rounded-2xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 border border-indigo-300/30 backdrop-blur-xl shadow-xl hover:shadow-2xl transition transform duration-300 hover:-translate-y-1 p-6 my-6`}>
+        <div className={`w-full max-w-6xl gap-8 flex flex-col ${layoutClass} items-center justify-between text-indigo-900 rounded-2xl bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 border border-indigo-300/30 backdrop-blur-xl shadow-xl hover:shadow-2xl transition transform duration-300 hover:-translate-y-1 p-6 px-10 my-6`}>
             {event.image && (
-                <div className="w-full md:w-1/2 flex justify-center">
+                <div className="w-2/5 flex justify-center">
                     <img src={event.image} alt="Event" className="rounded-xl object-cover max-h-72 w-full md:max-w-md" />
                 </div>
             )}
 
-            <div className="w-full md:w-1/2">
-                <div className="flex flex-row gap-6">
+            <div className="w-3/5">
+                <div className="flex flex-row gap-8 justify-between">
                     <h2 className="text-2xl font-semibold mb-4">{event.name}</h2>
-                    <div className="flex gap-4 items-center justify-end mt-2 text-sm text-indigo-800">
+                    <div className="flex flex-col gap-2 mb-4 text-sm text-indigo-800">
                         <span className="flex items-center gap-1"><FaCalendarAlt /> {eventDate.toLocaleDateString("ro-RO")}</span>
                         <span className="flex items-center gap-1"><FaClock /> {interval?.beginTime?.slice(0, 5)} - {interval?.endTime?.slice(0, 5)}</span>
                     </div>

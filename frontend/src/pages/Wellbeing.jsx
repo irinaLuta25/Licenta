@@ -238,8 +238,8 @@ function Wellbeing() {
                                     key={label}
                                     onClick={() => setSelectedPeriodFilter(label)}
                                     className={`px-3 py-1 rounded-full text-sm border transition ${selectedPeriodFilter === label
-                                            ? "bg-indigo-600 text-white border-indigo-600"
-                                            : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                                        ? "bg-indigo-600 text-white border-indigo-600"
+                                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                                         }`}
                                 >
                                     {label.charAt(0).toUpperCase() + label.slice(1)}
@@ -383,9 +383,9 @@ function Wellbeing() {
                 </div>
 
                 <GoalProgressChart
-  employeeGoals={employeeGoals}
-  trackingsByGoalId={trackingsByGoalId}
-/>
+                    employeeGoals={employeeGoals}
+                    trackingsByGoalId={trackingsByGoalId}
+                />
 
                 <div className="w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow">
                     <h2 className="text-xl font-semibold text-indigo-800 mb-6">Badge-urile mele</h2>

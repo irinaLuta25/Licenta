@@ -1,15 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./CustomCarousel.css";
 import { FaSmileBeam, FaUserMd, FaChartLine, FaCalendarCheck, FaBrain, FaHeartbeat, FaHandsHelping } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllTherapySessions } from "../../features/therapySessions/therapySessionsSlice";
 
 
 const CustomCarousel = () => {
+    const dispatch = useDispatch();
+    const sessionCount = useSelector((state) => state.therapySessions.count)
+    console.log(sessionCount)
+
+    useEffect(() => {
+        dispatch(getAllTherapySessions())
+    },[dispatch])
+
     const itemsRef = useRef([]);
     const [active, setActive] = useState(3);
 
     const slides = [
-        { icon: <FaSmileBeam size={64} color="#6646f1" />, title: "86% mai puțin stres", text: "Utilizatorii noștri au raportat o reducere semnificativă a stresului." },
-        { icon: <FaUserMd size={64} color="#10b981" />, title: "+120 sesiuni lunare", text: "Terapeuții sunt activi și disponibili să te sprijine oricând." },
+        { icon: <FaSmileBeam size={64} color="#6646f1" />, title: "Mai puțin stres", text: "Utilizatorii noștri au raportat o reducere semnificativă a stresului." },
+        { icon: <FaUserMd size={64} color="#10b981" />, title: `${sessionCount} sesiuni de terapie`, text: "Terapeuții sunt activi și disponibili să te sprijine oricând." },
         { icon: <FaChartLine size={64} color="#f59e0b" />, title: "Progres vizibil", text: "Obiceiurile tale sănătoase sunt înregistrate și analizate automat." },
         { icon: <FaCalendarCheck size={64} color="#3b82f6" />, title: "Programări ușoare", text: "Alege rapid intervalul care ți se potrivește cel mai bine." },
         { icon: <FaBrain size={64} color="#8b5cf6" />, title: "Focus mental îmbunătățit", text: "Activitățile din aplicație susțin echilibrul tău emoțional." },
@@ -64,6 +74,9 @@ const CustomCarousel = () => {
 
     const next = () => setActive((prev) => prev + 1);
     const prev = () => setActive((prev) => prev - 1);
+
+
+
 
     return (
         <div className="slider">

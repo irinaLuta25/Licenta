@@ -54,7 +54,7 @@ console.log("Body primit:", req.body);
 
     getAllTherapySessions: async (req, res) => {
         try {
-            const sessions = await TherapySessionDb.findAll();
+            const sessions = await TherapySessionDb.findAndCountAll();
             res.status(200).send(sessions);
         } catch (err) {
             res.status(500).send(err.message);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import MoodEvolutionChart from "../components/Charts/MoodEvolutionChart";
 import MoodFrequencyChart from "../components/Charts/MoodFrequencyChart";
@@ -12,7 +13,6 @@ import CustomDropdown2 from "../components/CustomDropdown2";
 
 // de rezolvat:
 // la refresh e ceva rau - tre sa adaug verifciare pt date goale pt grafice cred
-// de schimbat titlurile pe unde trebuie
 
 function Reports() {
     const { user } = useSelector((state) => state.auth);
@@ -66,8 +66,13 @@ function Reports() {
     ];
 
 
+    
+
+
+
     return (
-        <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800">
+        <div className="w-full overflow-x-hidden bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800">
+
             <Navbar />
 
             <div className="px-6 py-24">
@@ -218,30 +223,34 @@ function Reports() {
                 </section>
             </div>
 
-            {showProblemsModal && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50"
-                    onClick={() => setShowProblemsModal(false)}
-                >
-                    <div
-                        className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 relative"
-                        onClick={(e) => e.stopPropagation()}
+
+            <AnimatePresence>
+                {showProblemsModal && (
+                    <motion.div
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50"
+                        onClick={() => setShowProblemsModal(false)}
                     >
-                        <h3 className="text-xl font-semibold mb-4">Toate problemele comunicate</h3>
-                        <button
-                            onClick={() => setShowProblemsModal(false)}
-                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition text-2xl font-bold"
+                        <motion.div
+                            className="bg-white rounded-lg shadow-lg max-w-3xl w-full max-h-[80vh] overflow-y-auto p-6 relative"
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            &times;
-                        </button>
-                        <ProblemsList
-                            managerId={user?.id}
-                            selectedYear={selectedProblemYear}
-                            showAll={true}
-                        />
-                    </div>
-                </div>
-            )}
+                            <h3 className="text-xl font-semibold mb-4">Toate problemele comunicate</h3>
+                            <button
+                                onClick={() => setShowProblemsModal(false)}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition text-2xl font-bold"
+                            >
+                                &times;
+                            </button>
+                            <ProblemsList
+                                managerId={user?.id}
+                                selectedYear={selectedProblemYear}
+                                showAll={true}
+                            />
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 }

@@ -21,6 +21,24 @@ function App() {
     dispatch(getUserFromCookie());
   }, [dispatch]);
 
+  useEffect(() => {
+    const html = document.documentElement;
+
+    const fixHtmlScroll = () => {
+      if (html.style.overflow === "hidden") {
+        html.style.overflowY = "scroll";
+        html.style.paddingRight = "0px";
+      }
+    };
+
+    fixHtmlScroll();
+
+    const observer = new MutationObserver(fixHtmlScroll);
+    observer.observe(html, { attributes: true, attributeFilter: ["style"] });
+
+    return () => observer.disconnect();
+  }, []);
+
   if (loading) return <p>Se încarcă...</p>;
 
   return (

@@ -12,7 +12,7 @@ const ProblemsList = ({ managerId, selectedYear, onShowAll, showAll }) => {
     }
   }, [dispatch, managerId]);
 
-  if (loading) return <p>Se încarcă problemele...</p>;
+
   if (error) return <p className="text-red-600">Eroare: {error}</p>;
   if (!problemsList.length) return <p>Nu există probleme raportate în departamentul tău.</p>;
 

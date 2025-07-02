@@ -17,10 +17,10 @@ function Navbar() {
   };
 
   useEffect(() => {
-    if(user?.role=="angajat") {
+    if (user?.role == "angajat") {
       dispatch(getEmployeeByUserId(user?.id))
     }
-  },[dispatch,user])
+  }, [dispatch, user])
 
   const role = user?.role;
   const basePath = role === "specialist" ? "/specialist" : "/employee";
@@ -52,7 +52,13 @@ function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-indigo-700 text-white px-6 py-3 pb-4 flex justify-between items-center shadow-md">
 
-      <div className="text-2xl font-bold">MindCare</div>
+      <div
+        className="text-3xl font-extrabold bg-gradient-to-r from-[#c1f7dc] via-[#b2d8f3] to-[#c7b5ff] text-transparent bg-clip-text"
+        style={{ fontFamily: "'Syne', sans-serif" }}
+      > 
+        MindCare
+      </div>
+
 
       <ul className="hidden md:flex space-x-10">
         {navLinks.map(({ label, path }) => {
@@ -61,11 +67,10 @@ function Navbar() {
             <li key={label}>
               <Link
                 to={path}
-                className={`transition duration-200 ${
-                  isActive
+                className={`transition duration-200 ${isActive
                     ? "underline font-semibold text-white"
                     : "text-white hover:text-indigo-300"
-                }`}
+                  }`}
               >
                 {label}
               </Link>

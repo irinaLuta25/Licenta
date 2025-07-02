@@ -17,7 +17,7 @@
   height: 230px;
   top: 5%;
   left: 5%;
-  animation-delay: 0s;
+  /* animation-delay: 0s; */
 }
 
 .bubble-2 {
@@ -25,7 +25,7 @@
   height: 240px;
   bottom: 5%;
   left: 5%;
-  animation-delay: 2s;
+  /* animation-delay: 2s; */
 }
 
 .bubble-3 {
@@ -33,7 +33,7 @@
   height: 260px;
   bottom: 5%;
   left: 40%;
-  animation-delay: 4s;
+  /* animation-delay: 4s; */
 }
 
 .bubble-4 {
@@ -41,7 +41,7 @@
   height: 230px;
   top: 5%;
   right: 5%;
-  animation-delay: 1s;
+  /* animation-delay: 1s; */
 }
 
 .bubble-5 {
@@ -49,7 +49,7 @@
   height: 250px;
   bottom: 5%;
   right: 5%;
-  animation-delay: 3s;
+  /* animation-delay: 3s; */
 }
 
 @keyframes float {

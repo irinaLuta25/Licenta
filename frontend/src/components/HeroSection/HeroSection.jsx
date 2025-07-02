@@ -15,9 +15,9 @@ const HeroSection = ({ onExploreClick }) => {
         ))}
       </div>
 
-      {/* Conținut Hero */}
+      {/* Hero */}
       <div className="max-w-7xl w-full mx-auto flex flex-col lg:flex-row items-center justify-between relative z-10">
-        {/* TEXT STÂNGA */}
+        {/* TEXT STANGA */}
         <div className="flex-1 flex flex-col gap-6 justify-center text-center lg:text-left lg:pr-12">
           <TextAnimation
             text="Bine ai venit! Grija față de tine începe aici."
@@ -30,18 +30,17 @@ const HeroSection = ({ onExploreClick }) => {
           />
 
           <div className="flex flex-col gap-6 pt-6 min-h-[220px]">
-            {/* Paragraf */}
             <motion.p
               className="text-xl text-gray-700"
               initial={false}
               animate={showContent ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-              transition={{ duration: 0.6 }}
+              transition={{ 
+              duration: 0.6 }}
               style={{ visibility: showContent ? "visible" : "hidden" }}
             >
               Descoperă un spațiu dedicat stării tale de bine în mediul de lucru.
             </motion.p>
 
-            {/* Citat */}
             <motion.blockquote
               className="italic text-indigo-800 text-lg"
               initial={false}
@@ -49,10 +48,10 @@ const HeroSection = ({ onExploreClick }) => {
               transition={{ duration: 0.6, delay: 0.1 }}
               style={{ visibility: showContent ? "visible" : "hidden" }}
             >
-              “A avea grijă de tine nu este egoism — este responsabilitate.”
+              „Sănătatea mintală nu este o destinație, ci un proces. Este vorba despre cum conduci, nu unde mergi.”
+              <span className="not-italic text-gray-700 text-md"> – Noam Shpancer</span>
             </motion.blockquote>
 
-            {/* Buton */}
             <motion.button
               className="w-64 bg-orange-500 text-white px-6 py-3 mt-4 rounded-xl text-lg shadow-md hover:bg-orange-600 transition mx-auto lg:mx-0"
               whileTap={{ scale: 0.95 }}
