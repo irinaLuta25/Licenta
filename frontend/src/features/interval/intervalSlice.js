@@ -1,4 +1,3 @@
-
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -10,8 +9,8 @@ export const createInterval = createAsyncThunk(
         date,
         beginTime,
         endTime,
-        status:false,
-        specialistId
+        status: false,
+        specialistId,
       });
       return response.data;
     } catch (err) {
@@ -25,9 +24,21 @@ export const updateIntervalStatus = createAsyncThunk(
   async ({ id, status }, { rejectWithValue }) => {
     try {
       const response = await axios.put(`/interval/updateIntervalStatus/${id}`, {
-        status: status
+        status: status,
       });
       return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const deleteInterval = createAsyncThunk(
+  "interval/deleteInterval",
+  async (intervalId, { rejectWithValue }) => {
+    try {
+      await axios.delete(`/interval/delete/${intervalId}`);
+      return intervalId;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
@@ -70,7 +81,7 @@ const intervalSlice = createSlice({
       state.intervalsById = {};
       state.status = "idle";
       state.error = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -83,6 +94,10 @@ const intervalSlice = createSlice({
         state.intervalsById[updatedInterval.id] = updatedInterval;
       })
 
+      .addCase(deleteInterval.fulfilled, (state, action) => {
+        delete state.intervalsById[action.payload];
+      })
+
       .addCase(getIntervalById.fulfilled, (state, action) => {
         const interval = action.payload;
         state.intervalsById[interval.id] = interval;
@@ -90,11 +105,11 @@ const intervalSlice = createSlice({
 
       .addCase(getAllIntervals.fulfilled, (state, action) => {
         const allIntervals = action.payload;
-        allIntervals.forEach(interval => {
+        allIntervals.forEach((interval) => {
           state.intervalsById[interval.id] = interval;
         });
       });
-  }
+  },
 });
 
 export const { resetIntervalState } = intervalSlice.actions;
