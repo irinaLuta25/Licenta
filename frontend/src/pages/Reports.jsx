@@ -66,9 +66,13 @@ function Reports() {
     ];
 
 
-    
-
-
+    if (employee && !employee?.isManager) {
+        return (
+            <div className="w-full h-screen flex justify-center items-center text-red-700 text-xl font-bold">
+                Acces restricționat - doar pentru manageri
+            </div>
+        );
+    }
 
     return (
         <div className="w-full overflow-x-hidden bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800">
@@ -208,7 +212,7 @@ function Reports() {
                 </section>
 
                 {/* Secțiune opțională: Obiective și echilibru emoțional */}
-                <section className="mb-12">
+                {/* <section className="mb-12">
                     <h2 className="text-2xl font-semibold mb-4">
                         Obiective & echilibru emoțional
                     </h2>
@@ -220,7 +224,7 @@ function Reports() {
                             G7: ScatterChart - Obiective vs. mood
                         </div>
                     </div>
-                </section>
+                </section> */}
             </div>
 
 

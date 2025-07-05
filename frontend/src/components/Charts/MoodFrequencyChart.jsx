@@ -47,31 +47,40 @@ const MoodFrequencyChart = ({ managerId, selectedMonth, selectedYear }) => {
 
   return (
     <ResponsiveContainer width="100%" height={400}>
-  <BarChart
-    data={moodFrequency}
-    margin={{ top: 10, right: 30, left: 0, bottom: 70 }}
-  >
-    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-    <XAxis
-      dataKey="mood"
-      interval={0}
-      tick={{
-        fill: "#1e293b",
-        angle: 45,
-        textAnchor: "start",
-        dy: 20,
-        fontSize: 11,
-      }}
-    />
-    <YAxis tick={{ fill: "#1e293b" }} />
-    <Tooltip />
-    <Bar dataKey="count">
-      {moodFrequency.map((entry, index) => (
-        <Cell key={`cell-${index}`} fill={colorsMap[entry.mood] || "#8884d8"} />
-      ))}
-    </Bar>
-  </BarChart>
-</ResponsiveContainer>
+      <BarChart
+        data={moodFrequency}
+        margin={{ top: 10, right: 30, left: 0, bottom: 70 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+        <XAxis
+          dataKey="mood"
+          interval={0}
+          tick={{
+            fill: "#1e293b",
+            angle: 45,
+            textAnchor: "start",
+            dy: 20,
+            fontSize: 11,
+          }}
+        />
+        <YAxis
+          tick={{ fill: "#1e293b" }}
+          label={{
+            value: "Număr stări raportate",
+            position: "outsideLeft",
+            angle: -90,
+            dx: -20,
+            style: { fill: "#1e293b", fontWeight: "normal" }
+          }}
+        />
+        <Tooltip />
+        <Bar dataKey="count">
+          {moodFrequency.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={colorsMap[entry.mood] || "#8884d8"} />
+          ))}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
 
   );
 };

@@ -9,7 +9,6 @@ import {
     CartesianGrid,
     Tooltip,
     ResponsiveContainer,
-    Legend,
 } from "recharts";
 
 const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
@@ -98,7 +97,7 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
 
     return (
         <div>
-            {/* ✅ Selectare emoții */}
+
             <div className="flex flex-wrap gap-2 mb-4">
                 {emotions.map(({ key, color }) => {
                     const selected = selectedEmotions.includes(key);
@@ -122,7 +121,7 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
             </div>
 
 
-            {/* ✅ Grafic */}
+
             <ResponsiveContainer width="100%" height={300}>
                 <AreaChart data={formattedData}>
                     <defs>
@@ -137,11 +136,16 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
                     <CartesianGrid stroke="#9ca3af" strokeDasharray="4 4" />
                     <XAxis
                         dataKey="date"
-                        stroke="#374151"
                         tick={{ fill: "#374151", fontSize: 12 }}
                     />
                     <YAxis
-                        stroke="#374151"
+                        label={{
+                            value: "Număr stări raportate",
+                            position: "outsideLeft",
+                            angle: -90,
+                            dx: -20,
+                            style: { fill: "#1e293b", fontWeight: "normal" }
+                        }}
                         tick={{ fill: "#374151", fontSize: 12 }}
                     />
                     <Tooltip

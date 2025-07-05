@@ -57,12 +57,21 @@ const controller = {
         grouped[date][s.mood].push(s.intensity);
       }
 
-      // 5. Calculam media pe fiecare mood/zi
+      // // 5. Calculam media pe fiecare mood/zi
+      // const result = Object.entries(grouped).map(([date, moods]) => {
+      //   const entry = { date };
+      //   for (const [mood, values] of Object.entries(moods)) {
+      //     const sum = values.reduce((a, b) => a + b, 0);
+      //     entry[mood] = +(sum / values.length).toFixed(2);
+      //   }
+      //   return entry;
+      // });
+
+      // 5. Calculam numarul de persoane care au raportat fiecare mood pe zi
       const result = Object.entries(grouped).map(([date, moods]) => {
         const entry = { date };
         for (const [mood, values] of Object.entries(moods)) {
-          const sum = values.reduce((a, b) => a + b, 0);
-          entry[mood] = +(sum / values.length).toFixed(2);
+          entry[mood] = values.length; // doar număr, fără medie
         }
         return entry;
       });
@@ -230,68 +239,67 @@ const controller = {
   },
 
   getTherapySatisfactionDistribution: async (req, res) => {
-  const { managerId } = req.params;
-  const { year } = req.query;
+    const { managerId } = req.params;
+    const { year } = req.query;
 
-  if (!managerId || !year) {
-    return res.status(400).send("Missing managerId or year");
-  }
-
-  try {
-    const manager = await Employee.findOne({ where: { userId: managerId } });
-    if (!manager || !manager.isManager) {
-      return res.status(403).send("User is not a manager");
+    if (!managerId || !year) {
+      return res.status(400).send("Missing managerId or year");
     }
 
-    const department = manager.department;
-
-    // Aducem toate sesiunile cu satisfactie != null, angajatii din departamentul managerului si intervalul
-    const sessions = await TherapySession.findAll({
-      where: {
-        satisfactionScore: { [Op.not]: null },
-      },
-      include: [
-        {
-          model: Employee,
-          required: true,
-          where: { department: { [Op.or]: [department, "General"] } },
-        },
-        {
-          model: Interval,
-          required: true,
-        },
-      ],
-      raw: false,
-    });
-
-    // Filtrăm manual în JS sesiunile după anul din interval.date
-    const filteredSessions = sessions.filter(session => {
-      if (!session.interval || !session.interval.date) return false;
-      return new Date(session.interval.date).getFullYear() === parseInt(year);
-    });
-
-    // Contorizăm scorurile
-    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    filteredSessions.forEach(session => {
-      const score = session.satisfactionScore;
-      if (score >= 1 && score <= 5) {
-        counts[score]++;
+    try {
+      const manager = await Employee.findOne({ where: { userId: managerId } });
+      if (!manager || !manager.isManager) {
+        return res.status(403).send("User is not a manager");
       }
-    });
 
-    // Construim array-ul final
-    const distribution = [];
-    for (let i = 1; i <= 5; i++) {
-      distribution.push({ score: i, count: counts[i] });
+      const department = manager.department;
+
+      // Aducem toate sesiunile cu satisfactie != null, angajatii din departamentul managerului si intervalul
+      const sessions = await TherapySession.findAll({
+        where: {
+          satisfactionScore: { [Op.not]: null },
+        },
+        include: [
+          {
+            model: Employee,
+            required: true,
+            where: { department: { [Op.or]: [department, "General"] } },
+          },
+          {
+            model: Interval,
+            required: true,
+          },
+        ],
+        raw: false,
+      });
+
+      // Filtrăm manual în JS sesiunile după anul din interval.date
+      const filteredSessions = sessions.filter((session) => {
+        if (!session.interval || !session.interval.date) return false;
+        return new Date(session.interval.date).getFullYear() === parseInt(year);
+      });
+
+      // Contorizăm scorurile
+      const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+      filteredSessions.forEach((session) => {
+        const score = session.satisfactionScore;
+        if (score >= 1 && score <= 5) {
+          counts[score]++;
+        }
+      });
+
+      // Construim array-ul final
+      const distribution = [];
+      for (let i = 1; i <= 5; i++) {
+        distribution.push({ score: i, count: counts[i] });
+      }
+
+      return res.status(200).json(distribution);
+    } catch (error) {
+      console.error("Error getTherapySatisfactionDistribution:", error);
+      return res.status(500).send("Server error");
     }
-
-    return res.status(200).json(distribution);
-  } catch (error) {
-    console.error("Error getTherapySatisfactionDistribution:", error);
-    return res.status(500).send("Server error");
-  }
-},
-
+  },
 };
 
 module.exports = controller;

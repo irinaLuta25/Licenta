@@ -32,7 +32,7 @@ function MainEmployee() {
             <Route path="wellbeing" element={<Wellbeing />} />
             <Route path="profile" element={<Profile />} /> 
             
-            {employee?.isManager && <Route path="reports" element={<Reports />} />}
+            <Route path="reports" element={<Reports />} />
         </Routes>
     )
     

@@ -16,30 +16,45 @@ const TherapySatisfactionChart = ({ managerId, selectedYear }) => {
     }, [dispatch, managerId, selectedYear]);
 
     return (
-            
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart
-                        data={therapySatisfactionDistribution}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                        <XAxis
-                            dataKey="score"
-                            label={{ value: "Satisfacție", position: "insideBottom", offset: -10 }}
-                            tickCount={6} 
-                            domain={[0, 5]} 
-                            type="number"
-                            allowDecimals={false}
-                        />
-                        <YAxis
-                            label={{ value: "Număr sesiuni", angle: -90, position: "insideLeft", dy: 50 }}
-                            allowDecimals={false}
-                        />
-                        <Tooltip />
-                        <Bar dataKey="count" name="Număr sesiuni" fill="#8b5cf6" barSize={40} />
-                    </BarChart>
-                </ResponsiveContainer>
-            
+
+        <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+                data={therapySatisfactionDistribution}
+                margin={{ top: 20, right: 30, left: 20, bottom: 30 }}
+            >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis
+                    dataKey="score"
+                    label={{
+                        value: "Satisfacție",
+                        position: "insideBottom",
+                        offset: -10,
+                        style: { fill: "#1e293b", fontWeight: "normal" }
+                    }}
+                    tick={{ fill: "#1e293b", fontWeight: "normal" }} 
+                    tickCount={6}
+                    domain={[0, 5]}
+                    type="number"
+                    allowDecimals={false}
+                />
+
+                <YAxis
+                    label={{
+                        value: "Număr sesiuni",
+                        position: "insideLeft",
+                        angle: -90,
+                        dy: 50,
+                        style: { fill: "#1e293b", fontWeight: "normal" }
+                    }}
+                    tick={{ fill: "#1e293b", fontWeight: "normal" }}
+                    allowDecimals={false}
+                />
+
+                <Tooltip />
+                <Bar dataKey="count" name="Număr sesiuni" fill="#8b5cf6" barSize={40} />
+            </BarChart>
+        </ResponsiveContainer>
+
     );
 };
 
