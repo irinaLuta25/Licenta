@@ -47,15 +47,6 @@ const controller = {
         }
     },
 
-    getAllEmotionalStates: async (req, res) => {
-        try {
-            const emotionalStates = await EmotionalStateDb.findAll();
-            res.status(200).send(emotionalStates);
-        } catch (err) {
-            res.status(500).send(err.message);
-        }
-    },
-
     getEmotionalStateById: async (req, res) => {
         try {
             const emotionalState = await EmotionalStateDb.findByPk(req.params.id);

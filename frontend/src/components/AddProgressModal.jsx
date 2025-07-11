@@ -8,7 +8,7 @@ function AddProgressModal({ goal, onClose, onSubmit }) {
     useEffect(() => {
         const handleOutsideClick = (e) => {
             if (modalRef.current && !modalRef.current.contains(e.target)) {
-                onClose();
+                onClose();  
             }
         };
 

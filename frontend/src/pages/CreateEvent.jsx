@@ -12,6 +12,7 @@ import ImageUpload from "../components/ImageUpload"
 import { toast } from 'react-toastify';
 import CustomDropdown2 from "../components/CustomDropdown2";
 import "./AvailabilityCalendar2.css"
+import { differenceInHours, parseISO } from "date-fns";
 
 
 function CreateEvent() {
@@ -55,9 +56,10 @@ function CreateEvent() {
     const [form, setForm] = useState({
         name: "",
         description: "",
-        enrollmentDeadline: "",
-        type: "",
-        department: "",
+        enrollmentDeadlineDate: "",
+        enrollmentDeadlineTime: "",
+        type: "workshop",
+        department: "General",
         interval: null,
         image: null,
         questions: [],
@@ -92,28 +94,27 @@ function CreateEvent() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("SUBMIT TRIGGERED")
-
         if (step !== 4) {
             return;
         }
 
         if (form.questions.length === 0) {
-            toast.warning("Please add at least one question to the feedback form!");
+            toast.warning("Adaugă cel puțin o întrebare în formularul de feedback!");
             return;
         }
 
-        console.log("📦 Date trimise:", form);
         try {
             if (!form.interval) throw new Error("Intervalul nu există");
             if (!specialist?.id) throw new Error("Specialistul nu este valid");
+
+            const enrollmentDeadline = new Date(`${form.enrollmentDeadlineDate}T${form.enrollmentDeadlineTime}`);
 
             const formData = new FormData();
             formData.append("file", form.image);
             formData.append("name", form.name);
             formData.append("description", form.description);
             formData.append("specialistId", specialist.id);
-            formData.append("enrollmentDeadline", form.enrollmentDeadline);
+            formData.append("enrollmentDeadline", enrollmentDeadline.toISOString());
             formData.append("targetDepartment", form.department);
             formData.append("intervalId", form.interval.id);
             formData.append("type", form.type);
@@ -134,6 +135,7 @@ function CreateEvent() {
             }
 
             await dispatch(updateIntervalStatus({ id: form.interval.id, status: true }));
+            await dispatch(getIntervalsForTherapist(specialist.id));
             toast.success("Eveniment creat cu succes!");
             navigate(-1);
         } catch (err) {
@@ -151,19 +153,39 @@ function CreateEvent() {
         }
 
         if (step === 2) {
-            if (!form.enrollmentDeadline || !form.interval) {
-                toast.warning("Toate câmpurile sunt obligatorii.");
+            if (!form.enrollmentDeadlineDate || !form.enrollmentDeadlineTime || !form.interval) {
+                toast.warning("Completează data și ora pentru termenul limită și selectează un interval.");
                 return;
             }
 
-            const enrollmentDate = new Date(form.enrollmentDeadline);
-            const eventDate = new Date(selectedDate);
+            
 
-            const diffInMs = eventDate.getTime() - enrollmentDate.getTime();
-            const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+            const [edYear, edMonth, edDay] = form.enrollmentDeadlineDate.split("-").map(Number);
+            const [edHour, edMinute] = form.enrollmentDeadlineTime.split(":").map(Number);
+            const enrollmentDateTime = new Date(edYear, edMonth - 1, edDay, edHour, edMinute);
 
-            if (diffInDays < 1) {
-                toast.warning("Termenul limită pentru înscriere trebuie să fie cu minimum 24h înainte de desfășurare.");
+            const [evHour, evMinute] = form.interval.beginTime.split(":").map(Number);
+            const eventStartTime = new Date(
+                selectedDate.getFullYear(),
+                selectedDate.getMonth(),
+                selectedDate.getDate(),
+                evHour,
+                evMinute
+            );
+
+            const diffInMs = eventStartTime.getTime() - enrollmentDateTime.getTime();
+            const diffInHours = diffInMs / (1000 * 60 * 60);
+
+            if (diffInHours < 24) {
+                toast.warning(
+                    "Termenul limită trebuie să fie cu cel puțin 24h înainte de începerea evenimentului."
+                );
+                return;
+            }
+
+            const now = new Date();
+            if (enrollmentDateTime < now) {
+                toast.warning("Termenul limită pentru înscriere nu poate fi în trecut.");
                 return;
             }
         }
@@ -211,7 +233,6 @@ function CreateEvent() {
                                     value={form.type}
                                     onChange={(val) => setForm((prev) => ({ ...prev, type: val }))}
                                     options={[
-                                        { label: "Selectează tip", value: "" },
                                         { label: "Workshop", value: "workshop" },
                                         { label: "Training", value: "training" },
                                     ]}
@@ -262,14 +283,23 @@ function CreateEvent() {
                             {/* Enrollment + Intervals */}
                             <div className="w-full sm:w-1/2">
                                 <label className="font-medium block mb-2">Termen limită pentru înscriere</label>
-                                <input
-                                    type="date"
-                                    name="enrollmentDeadline"
-                                    value={form.enrollmentDeadline}
-                                    onChange={handleChange}
-                                    className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 placeholder-gray-500 focus:outline-none shadow-inner mb-4"
-                                    required
-                                />
+                                <div className="flex gap-2 mb-4 justify-between">
+                                    <input
+                                        type="date"
+                                        name="enrollmentDeadlineDate"
+                                        value={form.enrollmentDeadlineDate}
+                                        onChange={handleChange}
+                                        className="p-2 rounded bg-white/70 shadow-inner"
+                                    />
+                                    <input
+                                        type="time"
+                                        name="enrollmentDeadlineTime"
+                                        value={form.enrollmentDeadlineTime}
+                                        onChange={handleChange}
+                                        className="p-2 rounded bg-white/70 shadow-inner"
+                                    />
+                                </div>
+
 
                                 <div className="w-full flex justify-center">
                                     <div className="w-64 min-h-[120px] p-4 rounded-xl bg-white/70 shadow-inner text-gray-700 overflow-hidden">
@@ -287,8 +317,8 @@ function CreateEvent() {
                                                             key={interval.id}
                                                             onClick={() => setForm((prev) => ({ ...prev, interval }))}
                                                             className={`w-full max-w-[10rem] text-center px-4 py-2 rounded-md truncate transition ${isSelected
-                                                                    ? "bg-indigo-600 text-white font-semibold"
-                                                                    : "bg-white text-gray-800 border border-gray-300 hover:bg-indigo-100"
+                                                                ? "bg-indigo-600 text-white font-semibold"
+                                                                : "bg-white text-gray-800 border border-gray-300 hover:bg-indigo-100"
                                                                 }`}
                                                         >
                                                             {interval.beginTime.slice(0, 5)} - {interval.endTime.slice(0, 5)}
@@ -315,7 +345,10 @@ function CreateEvent() {
                     {step === 3 && (
                         <div>
                             <h2 className="text-lg font-semibold mb-2">Încarcă o imagine pentru eveniment</h2>
-                            <ImageUpload onImageUpload={(file) => setForm(prev => ({ ...prev, image: file }))} />
+                            <ImageUpload
+                                onImageUpload={(file) => setForm((prev) => ({ ...prev, image: file }))}
+                                selectedFile={form.image}
+                            />
                         </div>
                     )}
 

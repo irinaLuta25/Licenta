@@ -36,11 +36,30 @@ code {
 }
 
 
-.highlight-available {
+/* .highlight-available {
   background-color: #bbf7d0 !important; 
   color: #065f46 !important; 
   border-radius: 100%;
   font-weight: 500;
+} */
+
+.highlight-available {
+  position: relative;
+  color: #065f46 !important;
+  font-weight: 500;
+}
+
+.highlight-available::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  background-color: #bbf7d0;
+  border-radius: 20%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
 }
 
 .recharts-pie-sector:focus {

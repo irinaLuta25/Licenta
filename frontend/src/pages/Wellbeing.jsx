@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { FaTrash } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import AddProgressModal from "../components/AddProgressModal";
@@ -6,6 +6,7 @@ import AddGoalModal from "../components/AddGoalModal";
 import MoodListModal from "../components/MoodListModal";
 import MoodModal from "../components/MoodModal";
 import GoalProgressChart from "../components/Charts/GoalProgressChart";
+import { motion, AnimatePresence } from "framer-motion";
 
 
 
@@ -469,34 +470,50 @@ function Wellbeing() {
                 />
             )}
 
-            {showConfirmModal && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
-                    onClick={() => setShowConfirmModal(false)}
-                >
-                    <div
-                        className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md text-center"
-                        onClick={(e) => e.stopPropagation()}
-                    >
 
-                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Ești sigur că vrei să ștergi acest obiectiv?</h3>
-                        <div className="flex justify-center gap-4">
-                            <button
-                                onClick={confirmDeleteGoal}
-                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
-                            >
-                                Confirmă
-                            </button>
-                            <button
-                                onClick={() => setShowConfirmModal(false)}
-                                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition"
-                            >
-                                Anulează
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            {showConfirmModal && (
+                <AnimatePresence>
+                    <motion.div
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="bg-white rounded-2xl p-8 shadow-xl max-w-md w-full text-center space-y-4 relative"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h3 className="text-xl font-semibold text-indigo-800">
+                                Confirmă ștergerea obiectivului
+                            </h3>
+                            <p className="text-gray-600">
+                                Ești sigur că vrei să ștergi acest obiectiv?
+                            </p>
+
+                            <div className="flex justify-center gap-4 pt-4">
+                                <button
+                                    onClick={() => setShowConfirmModal(false)}
+                                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg"
+                                >
+                                    Anulează
+                                </button>
+
+                                <button
+                                    onClick={confirmDeleteGoal}
+                                    className="bg-indigo-700 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg"
+                                >
+                                    Da, șterge
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
             )}
+
 
 
         </div>

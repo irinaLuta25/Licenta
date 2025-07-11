@@ -10,7 +10,7 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
-import CustomDropdown2 from "../../components/CustomDropdown2";
+import CustomDropdownBlock from "../CustomDropdownBlock"
 
 const GoalProgressChart = ({ employeeGoals, trackingsByGoalId }) => {
   const [selectedGoalId, setSelectedGoalId] = useState(null);
@@ -86,7 +86,15 @@ const GoalProgressChart = ({ employeeGoals, trackingsByGoalId }) => {
     }));
   }, [selectedGoal, trackingsByGoalId]);
 
-  if (employeeGoals.length === 0) return null;
+  if (employeeGoals.length === 0) {
+    return (
+      <div className="w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow text-center">
+        <h2 className="text-xl font-semibold text-indigo-800 mb-4">Progresul meu pe obiective</h2>
+        <p className="text-gray-700">Momentan nu ai niciun obiectiv setat. Creează unul pentru a urmări progresul în timp!</p>
+      </div>
+    );
+  }
+
 
   const goalOptions = employeeGoals.map((goal) => ({
     value: goal.id,
@@ -98,7 +106,7 @@ const GoalProgressChart = ({ employeeGoals, trackingsByGoalId }) => {
       <h2 className="text-xl font-semibold text-indigo-800 mb-4">Progresul meu pe obiective</h2>
 
       <div className="w-full max-w-md mb-8">
-        <CustomDropdown2
+        <CustomDropdownBlock
           value={selectedGoalId || ""}
           onChange={(val) => setSelectedGoalId(val)}
           options={[{ value: "", label: "Selectează un obiectiv" }, ...goalOptions]}

@@ -1,8 +1,8 @@
 import './AvailabilityCalendar.css';
-import { React, useEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom"
 import { getTherapistById, getIntervalsForTherapist, resetSelectedTherapist } from "../../features/therapists/therapistsSlice";
-import { createTherapySession, resetTherapySessionStatus, getAllTherapySessionsBySpecialistId } from "../../features/therapySessions/therapySessionsSlice"
+import { createTherapySession, getAllTherapySessionsBySpecialistId } from "../../features/therapySessions/therapySessionsSlice"
 import { getEmployeeByUserId } from "../../features/employee/employeeSlice";
 import { updateIntervalStatus } from "../../features/interval/intervalSlice"
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import { FaLinkedin, FaFacebook, FaGlobe, FaPhone, FaEnvelope, FaStar, FaStarHal
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { toast } from 'react-toastify';
+import { motion, AnimatePresence } from "framer-motion";
 
 
 function TherapistDetails() {
@@ -31,7 +32,6 @@ function TherapistDetails() {
     const user = useSelector((state) => state.auth.user);
     const employee = useSelector((state) => state.employee.employee);
 
-    const success = useSelector((state) => state.therapySessions.success);
 
     const allSessions = useSelector((state) => state.therapySessions.list);
     console.log("allS", allSessions)
@@ -41,6 +41,20 @@ function TherapistDetails() {
     console.log("employee: ", employee)
 
     const navigate = useNavigate();
+
+    const modalRef = useRef();
+
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (modalRef.current && !modalRef.current.contains(e.target)) {
+                setShowModal(false);
+            }
+        };
+        document.addEventListener("mousedown", handleOutsideClick);
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, []);
 
 
     useEffect(() => {
@@ -56,12 +70,6 @@ function TherapistDetails() {
         }
     }, [dispatch, user]);
 
-    useEffect(() => {
-        if (success) {
-            toast.success("Programare efectuată cu succes!");
-            dispatch(resetTherapySessionStatus());
-        }
-    }, [success, dispatch]);
 
     useEffect(() => {
         if (therapist?.id) {
@@ -93,7 +101,7 @@ function TherapistDetails() {
         age = calculateAge(therapist.user?.birthdate);
     }
 
-    let specialization=therapist.specialization;
+    let specialization = therapist.specialization;
 
     console.log("Therapist " + id + ":", therapist)
     console.log(freeIntervals)
@@ -125,6 +133,7 @@ function TherapistDetails() {
         );
     };
 
+    
 
 
 
@@ -323,59 +332,73 @@ function TherapistDetails() {
             </div>
 
             {showModal && selectedInterval && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-                    <div
-                        className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md"
-                        onClick={(e) => e.stopPropagation()}
+                <AnimatePresence>
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
                     >
-                        <h2 className="text-xl font-bold mb-4 text-center">Confirmare programare</h2>
+                        <motion.div
+                            ref={modalRef}
+                            className="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl relative"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h2 className="text-xl font-bold mb-4 text-center">Confirmare programare</h2>
 
-                        <p className="text-gray-700 mb-6 text-center">
-                            Vrei să te programezi în intervalul <strong>{selectedInterval.beginTime.slice(0, 5)} - {selectedInterval.endTime.slice(0, 5)}</strong> pe data de <strong>{selectedDate.toLocaleDateString("ro-RO")}</strong>?
-                        </p>
+                            <p className="text-gray-700 mb-6 text-center">
+                                Vrei să te programezi în intervalul <strong>{selectedInterval.beginTime.slice(0, 5)} - {selectedInterval.endTime.slice(0, 5)}</strong> pe data de <strong>{selectedDate.toLocaleDateString("ro-RO")}</strong>?
+                            </p>
 
-                        <div className="flex justify-center gap-4">
-                            <button
-                                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-                                onClick={() => setShowModal(false)}
-                            >
-                                Anulează
-                            </button>
+                            <div className="flex justify-center gap-4">
+                                <button
+                                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    Anulează
+                                </button>
 
-                            <button
-                                className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                                onClick={async () => {
-                                    if (selectedInterval && therapist && employee?.id) {
-                                        await dispatch(
-                                            createTherapySession({
-                                                intervalId: selectedInterval.id,
-                                                specialistId: therapist.id,
-                                                employeeId: employee.id
-                                            })
+                                <button
+                                    className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                    onClick={async () => {
+                                        if (selectedInterval && therapist && employee?.id) {
+                                            try {
+                                                await dispatch(createTherapySession({
+                                                    intervalId: selectedInterval.id,
+                                                    specialistId: therapist.id,
+                                                    employeeId: employee.id
+                                                })).unwrap();
 
-                                        ).unwrap();
+                                                toast.success("Programare efectuată cu succes!");
 
-                                        await dispatch(updateIntervalStatus({ id: selectedInterval.id, status: true })).unwrap();
+                                                await dispatch(updateIntervalStatus({ id: selectedInterval.id, status: true })).unwrap();
+                                                await dispatch(getIntervalsForTherapist(therapist.id)).unwrap();
+                                            } catch (err) {
+                                                toast.error("Eroare la programare.");
+                                            }
+                                        } else {
+                                            console.warn("Date insuficiente pentru a crea sesiunea!");
+                                        }
+                                        setShowModal(false);
+                                    }}
+                                >
+                                    Da, confirmă
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
 
-                                        await dispatch(getIntervalsForTherapist(therapist.id)).unwrap();
-
-                                        console.log("Programare confirmată!");
-                                    } else {
-                                        console.warn("Date insuficiente pentru a crea sesiunea!");
-                                    }
-                                    setShowModal(false);
-                                }}
-                            >
-                                Da, confirmă
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
+            )
+            }
         </div>
-
     )
 }
+
+
 
 export default TherapistDetails;

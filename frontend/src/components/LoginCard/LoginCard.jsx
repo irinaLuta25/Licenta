@@ -69,10 +69,34 @@ function LoginCard() {
     const fields = ["firstName", "lastName", "phoneNumber", "birthdate", "gender", "role", "email", "password"];
     for (let f of fields) {
       if (!form[f] || form[f] === "") {
-        console.log(form[f])
+        toast.warning("Toate câmpurile sunt obligatorii.")
         return false;
       }
     }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(form.email)) {
+      toast.error("Email invalid");
+      return false;
+    }
+
+    const phoneNumberRegex = /^[0-9\s\-().+]{10,20}$/;
+    if (!phoneNumberRegex.test(form.phoneNumber)) {
+      toast.error("Număr de telefon invalid.");
+      return false;
+    }
+
+    const nameRegex = /^[a-zA-ZÀ-ž\s.'-]{2,}$/;
+    if (!nameRegex.test(form.firstName)) {
+      toast.error("Prenume invalid.");
+      return false;
+    }
+
+    if (!nameRegex.test(form.lastName)) {
+      toast.error("Nume de familie invalid.");
+      return false;
+    }
+
     return true;
   };
 
@@ -91,17 +115,13 @@ function LoginCard() {
     console.log("Form values:", form);
 
     if (!isLogin && step === 2 && !validateStepTwo()) {
-      console.log("aaaaaaaaaaaaaaaa")
-
-      toast.error("Te rugăm să completezi toate câmpurile.");
       return;
     }
 
-    // if (!isLogin && step === 1) return;
 
     try {
       if (isLogin) {
-        await axios.post("/user/login", {
+        const response = await axios.post("/user/login", {
           email: form.email,
           password: form.password,
         });
@@ -306,7 +326,6 @@ function LoginCard() {
                     type="button"
                     onClick={() => {
                       if (!validateStepOne()) {
-                        toast.error("Te rugăm să completezi toate câmpurile.");
                         return;
                       }
                       console.log("Step 1 values:", form);

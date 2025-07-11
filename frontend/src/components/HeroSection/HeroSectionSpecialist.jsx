@@ -4,7 +4,6 @@ import TextAnimation from "../TextAnimation";
 import "./HeroBubbles.css";
 
 const HeroSectionSpecialist = ({ onExploreClick }) => {
-  const [showContent, setShowContent] = useState(false);
 
   return (
     <section className="relative z-10 pb-15 mt-[-25px] min-h-[105vh] flex items-center justify-center lg:px-12 overflow-hidden">
@@ -26,40 +25,36 @@ const HeroSectionSpecialist = ({ onExploreClick }) => {
               textShadow: "2px 2px 4px rgba(0, 0, 0, 0.2)",
               fontFamily: "'Poppins', sans-serif",
             }}
-            onComplete={() => setShowContent(true)}
           />
 
           <div className="flex flex-col gap-6 pt-6 min-h-[220px]">
-            {/* Paragraf */}
             <motion.p
               className="text-xl text-gray-700"
-              initial={false}
-              animate={showContent ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              style={{ visibility: showContent ? "visible" : "hidden" }}
+              viewport={{ once: true, amount: 0.6 }}
             >
               Îți dedici timpul pentru a schimba vieți. MindCare te ajută să îți organizezi sesiunile și să ai un impact real.
             </motion.p>
 
-            {/* Citat */}
             <motion.blockquote
               className="italic text-indigo-800 text-lg"
-              initial={false}
-              animate={showContent ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              style={{ visibility: showContent ? "visible" : "hidden" }}
+              viewport={{ once: true, amount: 0.6 }}
             >
               “Grija față de ceilalți începe cu organizare, empatie și dedicare.”
             </motion.blockquote>
 
-            {/* Buton */}
             <motion.button
-              className="w-64 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 mt-4 rounded-xl text-lg shadow-md  transition mx-auto lg:mx-0"
+              className="w-64 bg-orange-500 text-white px-6 py-3 mt-4 rounded-xl text-lg shadow-md hover:bg-orange-600 transition mx-auto lg:mx-0"
               whileTap={{ scale: 0.95 }}
-              initial={false}
-              animate={showContent ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              style={{ visibility: showContent ? "visible" : "hidden" }}
+              viewport={{ once: true, amount: 0.6 }}
               onClick={onExploreClick}
             >
               Vezi cum funcționează
@@ -74,8 +69,9 @@ const HeroSectionSpecialist = ({ onExploreClick }) => {
             alt="MindCare Specialist Illustration"
             className="w-full max-w-[600px] lg:w-[400px] rounded-xl"
             initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: showContent ? 1 : 0, x: showContent ? 0 : 100 }}
+            whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            viewport={{ once: true, amount: 0.4 }}
           />
         </div>
       </div>

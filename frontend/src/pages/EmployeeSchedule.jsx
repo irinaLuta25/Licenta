@@ -16,6 +16,8 @@ import { updateIntervalStatus } from "../features/interval/intervalSlice";
 import { deleteEmployeeEvent } from "../features/employeeEvent/employeeEventSlice";
 import { checkHasFeedbackForEvent, checkHasFeedbackForTherapySession } from "../features/answer/answerSlice"
 import { ro } from "date-fns/locale";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 
 const EmployeeSchedule = () => {
@@ -77,9 +79,6 @@ const EmployeeSchedule = () => {
         setShowModal(false);
         setSelectedToDelete(null);
     };
-
-
-
 
     const modalRef = useRef();
 
@@ -253,8 +252,8 @@ const EmployeeSchedule = () => {
                                                                     : `/employee/schedule/event/${ev?.original?.event?.id}`
                                                             }
                                                             className={`text-sm ${hasFeedback
-                                                                    ? 'bg-gray-400 cursor-not-allowed pointer-events-none'
-                                                                    : 'bg-purple-400 hover:bg-purple-500'
+                                                                ? 'bg-gray-400 cursor-not-allowed pointer-events-none'
+                                                                : 'bg-purple-400 hover:bg-purple-500'
                                                                 } text-white px-3 py-2 rounded`}
                                                         >
                                                             {hasFeedback ? 'Feedback adăugat' : 'Adaugă feedback'}
@@ -281,30 +280,46 @@ const EmployeeSchedule = () => {
             </div>
 
             {showModal && selectedToDelete && (
-                <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div ref={modalRef} className="bg-white rounded-xl p-8 shadow-xl max-w-md w-full text-center space-y-4">
-                        <h3 className="text-xl font-semibold text-indigo-800">
-                            {selectedToDelete.type === "therapy" ? "Confirmă anularea sesiunii" : "Confirmă anularea evenimentului"}
-                        </h3>
-                        <p className="text-gray-600">
-                            Ești sigur că vrei să {selectedToDelete.type === "therapy" ? "anulezi ședința" : "te retragi de la acest eveniment"}?
-                        </p>
-                        <div className="flex justify-center gap-4 pt-4">
-                            <button
-                                onClick={confirmDelete}
-                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
-                            >
-                                Da, confirm
-                            </button>
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg"
-                            >
-                                Anulează
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <AnimatePresence>
+                    <motion.div
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            ref={modalRef}
+                            className="bg-white rounded-2xl p-8 shadow-xl max-w-md w-full text-center space-y-4 relative"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <h3 className="text-xl font-semibold text-indigo-800">
+                                {selectedToDelete.type === "therapy" ? "Confirmă anularea sesiunii" : "Confirmă anularea evenimentului"}
+                            </h3>
+                            <p className="text-gray-600">
+                                Ești sigur că vrei să {selectedToDelete.type === "therapy" ? "anulezi ședința" : "te retragi de la acest eveniment"}?
+                            </p>
+                            <div className="flex justify-center gap-4 pt-4">
+                                <button
+                                    onClick={() => setShowModal(false)}
+                                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg"
+                                >
+                                    Anulează
+                                </button>
+
+                                <button
+                                    onClick={confirmDelete}
+                                    className="bg-indigo-700 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg"
+                                >
+                                    Da, confirm
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
             )}
 
         </div>

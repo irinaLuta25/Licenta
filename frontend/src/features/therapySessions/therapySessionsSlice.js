@@ -86,32 +86,23 @@ const therapySessionsSlice = createSlice({
   name: "therapySessions",
   initialState: {
     loading: false,
-    success: false,
     error: null,
     list: [],
     count: 0
   },
   reducers: {
-    resetTherapySessionStatus: (state) => {
-      state.loading = false;
-      state.success = false;
-      state.error = null;
-    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(createTherapySession.pending, (state) => {
         state.loading = true;
-        state.success = false;
         state.error = null;
       })
       .addCase(createTherapySession.fulfilled, (state) => {
         state.loading = false;
-        state.success = true;
       })
       .addCase(createTherapySession.rejected, (state, action) => {
         state.loading = false;
-        state.success = false;
         state.error = action.payload;
       })
 
@@ -121,11 +112,9 @@ const therapySessionsSlice = createSlice({
       })
       .addCase(updateTherapySession.fulfilled, (state) => {
         state.loading = false;
-        state.success = true;
       })
       .addCase(updateTherapySession.rejected, (state, action) => {
         state.loading = false;
-        state.success = false;
         state.error = action.payload;
       })
 
@@ -138,12 +127,10 @@ const therapySessionsSlice = createSlice({
         state.list = state.list.filter(
           (session) => session.id !== action.payload.id
         );
-        state.success = true;
       })
       .addCase(deleteTherapySession.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-        state.success = false;
       })
 
       .addCase(getAllTherapySessionsBySpecialistId.pending, (state) => {
@@ -194,5 +181,4 @@ const therapySessionsSlice = createSlice({
   },
 });
 
-export const { resetTherapySessionStatus } = therapySessionsSlice.actions;
 export default therapySessionsSlice.reducer;

@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import { useDispatch, useSelector } from "react-redux";
 import "react-calendar/dist/Calendar.css";
@@ -24,7 +24,8 @@ import {
 import { createInterval, deleteInterval, getAllIntervals, updateIntervalStatus } from "../features/interval/intervalSlice";
 import { getEmployeeEventsByEventId } from "../features/employeeEvent/employeeEventSlice";
 import { toast } from "react-toastify";
-import { useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 const SpecialistCalendar = () => {
   const user = useSelector((state) => state.auth.user);
@@ -49,24 +50,34 @@ const SpecialistCalendar = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [pendingDelete, setPendingDelete] = useState(null);
 
-  const modalRef = useRef();
+  const addIntervalModalRef = useRef();
+  const confirmModalRef = useRef();
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        showModal &&
-        modalRef.current &&
-        !modalRef.current.contains(event.target)
-      ) {
+      if (showModal && addIntervalModalRef.current && !addIntervalModalRef.current.contains(event.target)) {
         setShowModal(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showModal]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showConfirmModal && confirmModalRef.current && !confirmModalRef.current.contains(event.target)) {
+        setShowConfirmModal(false);
+        setPendingDelete(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showConfirmModal]);
+
 
   const realSchedule = {};
   if (therapySessions) {
@@ -135,7 +146,17 @@ const SpecialistCalendar = () => {
 
   const handleAddInterval = () => {
     if (!intervalForm.date || !intervalForm.beginTime || !intervalForm.endTime)
+
       return;
+
+    const selectedStart = new Date(`${intervalForm.date}T${intervalForm.beginTime}`);
+    const now = new Date();
+
+    if (selectedStart < now) {
+      toast.error("Nu poți adăuga un interval în trecut.");
+      return;
+    }
+
     dispatch(
       createInterval({
         specialistId: specialist.id,
@@ -171,7 +192,7 @@ const SpecialistCalendar = () => {
         dispatch(getAllEvents())
 
       })
-      .catch(() => toast.error("Eroare la anularea evenimentului."));
+        .catch(() => toast.error("Eroare la anularea evenimentului."));
 
     } else if (ev.type === 'free') {
       console.log(ev)
@@ -179,7 +200,7 @@ const SpecialistCalendar = () => {
         toast.success("Interval șters cu succes!");
         dispatch(getIntervalsForTherapist(specialist.id));
       })
-      .catch(() => toast.error("Eroare la ștergerea intervalului."));
+        .catch(() => toast.error("Eroare la ștergerea intervalului."));
 
     }
   };
@@ -252,7 +273,7 @@ const SpecialistCalendar = () => {
                       </div>
                     ))}
                     {events.length > 3 && (
-                      <span className="text-[9px] text-gray-200">
+                      <span className="text-[9px] text-indigo-500">
                         + încă {events.length - 3}
                       </span>
                     )}
@@ -339,59 +360,71 @@ const SpecialistCalendar = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div
-            ref={modalRef}
-            className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl"
+        <AnimatePresence>
+          <motion.div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <h2 className="text-xl font-semibold text-indigo-800 mb-4">
-              Adaugă interval disponibil
-            </h2>
-            <div className="space-y-3">
-              <input
-                type="date"
-                className="w-full p-2 border rounded"
-                value={intervalForm.date}
-                onChange={(e) =>
-                  setIntervalForm({ ...intervalForm, date: e.target.value })
-                }
-              />
-              <input
-                type="time"
-                className="w-full p-2 border rounded"
-                value={intervalForm.beginTime}
-                onChange={(e) =>
-                  setIntervalForm({
-                    ...intervalForm,
-                    beginTime: e.target.value,
-                  })
-                }
-              />
-              <input
-                type="time"
-                className="w-full p-2 border rounded"
-                value={intervalForm.endTime}
-                onChange={(e) =>
-                  setIntervalForm({ ...intervalForm, endTime: e.target.value })
-                }
-              />
-              <div className="flex justify-end gap-2 mt-4">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
-                >
-                  Anulează
-                </button>
-                <button
-                  onClick={handleAddInterval}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
-                >
-                  Adaugă
-                </button>
+            <motion.div
+              ref={addIntervalModalRef}
+              className="bg-white rounded-2xl p-8 w-full max-w-md shadow-xl relative space-y-4"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-xl font-semibold text-indigo-800 mb-4">
+                Adaugă interval disponibil
+              </h2>
+              <div className="space-y-3">
+                <input
+                  type="date"
+                  className="w-full p-2 border rounded"
+                  value={intervalForm.date}
+                  onChange={(e) =>
+                    setIntervalForm({ ...intervalForm, date: e.target.value })
+                  }
+                />
+                <input
+                  type="time"
+                  className="w-full p-2 border rounded"
+                  value={intervalForm.beginTime}
+                  onChange={(e) =>
+                    setIntervalForm({
+                      ...intervalForm,
+                      beginTime: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="time"
+                  className="w-full p-2 border rounded"
+                  value={intervalForm.endTime}
+                  onChange={(e) =>
+                    setIntervalForm({ ...intervalForm, endTime: e.target.value })
+                  }
+                />
+                <div className="flex justify-end gap-2 mt-4">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded"
+                  >
+                    Anulează
+                  </button>
+                  <button
+                    onClick={handleAddInterval}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded"
+                  >
+                    Adaugă
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
       )}
 
       {selectedFeedbackSession && (
@@ -402,32 +435,48 @@ const SpecialistCalendar = () => {
       )}
 
       {showConfirmModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded p-6 shadow-md">
-            <h2 className="text-lg font-semibold mb-4">Ești sigur că vrei să ștergi?</h2>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setShowConfirmModal(false);
-                  setPendingDelete(null);
-                }}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              >
-                Anulează
-              </button>
-              <button
-                onClick={() => {
-                  handleDelete(pendingDelete);
-                  setShowConfirmModal(false);
-                  setPendingDelete(null);
-                }}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-              >
-                Confirmă
-              </button>
-            </div>
-          </div>
-        </div>
+        <AnimatePresence>
+          <motion.div
+            className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              ref={confirmModalRef}
+              className="bg-white rounded-2xl p-8 shadow-xl max-w-md w-full text-center space-y-4 relative"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="text-lg font-semibold mb-4">Ești sigur că vrei să ștergi?</h2>
+              <div className="flex justify-center gap-4 pt-4">
+                <button
+                  onClick={() => {
+                    setShowConfirmModal(false);
+                    setPendingDelete(null);
+                  }}
+                  className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg"
+                >
+                  Anulează
+                </button>
+                <button
+                  onClick={() => {
+                    handleDelete(pendingDelete);
+                    setShowConfirmModal(false);
+                    setPendingDelete(null);
+                  }}
+                  className="bg-indigo-700 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg"
+                >
+                  Confirmă
+                </button>
+              </div>
+
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>
       )}
     </div>
   );

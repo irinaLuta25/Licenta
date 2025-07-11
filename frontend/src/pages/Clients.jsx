@@ -13,6 +13,7 @@ import {
     getAllQuestions
 } from "../features/question/questionSlice";
 import { FaEdit } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 
 const defaultProfile = "/assets/Default_pfp.jpg";
@@ -328,54 +329,79 @@ function Clients() {
 
             {showModal && <FeedbackModal session={selectedSession} onClose={closeFeedbackModal} />}
             {showQuestionModal && (
-                <div onMouseDown={(e) => {
-                    if (modalRef.current && !modalRef.current.contains(e.target)) {
-                        closeQuestionModal();
-                    }
-                }}
-                    className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
-                    <div ref={modalRef} className="bg-white/90 backdrop-blur-xl rounded-xl shadow-2xl p-10 w-full max-w-3xl border border-indigo-100">
-                        <h2 className="text-2xl font-bold mb-10 text-indigo-800 text-center">Formular feedback</h2>
-                        <div className="mb-6 text-indigo-800 text-md space-y-1">
-                            <p><b>Client:</b> {questionSession?.employee?.user?.firstName} {questionSession?.employee?.user?.lastName}</p>
-                            <p><b>Data:</b> {formatDateRO(questionSession?.interval?.date)}</p>
-                            <p><b>Interval orar:</b> {formatTimeRange(questionSession?.interval?.beginTime, questionSession?.interval?.endTime)}</p>
-                        </div>
-                        <div className="space-y-4 mb-6">
-                            {questions.map((q, idx) => (
-                                <input
-                                    key={idx}
-                                    type="text"
-                                    value={q.text}
-                                    onChange={(e) => updateQuestionText(idx, e.target.value)}
-                                    className="w-full p-3 bg-indigo-100 border-l-4 border-indigo-400 rounded-md shadow-sm rounded-xl text-gray-700 placeholder-gray-500 focus:outline-indigo-600 shadow-inner"
-                                    placeholder={`Întrebare ${idx + 1}`}
-                                />
-                            ))}
-                            <button
-                                type="button"
-                                onClick={addQuestion}
-                                className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600"
-                            >
-                                Adaugă întrebare
-                            </button>
-                        </div>
-                        <div className="flex justify-end gap-4 mt-6">
-                            <button
-                                onClick={handleSubmitQuestions}
-                                className="px-5 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                            >
-                                Trimite
-                            </button>
+                <AnimatePresence>
+                    <motion.div
+                        onMouseDown={(e) => {
+                            if (modalRef.current && !modalRef.current.contains(e.target)) {
+                                closeQuestionModal();
+                            }
+                        }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            ref={modalRef}
+                            className="bg-white rounded-2xl p-10 w-full max-w-3xl shadow-xl relative"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             <button
                                 onClick={closeQuestionModal}
-                                className="px-5 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl font-bold"
                             >
-                                Închide
+                                &times;
                             </button>
-                        </div>
-                    </div>
-                </div>
+                            <h2 className="text-2xl font-bold mb-10 text-indigo-800 text-center">Formular feedback</h2>
+                            <div className="mb-6 text-black text-md space-y-1">
+                                <p><b>Client:</b> {questionSession?.employee?.user?.firstName} {questionSession?.employee?.user?.lastName}</p>
+                                <p><b>Data:</b> {formatDateRO(questionSession?.interval?.date)}</p>
+                                <p><b>Interval orar:</b> {formatTimeRange(questionSession?.interval?.beginTime, questionSession?.interval?.endTime)}</p>
+                            </div>
+                            <div className="space-y-4 mb-6">
+                                {questions.map((q, idx) => (
+                                    <input
+                                        key={idx}
+                                        type="text"
+                                        value={q.text}
+                                        onChange={(e) => updateQuestionText(idx, e.target.value)}
+                                        className="w-full p-3 bg-indigo-100 border-l-4 border-indigo-400 rounded-md shadow-sm rounded-xl text-gray-700 placeholder-gray-500 focus:outline-indigo-600 shadow-inner"
+                                        placeholder={`Întrebare ${idx + 1}`}
+                                    />
+                                ))}
+                                <div className="flex justify-begin">
+                                    <button
+                                        type="button"
+                                        onClick={addQuestion}
+                                        className="mt-2 bg-indigo-700 hover:bg-indigo-600 text-white px-5 py-2 rounded-lg shadow transition"
+                                    >
+                                        + Adaugă întrebare
+                                    </button>
+                                </div>
+
+                            </div>
+                            <div className="flex justify-end gap-4 mt-6">
+                                <button
+                                    onClick={closeQuestionModal}
+                                    className="px-5 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+                                >
+                                    Închide
+                                </button>
+                                <button
+                                    onClick={handleSubmitQuestions}
+                                    className="px-5 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                >
+                                    Trimite
+                                </button>
+
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                </AnimatePresence>
             )}
         </div>
     );

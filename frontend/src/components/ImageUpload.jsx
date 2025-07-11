@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-function ImageUpload({ onImageUpload }) {
+function ImageUpload({ onImageUpload, selectedFile = null }) {
     const [dragOver, setDragOver] = useState(false);
-    const [fileName, setFileName] = useState(null);
+    const [fileName, setFileName] = useState(selectedFile?.name || null);
+
 
     const handleDrop = (e) => {
         e.preventDefault();
@@ -38,6 +39,7 @@ function ImageUpload({ onImageUpload }) {
             <label className="cursor-pointer inline-block bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
                 Selectează fișier
                 <input
+                    key={selectedFile?.name || "empty"}
                     type="file"
                     accept="image/*"
                     className="hidden"
