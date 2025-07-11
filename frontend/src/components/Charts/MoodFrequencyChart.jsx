@@ -13,22 +13,23 @@ import {
 } from "recharts";
 
 const colorsMap = {
-  Energic: "#3b82f6",
-  Optimist: "#60a5fa",
+  Energic: "#3b44f6ff",
+  Optimist: "#3b82f6",
   Recunoscător: "#93c5fd",
-  Calm: "#10b981",
-  Concentrat: "#34d399",
-  Motivat: "#6ee7b7",
-  Obosit: "#f59e0b",
-  Apat: "#fbbf24",
-  Indiferent: "#fcd34d",
-  Stresat: "#f87171",
-  Trist: "#6366f1",
+  Calm: "#10a0b9ff",
+  Concentrat: "#34d3b8ff",
+  Motivat: "#438e70ff",
+  Obosit: "#f5800bff",
+  Distant: "#fcd34d",
+  Plictisit: "#cbe642ff",
+  Stresat: "#8b5cf6",
+  Trist: "#5f3bb3ff",
+  Confuz: "#9e8ce5ff",
+  Anxios: "#b422beff",
+  Dezamagit: "#962245ff",
   Furios: "#ef4444",
-  Anxios: "#8b5cf6",
-  Dezamagit: "#a78bfa",
-  Deznadajduit: "#c4b5fd",
 };
+
 
 const MoodFrequencyChart = ({ managerId, selectedMonth, selectedYear }) => {
   const dispatch = useDispatch();

@@ -14,9 +14,9 @@ const emojiMoods = [
 const emotionalStatesByMood = {
     foarte_bine: ["Energic", "Optimist", "Recunoscător"],
     bine: ["Calm", "Concentrat", "Motivat"],
-    neutru: ["Obosit", "Apat", "Indiferent"],
-    rau: ["Stresat", "Trist", "Furios"],
-    foarte_rau: ["Anxios", "Dezamagit", "Deznadajduit"],
+    neutru: ["Obosit", "Distant", "Plictisit"],
+    rau: ["Stresat", "Trist", "Confuz"],
+    foarte_rau: ["Anxios", "Dezamagit", "Furios"],
 };
 
 const MoodModal = ({ onClose, employeeId, onSave }) => {

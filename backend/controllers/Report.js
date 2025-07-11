@@ -49,12 +49,21 @@ const controller = {
       });
 
       // 4. Grupare date: pe zi + mood
+      const getWeekLabel = (dateStr) => {
+        const day = new Date(dateStr).getDate();
+        if (day <= 7) return "Săpt. 1";
+        if (day <= 14) return "Săpt. 2";
+        if (day <= 21) return "Săpt. 3";
+        return "Săpt. 4";
+      };
+
       const grouped = {};
       for (const s of states) {
         const date = s.createdAt.toISOString().split("T")[0];
-        if (!grouped[date]) grouped[date] = {};
-        if (!grouped[date][s.mood]) grouped[date][s.mood] = [];
-        grouped[date][s.mood].push(s.intensity);
+        const week = getWeekLabel(date);
+        if (!grouped[week]) grouped[week] = {};
+        if (!grouped[week][s.mood]) grouped[week][s.mood] = [];
+        grouped[week][s.mood].push(s.intensity);
       }
 
       // // 5. Calculam media pe fiecare mood/zi
@@ -68,10 +77,10 @@ const controller = {
       // });
 
       // 5. Calculam numarul de persoane care au raportat fiecare mood pe zi
-      const result = Object.entries(grouped).map(([date, moods]) => {
-        const entry = { date };
+      const result = Object.entries(grouped).map(([week, moods]) => {
+        const entry = { week }; // în loc de date
         for (const [mood, values] of Object.entries(moods)) {
-          entry[mood] = values.length; // doar număr, fără medie
+          entry[mood] = values.length;
         }
         return entry;
       });

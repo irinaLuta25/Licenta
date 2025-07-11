@@ -8,8 +8,6 @@ const upload = multer({ storage: multer.memoryStorage() });
 const authMiddleware = require("../middlewares/authMiddleware");
 const requireRole = require("../middlewares/requireRole");
 
-router.use(authMiddleware);
-
 router.get("/getAll", authMiddleware,  requireRole("specialist"), userController.getAllUsers);
 router.get("/getUserFromCookie", authMiddleware, userController.getUserFromCookie);
 router.get("/:id",authMiddleware, userController.getUserById);

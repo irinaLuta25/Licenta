@@ -41,16 +41,16 @@ const moodEmojiMap = {
     Motivat: "🙂",
 
     Obosit: "😐",
-    Apat: "😐",
-    Indiferent: "😐",
+    Distant: "😐",
+    Plictisit: "😐",
 
     Stresat: "😞",
     Trist: "😞",
-    Furios: "😞",
+    Confuz: "😞",
 
     Anxios: "😭",
     Dezamagit: "😭",
-    Deznadajduit: "😭",
+    Furios: "😭",
 };
 
 

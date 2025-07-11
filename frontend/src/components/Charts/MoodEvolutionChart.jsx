@@ -18,27 +18,27 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
     );
 
     const [selectedEmotions, setSelectedEmotions] = useState([
-        "Calm",
-        "Obosit",
+        "Stresat",
+        "Optimist",
         "Furios",
     ]);
 
     const emotions = [
-        { key: "Energic", color: "#3b82f6" },
-        { key: "Optimist", color: "#60a5fa" },
+        { key: "Energic", color: "#3b44f6ff" },
+        { key: "Optimist", color: "#3b82f6" },
         { key: "Recunoscător", color: "#93c5fd" },
-        { key: "Calm", color: "#10b981" },
-        { key: "Concentrat", color: "#34d399" },
-        { key: "Motivat", color: "#6ee7b7" },
-        { key: "Obosit", color: "#f59e0b" },
-        { key: "Apat", color: "#fbbf24" },
-        { key: "Indiferent", color: "#fcd34d" },
-        { key: "Stresat", color: "#f87171" },
-        { key: "Trist", color: "#6366f1" },
+        { key: "Calm", color: "#10a0b9ff" },
+        { key: "Concentrat", color: "#34d3b8ff" },
+        { key: "Motivat", color: "#438e70ff" },
+        { key: "Obosit", color: "#f5800bff" },
+        { key: "Distant", color: "#fcd34d" },
+        { key: "Plictisit", color: "#cbe642ff" },
+        { key: "Stresat", color: "#8b5cf6" },
+        { key: "Trist", color: "#5f3bb3ff" },
+        { key: "Confuz", color: "#9e8ce5ff" },
+        { key: "Anxios", color: "#b422beff" },
+        { key: "Dezamagit", color: "#962245ff" },
         { key: "Furios", color: "#ef4444" },
-        { key: "Anxios", color: "#8b5cf6" },
-        { key: "Dezamagit", color: "#a78bfa" },
-        { key: "Deznadajduit", color: "#c4b5fd" },
     ];
 
     useEffect(() => {
@@ -62,25 +62,25 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
     const formattedData = (() => {
         if (!Array.isArray(moodEvolution)) return [];
 
-        const dataMap = {};
-        moodEvolution.forEach((entry) => {
-            const key = new Date(entry.date).toISOString().split("T")[0];
-            dataMap[key] = { ...entry, date: key };
-        });
+        const weekOrder = ["Săpt. 1", "Săpt. 2", "Săpt. 3", "Săpt. 4"];
 
-        const allDates = generateMonthDates(selectedYear, selectedMonth);
-        const complete = allDates.map((dateStr) => {
-            const dayEntry = dataMap[dateStr] || { date: dateStr };
+        const mapped = moodEvolution.map((entry) => {
+            const result = { week: entry.week };
             emotions.forEach(({ key }) => {
-                if (dayEntry[key] === undefined) {
-                    dayEntry[key] = 0;
-                }
+                result[key] = entry[key] !== undefined ? entry[key] : null;
             });
-            return dayEntry;
-        });
+            return result;
+        }).filter(entry =>
+            selectedEmotions.some((key) => entry[key] !== null)
+        );
 
-        return complete;
+        // Sortează în ordinea corectă a săptămânilor
+        return mapped.sort(
+            (a, b) => weekOrder.indexOf(a.week) - weekOrder.indexOf(b.week)
+        );
     })();
+
+
     console.log(formattedData)
 
     const handleCheckboxChange = (emotion) => {
@@ -135,7 +135,7 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
 
                     <CartesianGrid stroke="#9ca3af" strokeDasharray="4 4" />
                     <XAxis
-                        dataKey="date"
+                        dataKey="week"
                         tick={{ fill: "#374151", fontSize: 12 }}
                     />
                     <YAxis
