@@ -229,7 +229,6 @@ function TherapistDetails() {
 
                         <br></br>
 
-                        {/* Therapy info - formare specializari therapy style */}
                         <div>
                             <h1 className="text-large font-bold">
                                 Detalii profesionale
@@ -252,7 +251,6 @@ function TherapistDetails() {
 
 
 
-                {/* Calendar cu intervalele libere din fiecare zi highlighted */}
                 <div className="flex flex-row gap-10 mx-8 pb-8">
 
                     <div className="w-[40%] min-h-[350px] flex flex-col gap-4 items-center text-center bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-2xl rounded-xl px-8 pt-4">

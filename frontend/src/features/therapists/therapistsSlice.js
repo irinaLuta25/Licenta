@@ -72,7 +72,7 @@ const therapistsSlice = createSlice({
     list: [],
     loggedInTherapist: null,
     selectedTherapist: null,
-    specialistsById: {}, // facilitatorii altor evenimente
+    specialistsById: {}, 
     freeIntervals: [],
     loading: false,
     error: null,
@@ -87,7 +87,6 @@ const therapistsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // --- getAllTherapists ---
       .addCase(getAllTherapists.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -101,7 +100,6 @@ const therapistsSlice = createSlice({
         state.error = action.payload;
       })
 
-      // --- getTherapistById ---
       .addCase(getTherapistById.pending, (state) => {
         state.loading = true;
         state.status = "loading";
@@ -121,7 +119,6 @@ const therapistsSlice = createSlice({
         state.error = action.payload;
       })
 
-      // --- getSpecialistByUserId  ---
       .addCase(getSpecialistByUserId.pending, (state) => {
         state.status = "loading";
       })
@@ -138,7 +135,6 @@ const therapistsSlice = createSlice({
         state.error = action.payload;
       })
 
-      // --- getIntervalsForTherapist ---
       .addCase(getIntervalsForTherapist.pending, (state) => {
         state.loading = true;
         state.status = "loading";
@@ -157,7 +153,6 @@ const therapistsSlice = createSlice({
         state.error = action.payload;
       })
 
-      // ---- updateSpecialist ----
       .addCase(updateSpecialist.fulfilled, (state, action) => {
         const updated = action.payload;
         state.loggedInTherapist = updated;

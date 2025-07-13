@@ -41,7 +41,6 @@ function AddProgressModal({ goal, onClose, onSubmit }) {
                     exit={{ scale: 0.9, opacity: 0 }}
                     transition={{ duration: 0.2 }}
                 >
-                    {/* Close button */}
                     <button
                         onClick={onClose}
                         className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 text-xl font-semibold"
@@ -49,15 +48,12 @@ function AddProgressModal({ goal, onClose, onSubmit }) {
                         &times;
                     </button>
 
-                    {/* Title */}
                     <h2 className="text-xl font-semibold text-indigo-800 mb-3">Adaugă progres</h2>
 
-                    {/* Habit info */}
                     <p className="text-sm text-gray-600 mb-4">
                         {goal?.habit?.name} – <span className="text-gray-800 font-medium">{goal?.habit?.unit}</span>
                     </p>
 
-                    {/* Input */}
                     <input
                         type="number"
                         min="0"
@@ -70,7 +66,6 @@ function AddProgressModal({ goal, onClose, onSubmit }) {
                         placeholder="Introdu un număr întreg pozitiv"
                     />
 
-                    {/* Submit */}
                     <button
                         onClick={handleSubmit}
                         className="w-full mt-5 bg-indigo-700 hover:bg-indigo-600 text-white py-2 rounded-lg transition"

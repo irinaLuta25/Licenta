@@ -6,16 +6,13 @@ import "./HeroBubbles.css";
 const HeroSection = ({ onExploreClick }) => {
   return (
     <section className="relative z-10 pb-15 mt-[-25px] min-h-[105vh] flex items-center justify-center lg:px-12 overflow-hidden">
-      {/* Bule animate */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {[...Array(5)].map((_, i) => (
           <div key={i} className={`floating-bubble bubble-${i + 1}`} />
         ))}
       </div>
 
-      {/* Hero */}
       <div className="max-w-7xl w-full mx-auto flex flex-col lg:flex-row items-center justify-between relative z-10">
-        {/* TEXT STÂNGA */}
         <div className="flex-1 flex flex-col gap-6 justify-center text-center lg:text-left lg:pr-12">
           <TextAnimation
             text="Bine ai venit! Grija față de tine începe aici."
@@ -62,7 +59,6 @@ const HeroSection = ({ onExploreClick }) => {
           </div>
         </div>
 
-        {/* IMAGINE */}
         <div className="flex-1 flex justify-center mt-10 lg:mt-0">
           <motion.img
             src="/assets/hero_img.png"

@@ -12,7 +12,6 @@
   font-size: 1.3rem;
 }
 
-/* standard tile */
 .custom-calendar2 .react-calendar__tile {
   background: transparent;
   border-radius: 0.5rem;
@@ -20,13 +19,11 @@
   transition: all 0.2s ease-in-out;
 }
 
-/* Selected */
 .custom-calendar2 .react-calendar__tile--active {
   background: #4338ca !important;
   color: white !important;
 }
 
-/* Now */
 .custom-calendar2 .react-calendar__tile--now {
   background: rgba(99, 102, 241, 0.1);
   border: 1px solid #6366f1;
@@ -34,7 +31,6 @@
   color: #4338ca;
 }
 
-/* Hover */
 .custom-calendar2 .react-calendar__tile:enabled:not(.react-calendar__tile--active):hover {
   background: rgba(99, 102, 241, 0.15) !important;
   color: #4338ca;

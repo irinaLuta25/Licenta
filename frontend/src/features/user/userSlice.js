@@ -9,7 +9,6 @@ export const updateUser = createAsyncThunk(
 
       for (const key in user) {
         if (key === "profileImage") {
-          // doar dacă e obiect File
           if (user.profileImage instanceof File) {
             formData.append("profileImage", user.profileImage);
           }

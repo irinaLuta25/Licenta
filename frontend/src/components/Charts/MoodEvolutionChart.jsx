@@ -74,7 +74,6 @@ const MoodEvolutionChart = ({ managerId, selectedMonth, selectedYear }) => {
             selectedEmotions.some((key) => entry[key] !== null)
         );
 
-        // Sortează în ordinea corectă a săptămânilor
         return mapped.sort(
             (a, b) => weekOrder.indexOf(a.week) - weekOrder.indexOf(b.week)
         );

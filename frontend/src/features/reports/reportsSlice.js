@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios"
 
-// Thunk: Fetch mood evolution data pentru managerId și lună/an
 export const fetchMoodEvolution = createAsyncThunk(
   "reports/fetchMoodEvolution",
   async ({ managerId, month, year }) => {

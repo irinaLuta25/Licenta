@@ -83,13 +83,13 @@ const SpecialistCalendar = () => {
   if (therapySessions) {
     therapySessions.forEach((session) => {
       if (!session?.interval?.date) return;
-      const dateKey = format(new Date(session.interval.date), "yyyy-MM-dd");
-      const begin = session.interval.beginTime.slice(0, 5);
-      const end = session.interval.endTime.slice(0, 5);
+      const dateKey = format(new Date(session?.interval?.date), "yyyy-MM-dd");
+      const begin = session.interval?.beginTime.slice(0, 5);
+      const end = session.interval?.endTime.slice(0, 5);
       realSchedule[dateKey] = realSchedule[dateKey] || [];
       realSchedule[dateKey].push({
         type: "therapy",
-        title: `Sesiune de terapie - ${session.employee.user.firstName} ${session.employee.user.lastName}`,
+        title: `Sesiune de terapie - ${session?.employee?.user?.firstName} ${session?.employee?.user?.lastName}`,
         time: `${begin}–${end}`,
         original: session,
       });
@@ -106,7 +106,7 @@ const SpecialistCalendar = () => {
       realSchedule[dateKey] = realSchedule[dateKey] || [];
       realSchedule[dateKey].push({
         type: "event",
-        title: `${event.type === "workshop" ? "Workshop" : "Training"} - ${event.name
+        title: `${event?.type === "workshop" ? "Workshop" : "Training"} - ${event?.name
           }`,
         time: `${begin}–${end}`,
         original: event,
@@ -118,8 +118,8 @@ const SpecialistCalendar = () => {
     freeIntervals.forEach((interval) => {
       if (!interval?.date) return;
       const dateKey = format(new Date(interval.date), "yyyy-MM-dd");
-      const begin = interval.beginTime.slice(0, 5);
-      const end = interval.endTime.slice(0, 5);
+      const begin = interval?.beginTime.slice(0, 5);
+      const end = interval?.endTime.slice(0, 5);
       realSchedule[dateKey] = realSchedule[dateKey] || [];
       realSchedule[dateKey].push({
         id: interval?.id,

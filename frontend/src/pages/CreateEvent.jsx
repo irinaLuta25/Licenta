@@ -259,7 +259,6 @@ function CreateEvent() {
 
                     {step === 2 && (
                         <div className="flex flex-col sm:flex-row justify-between items-start gap-8">
-                            {/* Calendar */}
                             <div>
                                 <label className="font-medium block mb-2">Alege un interval</label>
                                 <Calendar
@@ -280,7 +279,6 @@ function CreateEvent() {
                                 )}
                             </div>
 
-                            {/* Enrollment + Intervals */}
                             <div className="w-full sm:w-1/2">
                                 <label className="font-medium block mb-2">Termen limită pentru înscriere</label>
                                 <div className="flex gap-2 mb-4 justify-between">

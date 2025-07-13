@@ -219,7 +219,7 @@ function Clients() {
 
                                 {expandedClientIds.includes(client.id) && (
                                     <div className="mt-4 space-y-6">
-                                        {/* Ședințe viitoare */}
+                                        {/* viitoare */}
                                         {client.sessions.filter(s => isFuture(s.date)).length > 0 && (
                                             <div>
                                                 <h3 className="text-lg font-bold text-indigo-800 mb-2">Programări viitoare</h3>
@@ -244,7 +244,7 @@ function Clients() {
                                             </div>
                                         )}
 
-                                        {/* Ședințe trecute */}
+                                        {/* trecute */}
                                         {client.sessions.filter(s => !isFuture(s.date)).length > 0 && (
                                             <div>
                                                 <h3 className="text-lg font-bold text-indigo-800 mb-2">Programări trecute</h3>

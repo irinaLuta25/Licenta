@@ -15,7 +15,6 @@ function MainSpecialist() {
 
     return (
         <Routes>
-            {/* pages in navbar: clients, events, calendar, profile */}
             <Route path="/" element={<Navigate to="home" />} />
             <Route path="events" element={<Events />} />
             <Route path="events/create-event" element={<CreateEvent />} />

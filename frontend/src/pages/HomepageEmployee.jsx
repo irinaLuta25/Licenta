@@ -23,13 +23,11 @@ function HomepageEmployee() {
             <Navbar />
 
             <div className="flex flex-col">
-                {/* Hero Section */}
                 <HeroSection onExploreClick={() => {
                     howItWorksRef.current?.scrollIntoView({ behavior: "smooth" });
                 }} />
 
 
-                {/* Mental Health awareness */}
                 <section
                     className="mt-20 py-16 bg-gradient-to-r from-[#dbeafe] via-[#e0f2fe] to-[#f0fdf4] text-center px-4"
                 >
@@ -89,7 +87,6 @@ function HomepageEmployee() {
                     </div>
                 </section>
 
-                {/* Statistics */}
                 <section className="mt-28 mb-16 text-center px-16">
                     <h2
                         className="text-3xl font-bold text-indigo-900 mb-8"
@@ -100,7 +97,6 @@ function HomepageEmployee() {
                     <CustomCarousel />
                 </section>
 
-                {/* How It Works */}
                 <motion.section
                     ref={howItWorksRef}
                     className="mt-20 max-w-6xl mx-auto"
@@ -121,7 +117,6 @@ function HomepageEmployee() {
                         Cum funcționează aplicația
                     </h2>
 
-                    {/* Ședințe de terapie */}
                     <StepsSection
                         title="🧠 Ședințe de terapie"
                         steps={[
@@ -131,7 +126,6 @@ function HomepageEmployee() {
                         ]}
                     />
 
-                    {/* Evenimente */}
                     <StepsSection
                         title="📅 Participare la evenimente"
                         steps={[
@@ -155,7 +149,6 @@ function HomepageEmployee() {
                     />
 
 
-                    {/* Obiceiuri sănătoase */}
                     <StepsSection
                         title="💡 Stil de viață și obiective"
                         steps={[
@@ -179,7 +172,6 @@ function HomepageEmployee() {
 
                 </motion.section>
 
-                {/* Call to Action */}
                 <section className="text-center mt-24 mb-20">
                     <h3 className="text-2xl font-semibold text-indigo-900 mb-4">
                         Vrei să ne semnalezi o problemă?

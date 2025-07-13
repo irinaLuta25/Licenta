@@ -270,7 +270,6 @@ function CompatibilityForm() {
                         ))}
                     </div>
 
-                    {/* to do: back de pe details tre sa ma intoarca la formular fara sa dispara terapeutii */}
 
                 </div>
 

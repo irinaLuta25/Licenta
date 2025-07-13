@@ -172,7 +172,7 @@ const controller = {
           res.cookie("token", token, {
             httpOnly: true,
             sameSite: "Lax",
-            maxAge: 24 * 60 * 60 * 1000, // 1 zi
+            maxAge: 24 * 60 * 60 * 1000,
           });
           return res
             .status(200)

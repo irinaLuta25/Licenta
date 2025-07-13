@@ -15,7 +15,7 @@ function randomDateInPastMonths(months = 3) {
 }
 
 function randomTimeSlot() {
-  const startHour = 8 + Math.floor(Math.random() * 8); // 8 - 15
+  const startHour = 8 + Math.floor(Math.random() * 8);
   const begin = `${startHour}:00:00`;
   const end = `${startHour + 1}:00:00`;
   return [begin, end];
@@ -33,7 +33,6 @@ function removeDiacritics(str) {
     const specialists = [];
     const employees = [];
 
-    // === 1. SPECIALISTI ===
     for (let i = 0; i < 30; i++) {
       const firstName = faker.person.firstName();
       const lastName = faker.person.lastName();
@@ -103,7 +102,6 @@ function removeDiacritics(str) {
       specialists.push({ ...specialist.dataValues, user });
     }
 
-    // === 2. ANGAJATI ===
     for (let i = 0; i < 80; i++) {
       const firstName = faker.person.firstName();
       const lastName = faker.person.lastName();
@@ -138,7 +136,6 @@ function removeDiacritics(str) {
       employees.push({ ...employee.dataValues, user });
     }
 
-    // === 3. INTERVALE & SESIUNI ===
     const therapistNotesRO = [
   "Clientul a vorbit despre stresul acumulat la locul de muncă.",
   "Am explorat relația cu familia și impactul acesteia asupra stării emoționale.",
@@ -159,7 +156,7 @@ function removeDiacritics(str) {
 
     let sessionCount = 0;
     for (const specialist of specialists) {
-      const numSessions = 10 + Math.floor(Math.random() * 6); // 10-15
+      const numSessions = 10 + Math.floor(Math.random() * 6);
 
       for (let i = 0; i < numSessions; i++) {
         const employee = faker.helpers.arrayElement(employees);
@@ -175,7 +172,7 @@ function removeDiacritics(str) {
         });
 
         await TherapySession.create({
-          satisfactionScore: 1 + Math.floor(Math.random() * 5), // 1-5
+          satisfactionScore: 1 + Math.floor(Math.random() * 5),
           notes: faker.helpers.arrayElement(therapistNotesRO),
           intervalId: interval.id,
           employeeId: employee.id,
@@ -188,10 +185,10 @@ function removeDiacritics(str) {
       if (sessionCount >= 300) break;
     }
 
-    console.log("✅ Baza de date a fost populată cu succes!");
+    console.log("Baza de date a fost populată cu succes!");
     process.exit(0);
   } catch (err) {
-    console.error("❌ Eroare la populare:", err);
+    console.error("Eroare la populare:", err);
     process.exit(1);
   }
 })();

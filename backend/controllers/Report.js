@@ -19,13 +19,11 @@ const controller = {
     }
 
     try {
-      // 1. Cautam angajatul manager
       const manager = await Employee.findOne({ where: { userId: managerId } });
       if (!manager || !manager.isManager) {
         return res.status(403).send("User is not a manager");
       }
 
-      // 2. Toti angajatii din acelasi department
       const employees = await Employee.findAll({
         where: {
           department: manager.department,
@@ -36,7 +34,6 @@ const controller = {
       const employeeIds = employees.map((emp) => emp.id);
       if (employeeIds.length === 0) return res.status(200).send([]);
 
-      // 3. Perioada de filtrare
       const startDate = new Date(year, month - 1, 1);
       const endDate = new Date(year, month, 0, 23, 59, 59);
 
@@ -48,7 +45,6 @@ const controller = {
         raw: true,
       });
 
-      // 4. Grupare date: pe zi + mood
       const getWeekLabel = (dateStr) => {
         const day = new Date(dateStr).getDate();
         if (day <= 7) return "Săpt. 1";
@@ -66,19 +62,9 @@ const controller = {
         grouped[week][s.mood].push(s.intensity);
       }
 
-      // // 5. Calculam media pe fiecare mood/zi
-      // const result = Object.entries(grouped).map(([date, moods]) => {
-      //   const entry = { date };
-      //   for (const [mood, values] of Object.entries(moods)) {
-      //     const sum = values.reduce((a, b) => a + b, 0);
-      //     entry[mood] = +(sum / values.length).toFixed(2);
-      //   }
-      //   return entry;
-      // });
 
-      // 5. Calculam numarul de persoane care au raportat fiecare mood pe zi
       const result = Object.entries(grouped).map(([week, moods]) => {
-        const entry = { week }; // în loc de date
+        const entry = { week }; 
         for (const [mood, values] of Object.entries(moods)) {
           entry[mood] = values.length;
         }
@@ -177,7 +163,7 @@ const controller = {
 
       const monthlyCounts = Array(12).fill(0);
       for (const p of problems) {
-        const month = new Date(p.createdAt).getMonth(); // 0 - 11
+        const month = new Date(p.createdAt).getMonth(); 
         monthlyCounts[month]++;
       }
 
@@ -218,7 +204,7 @@ const controller = {
             attributes: ["date"],
           },
           {
-            model: EmployeeEvent, // folosim direct modelul
+            model: EmployeeEvent, 
           },
         ],
       });
@@ -263,7 +249,6 @@ const controller = {
 
       const department = manager.department;
 
-      // Aducem toate sesiunile cu satisfactie != null, angajatii din departamentul managerului si intervalul
       const sessions = await TherapySession.findAll({
         where: {
           satisfactionScore: { [Op.not]: null },
@@ -282,13 +267,11 @@ const controller = {
         raw: false,
       });
 
-      // Filtrăm manual în JS sesiunile după anul din interval.date
       const filteredSessions = sessions.filter((session) => {
         if (!session.interval || !session.interval.date) return false;
         return new Date(session.interval.date).getFullYear() === parseInt(year);
       });
 
-      // Contorizăm scorurile
       const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
       filteredSessions.forEach((session) => {
         const score = session.satisfactionScore;
@@ -297,7 +280,6 @@ const controller = {
         }
       });
 
-      // Construim array-ul final
       const distribution = [];
       for (let i = 1; i <= 5; i++) {
         distribution.push({ score: i, count: counts[i] });

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// FETCH ALL HABITS
 export const fetchAllHabits = createAsyncThunk(
   "habit/fetchAllHabits",
   async (_, thunkAPI) => {

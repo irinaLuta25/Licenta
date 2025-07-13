@@ -1,4 +1,3 @@
-// Script de populare pentru specialisti noi, intervale, evenimente si participari
 const bcrypt = require("bcryptjs");
 const { fakerRO: faker } = require('@faker-js/faker');
 

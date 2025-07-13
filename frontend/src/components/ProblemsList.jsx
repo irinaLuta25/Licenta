@@ -16,7 +16,6 @@ const ProblemsList = ({ managerId, selectedYear, onShowAll, showAll }) => {
   if (error) return <p className="text-red-600">Eroare: {error}</p>;
   if (!problemsList.length) return <p>Nu există probleme raportate în departamentul tău.</p>;
 
-  // Filtrare locală după an:
   const filteredProblems = problemsList.filter(problem => {
     const problemYear = new Date(problem.createdAt).getFullYear();
     return problemYear === selectedYear;

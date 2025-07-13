@@ -170,14 +170,11 @@ function Wellbeing() {
         <div className="bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen text-gray-800">
             <Navbar />
 
-            {/* Main container */}
             <div className="px-6 py-24 flex flex-col gap-4">
 
-                {/* mood + habits*/}
                 <div className="flex flex-row w-full gap-4">
 
                     <div className="flex flex-col w-[40%] gap-6 p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
-                        {/* track mood */}
                         <div className="flex flex-col items-center border-none p-4 gap-4 backdrop-blur-sm rounded-[1rem] bg-[linear-gradient(145deg,_#e2d9ff,_#c3e0ff,_#dee3ff)]">
                             <h1 className="text-2xl font-semibold text-indigo-800">Bună! Cum Îți merge ziua?</h1>
                             <button
@@ -187,7 +184,6 @@ function Wellbeing() {
                             </button>
                         </div>
 
-                        {/* calendar moods */}
                         <div>
                             <Calendar
                                 className="custom-schedule-calendar"
@@ -225,10 +221,8 @@ function Wellbeing() {
                         </div>
                     </div>
 
-                    {/* habits */}
                     <div className="w-[60%] p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)] flex flex-col gap-4">
 
-                        {/* Buton adaugă obiectiv */}
                         <div className="flex justify-between items-center">
                             <h2 className="text-xl font-semibold text-indigo-800">Obiectivele mele</h2>
                             <button
@@ -255,7 +249,6 @@ function Wellbeing() {
                         </div>
 
 
-                        {/* Carduri obiective */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[610px] pr-2">
                             {currentGoals.map((goal) => {
                                 const { id, habit, targetValue, period } = goal;
@@ -414,7 +407,6 @@ function Wellbeing() {
                                     <h3 className="text-lg font-semibold capitalize text-gray-800">{cat}</h3>
 
                                     <div className="flex items-center gap-4 ">
-                                        {/* Badge actual */}
                                         <div className="relative w-[120px] h-[120px] flex items-center justify-center">
 
                                             <BadgeIcon
@@ -427,7 +419,6 @@ function Wellbeing() {
                                         </div>
 
 
-                                        {/* Hint spre nivelul urmator */}
                                         <div className="text-sm text-gray-600 italic max-w-[180px]">
                                             {hasAny
                                                 ? `Continuă pentru a atinge Nivel ${maxLevel + 1}.`

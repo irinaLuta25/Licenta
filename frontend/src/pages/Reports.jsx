@@ -81,10 +81,8 @@ function Reports() {
                     Raport pentru departamentul {employee?.department}
                 </h1>
 
-                {/* Secțiune: Stare emoțională */}
                 <section className="mb-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        {/* Partea stângă */}
                         <div>
                             <div className="flex justify-between mb-4">
                                 <h2 className="text-2xl font-semibold mt-3">
@@ -100,7 +98,6 @@ function Reports() {
                             </div>
                         </div>
 
-                        {/* Partea dreaptă */}
                         <div>
                             <div className="flex justify-between items-end mb-4">
                                 <h2 className="text-2xl font-semibold m-0">Frecvența stărilor emoționale</h2>
@@ -132,7 +129,6 @@ function Reports() {
                     </div>
                 </section>
 
-                {/* Secțiune: Probleme raportate */}
                 <section className="mb-12">
                     <div className="flex flex-row justify-between items-center">
                         <h2 className="text-2xl font-semibold mb-4">Evoluție Probleme Raportate</h2>
@@ -166,7 +162,6 @@ function Reports() {
 
                 <section className="mb-12">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-4">
-                        {/* Partea stângă - Participare la evenimente */}
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-semibold">Distribuția participării la evenimente</h2>
                             <div className="w-32">
@@ -178,7 +173,6 @@ function Reports() {
                             </div>
                         </div>
 
-                        {/* Partea dreaptă - Satisfacție sesiuni terapie */}
                         <div className="flex justify-between items-center">
                             <h2 className="text-2xl font-semibold">Satisfacția generală pentru sesiunile de terapie</h2>
                             <div className="w-32">
@@ -208,20 +202,7 @@ function Reports() {
                     </div>
                 </section>
 
-                {/* Secțiune opțională: Obiective și echilibru emoțional */}
-                {/* <section className="mb-12">
-                    <h2 className="text-2xl font-semibold mb-4">
-                        Obiective & echilibru emoțional
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
-                            G6: RadarChart - Obiective personale
-                        </div>
-                        <div className="p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)]">
-                            G7: ScatterChart - Obiective vs. mood
-                        </div>
-                    </div>
-                </section> */}
+                
             </div>
 
 

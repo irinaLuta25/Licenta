@@ -153,6 +153,8 @@ function Profile() {
     }, [userFromCookie, dispatch]);
 
     useEffect(() => {
+        if (!user?.id || !user?.role) return;
+        
         if (user?.role === "angajat") {
             dispatch(getEmployeeByUserId(user?.id));
         } else {

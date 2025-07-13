@@ -73,7 +73,6 @@ function Therapists() {
             <div className="pt-24 px-8 sm:px-16 bg-gradient-to-br from-[#F1F2D3] via-[#5e8de7] to-[#9f82ec] min-h-screen">
                 <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center gap-4 my-6 mb-12">
                     <div className="flex flex-wrap items-center gap-6 flex-grow">
-                        {/* Search */}
                         <div className="relative w-full sm:w-64">
 
                             <input
@@ -103,13 +102,11 @@ function Therapists() {
                             </div>
                         </div>
 
-                        {/* Dropdowns */}
                         <CustomDropdown1 value={sortOption} onChange={setSortOption} options={sortOptions} />
                         <CustomDropdown1 value={genderFilter} onChange={setGenderFilter} options={genderOptions} />
                         <CustomDropdown1 value={formationFilter} onChange={setFormationFilter} options={formationOptions} />
                     </div>
 
-                    {/* Compatibility */}
                     <button
                         onClick={() => navigate("compatibilityForm")}
                         className="bg-gradient-to-r from-[#4f46e5] via-[#7c3aed] to-[#ec4899] text-white shadow-md hover:brightness-110 hover:scale-105 font-semibold px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2"

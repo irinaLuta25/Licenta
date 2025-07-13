@@ -14,12 +14,10 @@ function HomepageSpecialist() {
       <Navbar />
 
       <div className="flex flex-col">
-        {/* Hero Section */}
         <HeroSectionSpecialist onExploreClick={() => {
           howItWorksRef.current?.scrollIntoView({ behavior: "smooth" });
         }} />
 
-        {/* Despre impactul specialiștilor */}
         <section className="mt-20 py-16 bg-gradient-to-r from-[#f0fdf4] via-[#e0f2fe] to-[#dbeafe] text-center px-4 mb-12">
           <motion.h2
             className="text-3xl font-bold text-indigo-900 mb-4"
@@ -75,7 +73,6 @@ function HomepageSpecialist() {
           </div>
         </section>
 
-        {/* How It Works */}
         <motion.section
           ref={howItWorksRef}
           className="mt-20 max-w-6xl mx-auto"
