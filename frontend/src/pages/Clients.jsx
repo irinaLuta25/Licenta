@@ -203,7 +203,7 @@ function Clients() {
                             <div key={client.id} className="bg-white/70 backdrop-blur rounded-2xl shadow-xl p-8 mb-6">
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-4">
-                                        <img src={client.profileImage} alt="Profil" className="w-16 h-16 rounded-full object-cover shadow-md" />
+                                        <img src={client.profileImage} alt="" className="w-16 h-16 rounded-full object-cover shadow-md" />
                                         <div>
                                             <h2 className="text-2xl font-bold text-indigo-800">{client.name}</h2>
                                             <p className="text-md text-gray-600">{client.email} – {client.department}</p>

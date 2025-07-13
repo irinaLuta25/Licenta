@@ -98,14 +98,14 @@ const GoalProgressChart = ({ employeeGoals, trackingsByGoalId }) => {
 
   const goalOptions = employeeGoals.map((goal) => ({
     value: goal.id,
-    label: `${goal.habit.name} (${goal.period})`
+    label: `${goal?.habit?.name} (${goal?.period})`
   }));
 
   return (
     <div className="w-full p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow">
       <h2 className="text-xl font-semibold text-indigo-800 mb-4">Progresul meu pe obiective</h2>
 
-      <div className="w-full max-w-md mb-8">
+      <div className="w-full max-w-md mb-10">
         <CustomDropdownBlock
           value={selectedGoalId || ""}
           onChange={(val) => setSelectedGoalId(val)}
@@ -128,7 +128,7 @@ const GoalProgressChart = ({ employeeGoals, trackingsByGoalId }) => {
               y={selectedGoal.targetValue}
               stroke="red"
               strokeDasharray="4 4"
-              label={{ position: "top", value: `Target ${selectedGoal.targetValue} ${selectedGoal.habit.unit}`, fill: "#b91c1c" }}
+              label={{ position: "insideTop", value: `Target ${selectedGoal.targetValue} ${selectedGoal.habit.unit}`, fill: "#b91c1c" }}
             />
             <Line
               type="monotone"

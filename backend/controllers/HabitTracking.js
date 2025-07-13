@@ -11,11 +11,13 @@ const controller = {
       });
 
       const goal = await EmployeeGoalDb.findByPk(req.body.employeeGoalId);
+      let rewardGranted = false;
+
       if (goal) {
-        await checkAndUpdateReward(goal.employeeId, require("../models"));
+        rewardGranted = await checkAndUpdateReward(goal.employeeId);
       }
 
-      res.status(200).send(record);
+      res.status(200).json({ record, rewardGranted });
     } catch (err) {
       res.status(500).send(err.message);
     }

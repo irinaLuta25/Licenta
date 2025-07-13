@@ -7,8 +7,7 @@ import MoodListModal from "../components/MoodListModal";
 import MoodModal from "../components/MoodModal";
 import GoalProgressChart from "../components/Charts/GoalProgressChart";
 import { motion, AnimatePresence } from "framer-motion";
-
-
+import { toast } from "react-toastify";
 
 import BadgeIcon from "../components/BadgeIcon";
 
@@ -24,11 +23,11 @@ import { fetchAllRewards } from "../features/reward/rewardSlice";
 import { fetchEmotionalStatesByEmployeeId } from "../features/emotionalState/emotionalStateSlice";
 
 const categoryColors = {
-    "productivitate": "#6366f1", // indigo
-    "activitate fizica": "#22c55e", // green
-    "stil de viata": "#eab308", // yellow
-    "sanatate emotionala": "#ec4899", // pink
-    "dezvoltare personala": "#3b82f6", // blue
+    "productivitate": "#6366f1", 
+    "activitate fizica": "#22c55e",
+    "stil de viata": "#eab308", 
+    "sanatate emotionala": "#ec4899", 
+    "dezvoltare personala": "#3b82f6",
 };
 
 const moodEmojiMap = {
@@ -81,10 +80,17 @@ function Wellbeing() {
 
     const handleOpenProgressModal = (goal) => setSelectedGoal(goal);
     const handleCloseProgressModal = () => setSelectedGoal(null);
-    const handleSubmitProgress = (goalId, value) => {
-        dispatch(createHabitTracking({ employeeGoalId: goalId, value }));
-        if (employee?.id) {
-            dispatch(fetchRewardsByEmployee(employee.id));
+    const handleSubmitProgress = async (goalId, value) => {
+        const response = await dispatch(createHabitTracking({ employeeGoalId: goalId, value }));
+
+        dispatch(fetchHabitTrackingByGoalId(goalId));
+
+        if (response?.payload?.rewardGranted) {
+            toast.success("🎉 Ai primit o recompensă!");
+
+            if (employee?.id) {
+                dispatch(fetchRewardsByEmployee(employee.id));
+            }
         }
     };
 
@@ -220,7 +226,7 @@ function Wellbeing() {
                     </div>
 
                     {/* habits */}
-                    <div className="w-[60%] p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)] flex flex-col gap-6">
+                    <div className="w-[60%] p-10 bg-white/30 backdrop-blur-xl border border-white/30 rounded-xl shadow-[0_6px_18px_rgba(0,0,0,0.15)] flex flex-col gap-4">
 
                         {/* Buton adaugă obiectiv */}
                         <div className="flex justify-between items-center">
@@ -250,7 +256,7 @@ function Wellbeing() {
 
 
                         {/* Carduri obiective */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[570px] pr-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto max-h-[610px] pr-2">
                             {currentGoals.map((goal) => {
                                 const { id, habit, targetValue, period } = goal;
 
@@ -317,7 +323,7 @@ function Wellbeing() {
                                         )}
 
 
-                                        <h3 className="text-lg font-semibold text-indigo-700">{habit?.name}</h3>
+                                        <h3 className="text-lg font-semibold text-indigo-700 pt-2">{habit?.name}</h3>
 
                                         <div>
                                             <div className="w-full bg-gray-200 rounded-full h-3">
@@ -331,7 +337,7 @@ function Wellbeing() {
                                             <div className="text-sm text-gray-700 mt-1 mb-2 flex justify-between">
                                                 <span>
                                                     <span className="font-medium text-indigo-800">{currentValue}</span>
-                                                    <span className="text-gray-500"> / {targetValue}{habit?.unit}</span>
+                                                    <span className="text-gray-500"> / {targetValue} ({habit?.unit})</span>
                                                 </span>
                                                 <span className="italic text-gray-600 capitalize">{period}</span>
                                             </div>
@@ -412,7 +418,7 @@ function Wellbeing() {
                                         <div className="relative w-[120px] h-[120px] flex items-center justify-center">
 
                                             <BadgeIcon
-                                                level={hasAny ? maxLevel : 1}
+                                                level={hasAny ? maxLevel : 0}
                                                 label={hasAny ? getRewardLabel(cat, maxLevel) : "Blocat"}
 
                                                 filled={hasAny}

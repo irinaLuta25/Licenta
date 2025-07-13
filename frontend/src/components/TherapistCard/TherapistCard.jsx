@@ -19,7 +19,7 @@ function TherapistCard({ therapist }) {
   return (
     <div className="bg-gradient-to-br from-[#d4ccff]/70 via-[#c7dfff]/70 to-[#d6e6ff]/70 backdrop-blur-xl shadow-xl hover:shadow-2xl rounded-xl transition transform duration-300 hover:-translate-y-1 overflow-hidden p-4 flex flex-col justify-between">
   <img
-    src={user?.profileImage || "/assets/Cat_November_2010-1a.jpg"}
+    src={user?.profileImage || "/assets/Default_pfp.jpg"}
     alt="Therapist"
     className="w-full max-h-[250px] aspect-[3/4] object-contain rounded-lg mb-4"
   />

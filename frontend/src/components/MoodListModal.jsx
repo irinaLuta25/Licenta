@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 const emojiMap = {
     Energic: "😄", Optimist: "😄", Recunoscător: "😄",
     Calm: "🙂", Concentrat: "🙂", Motivat: "🙂",
-    Obosit: "😐", Apat: "😐", Indiferent: "😐",
-    Stresat: "😞", Trist: "😞", Furios: "😞",
-    Anxios: "😭", Dezamagit: "😭", Deznadajduit: "😭",
+    Obosit: "😐", Distant: "😐", Plictisit: "😐",
+    Stresat: "😞", Trist: "😞", Confuz: "😞",
+    Anxios: "😭", Dezamagit: "😭", Furios: "😭",
 };
 
 const MoodListModal = ({ date, emotionalStates, onClose }) => {

@@ -21,9 +21,6 @@ const ProblemEvolutionChart = ({ managerId, selectedYear }) => {
     }
   }, [dispatch, managerId, selectedYear]);
 
-  if (loading) return <p>Se incarca datele...</p>;
-  if (error) return <p className="text-red-500">Eroare: {error}</p>;
-
   return (
     <ResponsiveContainer width="100%" height={400}>
       <LineChart data={problemsPerMonth} margin={{ top: 10, right: 38, left: 0, bottom: 70 }}>

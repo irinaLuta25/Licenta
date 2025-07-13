@@ -11,9 +11,6 @@ import ProblemsList from "../components/ProblemsList";
 import { getEmployeeByUserId } from "../features/employee/employeeSlice";
 import CustomDropdown2 from "../components/CustomDropdown2";
 
-// de rezolvat:
-// la refresh e ceva rau - tre sa adaug verifciare pt date goale pt grafice cred
-
 function Reports() {
     const { user } = useSelector((state) => state.auth);
     const employee = useSelector((state) => state.employee.employee);

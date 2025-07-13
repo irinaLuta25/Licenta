@@ -12,7 +12,7 @@ import {
     return (
       <Listbox value={value} onChange={onChange}>
         <div className="relative w-full">
-          <ListboxButton className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 focus:outline-none shadow-inner text-left flex justify-between items-center">
+          <ListboxButton className="w-full p-2.5 rounded-xl bg-white/70 text-gray-700 focus:outline-none shadow-inner text-left flex justify-between items-center" >
             <span>{selected.label}</span>
             <ChevronDownIcon className="h-5 w-5 text-indigo-600" aria-hidden="true" />
           </ListboxButton>

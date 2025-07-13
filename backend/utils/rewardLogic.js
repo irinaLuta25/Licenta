@@ -1,11 +1,14 @@
 const { EmployeeGoal, Habit, EmployeeReward, Reward, HabitTracking} = require("../models");
 
-const checkAndUpdateReward = async (employeeId, models) => {
+const checkAndUpdateReward = async (employeeId) => {
+  let rewardGranted = false;
+
   const goals = await EmployeeGoal.findAll({
     where: { employeeId },
     include: [{ model: Habit }],
   });
 
+  const now = new Date();
   const completedCounts = {};
 
   for (const goal of goals) {
@@ -13,25 +16,32 @@ const checkAndUpdateReward = async (employeeId, models) => {
       where: { employeeGoalId: goal.id },
     });
 
-    const today = new Date();
-    const relevant = trackings.filter((t) => {
-      const d = new Date(t.createdAt);
-      if (goal.period === "zilnic") return d.toDateString() === today.toDateString();
-      if (goal.period === "săptămânal") {
-        const start = new Date(today);
-        start.setDate(today.getDate() - today.getDay());
-        return d >= start && d <= today;
-      }
-      if (goal.period === "lunar")
-        return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-      if (goal.period === "anual") return d.getFullYear() === today.getFullYear();
-      return false;
-    });
+    const grouped = {};
 
-    const sum = relevant.reduce((acc, curr) => acc + curr.value, 0);
-    if (sum >= goal.targetValue) {
+    for (const t of trackings) {
+      const d = new Date(t.createdAt);
+      let key = "";
+
+      if (goal.period === "zilnic") {
+        key = d.toISOString().split("T")[0];
+      } else if (goal.period === "săptămânal") {
+        const weekStart = new Date(d);
+        weekStart.setDate(d.getDate() - d.getDay());
+        key = weekStart.toISOString().split("T")[0];
+      } else if (goal.period === "lunar") {
+        key = `${d.getFullYear()}-${d.getMonth() + 1}`;
+      } else if (goal.period === "anual") {
+        key = `${d.getFullYear()}`;
+      }
+
+      grouped[key] = (grouped[key] || 0) + t.value;
+    }
+
+    const completari = Object.values(grouped).filter((sum) => sum >= goal.targetValue).length;
+
+    if (completari > 0) {
       const cat = goal.habit.category;
-      completedCounts[cat] = (completedCounts[cat] || 0) + 1;
+      completedCounts[cat] = (completedCounts[cat] || 0) + completari;
     }
   }
 
@@ -54,8 +64,15 @@ const checkAndUpdateReward = async (employeeId, models) => {
         createdAt: new Date(),
         level: currentLevel + 1,
       });
+
+      rewardGranted = true;
+      console.log(`🎉 Ai primit o recompensă! Nivel nou: ${currentLevel + 1}`);
     }
+
+    console.log(`Obiective îndeplinite pt ${category}: ${count} / necesare: ${needed}`);
   }
+
+  return rewardGranted;
 };
 
 module.exports = { checkAndUpdateReward };

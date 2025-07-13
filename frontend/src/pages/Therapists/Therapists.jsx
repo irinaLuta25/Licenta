@@ -21,8 +21,9 @@ const genderOptions = [
 const formationOptions = [
     { label: "Formare", value: "" },
     { label: "CBT", value: "CBT" },
-    { label: "Psihanaliză", value: "Psihanaliză" },
-    { label: "Terapie sistemică", value: "Terapie sistemică" },
+    { label: "Psihanaliză", value: "Psihanaliza" },
+    { label: "Sistemică", value: "Sistemica" },
+    { label: "Experiențială", value: "Experientiala" },
 ];
 
 function Therapists() {

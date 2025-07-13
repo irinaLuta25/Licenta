@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { fetchAllHabits } from "../features/habit/habitSlice";
 import { createEmployeeGoal, fetchEmployeeGoals } from "../features/employeeGoals/employeeGoalSlice";
 import CustomDropdown2 from "./CustomDropdown2";
+import { toast } from "react-toastify";
 
 const categoryColors = {
     productivitate: "bg-indigo-100 text-indigo-800",
@@ -32,6 +33,8 @@ const periodOptions = [
 function AddGoalModal({ onClose, employeeId }) {
     const dispatch = useDispatch();
     const { habits } = useSelector((state) => state.habit);
+        console.log("aaaaaa",habits)
+
 
     const [selectedCategory, setSelectedCategory] = useState("Toate categoriile");
     const [selectedHabitId, setSelectedHabitId] = useState("");
@@ -79,6 +82,8 @@ function AddGoalModal({ onClose, employeeId }) {
                 period,
             })
         );
+
+        toast.success("Obiectiv adăugat cu succes!")
 
         await dispatch(fetchEmployeeGoals(employeeId));
         onClose();

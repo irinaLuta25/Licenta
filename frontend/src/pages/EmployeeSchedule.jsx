@@ -120,7 +120,7 @@ const EmployeeSchedule = () => {
 
     if (events) {
         events.forEach((employeeEvent) => {
-            const event = employeeEvent.event;
+            const event = employeeEvent?.event;
             if (!event?.interval?.date) return;
             const dateKey = format(new Date(event.interval.date), "yyyy-MM-dd");
             const begin = event.interval.beginTime.slice(0, 5);
@@ -128,8 +128,8 @@ const EmployeeSchedule = () => {
             realSchedule[dateKey] = realSchedule[dateKey] || [];
             realSchedule[dateKey].push({
                 type: "event",
-                title: `${event.name} - ${event.interval?.specialist?.user?.firstName || "Specialist"
-                    } ${event.interval?.specialist?.user?.lastName || ""}`,
+                title: `${event?.name} - ${event.interval?.specialist?.user?.firstName || "Specialist"
+                    } ${event?.interval?.specialist?.user?.lastName || ""}`,
                 time: `${begin}–${end}`,
                 original: employeeEvent,
             });
@@ -167,7 +167,7 @@ const EmployeeSchedule = () => {
                 dispatch(checkHasFeedbackForTherapySession({ therapySessionId: session.id, employeeId: employee.id }));
             });
             events.forEach((employeeEvent) => {
-                dispatch(checkHasFeedbackForEvent({ eventId: employeeEvent.event.id, employeeId: employee.id }));
+                dispatch(checkHasFeedbackForEvent({ eventId: employeeEvent?.event?.id, employeeId: employee?.id }));
             });
         }
     }, [employee?.id, therapySessions, events, dispatch]);
